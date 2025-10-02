@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatIndia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --wa-header-bg: #005c97;
+            --wa-accent-blue: #34B7F1;
+            --wa-message-out-bg: #e1f6fb;
+            --wa-message-in-bg: #ffffff;
+            --wa-app-bg: #f0f2f5;
+            --wa-chat-bg: #e5ddd5;
+            --wa-icon-color: #f0f2f5;
+            --wa-text-primary: #111b21;
+            --wa-text-secondary: #667781;
+            --wa-border-color: #e9edef;
+            --wa-active-tab-indicator: var(--wa-accent-blue);
+            --wa-button-color: #008069;
+            --wa-link-color: #00a8e8;
+            --wa-shadow: rgba(17, 27, 33, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            background-color: #d1d7db;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        #app-container {
+            width: 100%;
+            height: 100%;
+            max-width: 450px;
+            max-height: 950px;
+            background-color: var(--wa-app-bg);
+            box-shadow: 0 4px 12px var(--wa-shadow);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view, .modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--wa-app-bg);
+            flex-direction: column;
+        }
+
+        .view.active, .modal.active {
+            display: flex;
+            z-index: 10;
+        }
+
+        /* --- Auth View --- */
+        #auth-view {
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        #auth-view h1 {
+            color: var(--wa-header-bg);
+            font-size: 3rem;
+            margin-bottom: 2rem;
+        }
+        .auth-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .auth-form input {
+            padding: 0.8rem;
+            border: 1px solid var(--wa-border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .auth-form input:focus {
+            outline: none;
+            border-color: var(--wa-accent-blue);
+            box-shadow: 0 0 5px rgba(52, 183, 241, 0.5);
+        }
+        .auth-form button {
+            padding: 0.8rem;
+            background-color: var(--wa-button-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .auth-form .form-switch-link {
+            color: var(--wa-link-color);
+            text-align: center;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .error-message {
+            color: #e91e63;
+            font-size: 0.9rem;
+            text-align: center;
+            min-height: 1.2em;
+        }
+        #signup-form {
+            display: none;
+        }
+
+        /* --- Main View --- */
+        #main-view {
+            display: flex;
+        }
+        .main-header {
+            background-color: var(--wa-header-bg);
+            color: var(--wa-icon-color);
+            padding-top: 1rem;
+            box-shadow: 0 2px 4px var(--wa-shadow);
+            z-index: 5;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem 0.5rem 1rem;
+        }
+        .header-top h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--wa-icon-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+        .icon-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .icon-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        .header-nav {
+            display: flex;
+        }
+        .nav-tab {
+            flex: 1;
+            text-align: center;
+            padding: 1rem 0;
+            cursor: pointer;
+            color: var(--wa-icon-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            position: relative;
+        }
+        .nav-tab.active {
+            color: var(--wa-accent-blue);
+            border-bottom: 3px solid var(--wa-active-tab-indicator);
+        }
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 15%;
+            background-color: var(--wa-accent-blue);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: none;
+        }
+        #main-content {
+            flex: 1;
+            position: relative;
+            overflow-y: auto;
+        }
+        .content-panel {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .content-panel.active {
+            display: flex;
+        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--wa-border-color);
+        }
+        .list-item:hover {
+            background-color: #f5f5f5;
+        }
+        .list-item-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            background-color: var(--wa-header-bg);
+        }
+        .list-item-details {
+            flex: 1;
+            overflow: hidden;
+        }
+        .list-item-name {
+            font-weight: 500;
+            color: var(--wa-text-primary);
+        }
+        .list-item-subtext {
+            color: var(--wa-text-secondary);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .list-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+         .list-item-actions button {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        .accept-btn { background-color: #4CAF50; }
+        .reject-btn { background-color: #f44336; }
+
+
+        /* --- Chat View --- */
+        #chat-view {
+            background-color: var(--wa-chat-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23bdbdbd' fill-opacity='0.15' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: var(--wa-header-bg);
+            color: var(--wa-icon-color);
+            gap: 0.5rem;
+        }
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex: 1;
+        }
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--wa-accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+        .contact-name {
+            font-weight: 500;
+        }
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .message-bubble {
+            max-width: 75%;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            word-wrap: break-word;
+        }
+        .message-sent {
+            background-color: var(--wa-message-out-bg);
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+        .message-received {
+            background-color: var(--wa-message-in-bg);
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+            box-shadow: 0 1px 1px var(--wa-shadow);
+        }
+        #chat-input-container {
+            display: flex;
+            padding: 0.5rem;
+            background-color: var(--wa-app-bg);
+            align-items: center;
+            gap: 0.5rem;
+        }
+        #chat-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 20px;
+            background-color: white;
+        }
+        #chat-input:focus {
+            outline: none;
+        }
+        #chat-send-btn {
+            background-color: var(--wa-button-color);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Call Views --- */
+        .call-view {
+            background-color: #222;
+            z-index: 100;
+            color: white;
+        }
+        #remote-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+        }
+        #local-video {
+            width: 120px;
+            height: 160px;
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            border: 2px solid white;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: move;
+            z-index: 101;
+        }
+        .call-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.8) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+        }
+        .caller-info {
+            text-align: center;
+            padding-top: 2rem;
+        }
+        .caller-name {
+            font-size: 2rem;
+            font-weight: 500;
+        }
+        .call-status {
+            font-size: 1rem;
+            color: #eee;
+        }
+        #voice-call-view .caller-info {
+            padding-top: 30%;
+        }
+        .call-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding-bottom: 2rem;
+        }
+        .call-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .end-call-btn { background-color: #e91e63; }
+        .accept-call-btn { background-color: #4CAF50; }
+
+        /* --- Modals --- */
+        .modal {
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .modal-content h2 {
+            color: var(--wa-text-primary);
+            text-align: center;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--wa-border-color);
+            border-radius: 5px;
+        }
+        .modal-content button {
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            background-color: var(--wa-button-color);
+        }
+        #incoming-call-modal .modal-content {
+            align-items: center;
+        }
+        #profile-view-modal ul {
+            list-style: none;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--wa-border-color);
+            padding: 0.5rem;
+        }
+        #profile-view-modal li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <!-- ===== AUTH VIEW ===== -->
+        <div id="auth-view" class="view active">
+            <h1>ChatIndia</h1>
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <div id="login-error" class="error-message"></div>
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Log In</button>
+                <p class="form-switch-link" id="show-signup-link">Don't have an account? Sign Up</p>
+            </form>
+            <!-- Signup Form -->
+            <form id="signup-form" class="auth-form" style="display: none;">
+                <div id="signup-error" class="error-message"></div>
+                <input type="email" id="signup-email" placeholder="Email" required>
+                <input type="password" id="signup-password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+                <p class="form-switch-link" id="show-login-link">Already have an account? Log In</p>
+            </form>
+        </div>
+
+        <!-- ===== MAIN APP VIEW ===== -->
+        <div id="main-view" class="view">
+            <header class="main-header">
+                <div class="header-top">
+                    <h1>ChatIndia</h1>
+                    <div class="header-actions">
+                        <button id="add-friend-btn" class="icon-btn" title="Add Friend">
+                            <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </button>
+                        <button id="menu-btn" class="icon-btn" title="Profile & Settings">
+                            <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <nav class="header-nav">
+                    <div id="nav-home" class="nav-tab active">CHATS <span class="badge"></span></div>
+                    <div id="nav-notifications" class="nav-tab">UPDATES <span id="notifications-badge" class="badge"></span></div>
+                    <div id="nav-calls" class="nav-tab">CALLS <span class="badge"></span></div>
+                </nav>
+            </header>
+            <main id="main-content">
+                <div id="home-content" class="content-panel active"></div>
+                <div id="notifications-content" class="content-panel"></div>
+                <div id="calls-content" class="content-panel"></div>
+            </main>
+        </div>
+
+        <!-- ===== CHAT VIEW ===== -->
+        <div id="chat-view" class="view">
+            <header class="chat-header">
+                <button id="chat-back-btn" class="icon-btn">
+                     <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                </button>
+                <div class="contact-info">
+                    <div id="chat-contact-avatar" class="contact-avatar"></div>
+                    <span id="chat-contact-name" class="contact-name"></span>
+                </div>
+                <button id="voice-call-btn" class="icon-btn" title="Voice Call">
+                    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.02.74-.25 1.02l-2.2 2.2z"/></svg>
+                </button>
+                <button id="video-call-btn" class="icon-btn" title="Video Call">
+                    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                </button>
+                <button id="chat-more-btn" class="icon-btn" title="More options">
+                     <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                </button>
+            </header>
+            <div id="chat-messages"></div>
+            <form id="chat-form">
+                <div id="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Message" autocomplete="off">
+                    <button id="chat-send-btn" type="submit" class="icon-btn">
+                         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ===== CALL VIEWS ===== -->
+        <div id="video-call-view" class="view call-view">
+            <video id="remote-video" autoplay playsinline></video>
+            <video id="local-video" autoplay playsinline muted></video>
+            <div class="call-overlay">
+                <div class="caller-info">
+                    <h2 class="caller-name"></h2>
+                    <p class="call-status">Ringing...</p>
+                </div>
+                <div class="call-controls">
+                    <button id="video-end-call-btn" class="call-btn end-call-btn">
+                         <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M12 9c-1.6 0-3.15.25-4.62.72v3.1c0 .46-.32.87-.76.97-1.12.25-2.18.66-3.13 1.22-.32.18-.72.1-.94-.23l-2.2-2.2c-.28-.28-.36-.67-.25-1.02.37-1.12.57-2.33.57-3.57 0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1C0 17.39 7.61 25 17 25c.55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.02-1.02.25l-2.2 2.2c-.57-2.83-2.88-5.14-5.71-6.58z" transform="rotate(-135 12 12)"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="voice-call-view" class="view call-view">
+            <audio id="remote-audio" autoplay></audio>
+            <div class="call-overlay">
+                <div class="caller-info">
+                    <h2 class="caller-name"></h2>
+                    <p class="call-status">Ringing...</p>
+                </div>
+                <div class="call-controls">
+                     <button id="voice-end-call-btn" class="call-btn end-call-btn">
+                        <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M12 9c-1.6 0-3.15.25-4.62.72v3.1c0 .46-.32.87-.76.97-1.12.25-2.18.66-3.13 1.22-.32.18-.72.1-.94-.23l-2.2-2.2c-.28-.28-.36-.67-.25-1.02.37-1.12.57-2.33.57-3.57 0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1C0 17.39 7.61 25 17 25c.55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.02-1.02.25l-2.2 2.2c-.57-2.83-2.88-5.14-5.71-6.58z" transform="rotate(-135 12 12)"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== MODALS ===== -->
+        <div id="profile-setup-modal" class="modal">
+            <div class="modal-content">
+                <h2>Set Up Your Profile</h2>
+                <p>Your username must be unique.</p>
+                <div id="profile-setup-error" class="error-message"></div>
+                <input type="text" id="username-input" placeholder="Enter a unique username" required>
+                <button id="save-profile-btn">Save Profile</button>
+            </div>
+        </div>
+
+        <div id="add-friend-modal" class="modal">
+            <div class="modal-content">
+                <h2>Add a Friend</h2>
+                <p>Enter your friend's username to send a request.</p>
+                <div id="add-friend-error" class="error-message"></div>
+                <input type="text" id="add-friend-username" placeholder="Friend's username">
+                <button id="send-friend-request-btn">Send Request</button>
+                 <button class="close-modal-btn" style="background-color: var(--wa-text-secondary); margin-top: 0.5rem;">Cancel</button>
+            </div>
+        </div>
+
+        <div id="profile-view-modal" class="modal">
+            <div class="modal-content">
+                <h2>Profile & Settings</h2>
+                <p><strong>Email:</strong> <span id="profile-email"></span></p>
+                <p><strong>Username:</strong> <span id="profile-username"></span></p>
+                <hr>
+                <h3>Blocked Users</h3>
+                <ul id="blocked-users-list">
+                    <!-- Blocked users will be populated here -->
+                </ul>
+                <button id="logout-btn" style="background-color: #e91e63;">Logout</button>
+                 <button class="close-modal-btn" style="background-color: var(--wa-text-secondary); margin-top: 0.5rem;">Close</button>
+            </div>
+        </div>
+
+        <div id="incoming-call-modal" class="modal">
+            <div class="modal-content">
+                <h2>Incoming Call</h2>
+                <p><strong id="incoming-caller-name"></strong> is calling...</p>
+                <div class="call-controls">
+                    <button id="accept-call-btn" class="call-btn accept-call-btn">
+                        <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.02.74-.25 1.02l-2.2 2.2z"/></svg>
+                    </button>
+                    <button id="reject-call-btn" class="call-btn end-call-btn">
+                         <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M12 9c-1.6 0-3.15.25-4.62.72v3.1c0 .46-.32.87-.76.97-1.12.25-2.18.66-3.13 1.22-.32.18-.72.1-.94-.23l-2.2-2.2c-.28-.28-.36-.67-.25-1.02.37-1.12.57-2.33.57-3.57 0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1C0 17.39 7.61 25 17 25c.55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.02-1.02.25l-2.2 2.2c-.57-2.83-2.88-5.14-5.71-6.58z" transform="rotate(-135 12 12)"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <audio id="ringtone" loop src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"></audio>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- App Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyAUO5W27M6Qf9f-oZi6RPNCuXgLOV9Rh9w",
+                authDomain: "chatindia-d817e.firebaseapp.com",
+                databaseURL: "https://chatindia-d817e-default-rtdb.firebaseio.com",
+                projectId: "chatindia-d817e",
+                storageBucket: "chatindia-d817e.firebasestorage.app",
+                messagingSenderId: "166911727999",
+                appId: "1:166911727999:web:7118b9bf2796a208f2224a",
+                measurementId: "G-7ZKCVZKVDR"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.database();
+
+            // --- STATE MANAGEMENT ---
+            let currentUser = null;
+            let currentChat = {
+                chatId: null,
+                friendId: null,
+                friendUsername: null
+            };
+            let friends = {}; // Cache for friend data
+
+            // --- DOM ELEMENTS ---
+            const views = document.querySelectorAll('.view');
+            const modals = document.querySelectorAll('.modal');
+            const authView = document.getElementById('auth-view');
+            const mainView = document.getElementById('main-view');
+            const chatView = document.getElementById('chat-view');
+
+            // Auth
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const loginError = document.getElementById('login-error');
+            const signupError = document.getElementById('signup-error');
+            const showSignupLink = document.getElementById('show-signup-link');
+            const showLoginLink = document.getElementById('show-login-link');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            // Profile Setup
+            const profileSetupModal = document.getElementById('profile-setup-modal');
+            const usernameInput = document.getElementById('username-input');
+            const saveProfileBtn = document.getElementById('save-profile-btn');
+            const profileSetupError = document.getElementById('profile-setup-error');
+
+            // Main View
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const contentPanels = document.querySelectorAll('.content-panel');
+            const homeContent = document.getElementById('home-content');
+            const notificationsContent = document.getElementById('notifications-content');
+            const notificationsBadge = document.getElementById('notifications-badge');
+            
+            // Modals
+            const addFriendModal = document.getElementById('add-friend-modal');
+            const addFriendBtn = document.getElementById('add-friend-btn');
+            const sendFriendRequestBtn = document.getElementById('send-friend-request-btn');
+            const addFriendUsernameInput = document.getElementById('add-friend-username');
+            const addFriendError = document.getElementById('add-friend-error');
+
+            const profileViewModal = document.getElementById('profile-view-modal');
+            const menuBtn = document.getElementById('menu-btn');
+            const profileEmail = document.getElementById('profile-email');
+            const profileUsername = document.getElementById('profile-username');
+
+            // Chat View
+            const chatForm = document.getElementById('chat-form');
+            const chatInput = document.getElementById('chat-input');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatBackBtn = document.getElementById('chat-back-btn');
+            const chatContactName = document.getElementById('chat-contact-name');
+            const chatContactAvatar = document.getElementById('chat-contact-avatar');
+
+
+            // --- HELPER FUNCTIONS ---
+            const showView = (viewId) => {
+                views.forEach(view => view.classList.remove('active'));
+                document.getElementById(viewId).classList.add('active');
+            };
+
+            const showModal = (modalId) => document.getElementById(modalId).classList.add('active');
+            const hideModal = (modalId) => document.getElementById(modalId).classList.remove('active');
+
+            const renderError = (element, message) => {
+                element.textContent = message;
+                setTimeout(() => element.textContent = '', 3000);
+            };
+
+            // --- AUTHENTICATION ---
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const userProfileRef = db.ref(`users/${user.uid}`);
+                    const snapshot = await userProfileRef.once('value');
+                    if (snapshot.exists() && snapshot.val().username) {
+                        currentUser = { uid: user.uid, email: user.email, ...snapshot.val() };
+                        initializeApp();
+                        showView('main-view');
+                    } else {
+                        showModal('profile-setup-modal');
+                    }
+                } else {
+                    currentUser = null;
+                    showView('auth-view');
+                }
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = loginForm['login-email'].value;
+                const password = loginForm['login-password'].value;
+                auth.signInWithEmailAndPassword(email, password)
+                    .catch(err => renderError(loginError, err.message));
+            });
+
+            signupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = signupForm['signup-email'].value;
+                const password = signupForm['signup-password'].value;
+                auth.createUserWithEmailAndPassword(email, password)
+                    .catch(err => renderError(signupError, err.message));
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                 hideModal('profile-view-modal');
+                 auth.signOut();
+            });
+
+            showSignupLink.addEventListener('click', () => {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'flex';
+            });
+
+            showLoginLink.addEventListener('click', () => {
+                signupForm.style.display = 'none';
+                loginForm.style.display = 'flex';
+            });
+
+            // --- PROFILE SETUP ---
+            saveProfileBtn.addEventListener('click', async () => {
+                const username = usernameInput.value.trim().toLowerCase();
+                if (username.length < 3) {
+                    renderError(profileSetupError, "Username must be at least 3 characters.");
+                    return;
+                }
+                const usernameRef = db.ref('usernames').child(username);
+                const snapshot = await usernameRef.once('value');
+                if (snapshot.exists()) {
+                    renderError(profileSetupError, "This username is already taken.");
+                } else {
+                    const user = auth.currentUser;
+                    await db.ref(`users/${user.uid}`).set({ username: username, email: user.email });
+                    await usernameRef.set(user.uid);
+                    hideModal('profile-setup-modal');
+                    currentUser = { uid: user.uid, email: user.email, username: username };
+                    initializeApp();
+                    showView('main-view');
+                }
+            });
+
+             // --- INITIALIZE APP AFTER LOGIN ---
+            function initializeApp() {
+                if (!currentUser) return;
+                listenForFriendRequests();
+                listenForChats();
+                // Add listeners for calls, etc.
+            }
+
+            // --- NAVIGATION & UI ---
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const targetPanelId = tab.id.replace('nav-', '') + '-content';
+                    contentPanels.forEach(p => p.classList.remove('active'));
+                    document.getElementById(targetPanelId).classList.add('active');
+                });
+            });
+
+            addFriendBtn.addEventListener('click', () => showModal('add-friend-modal'));
+            menuBtn.addEventListener('click', () => {
+                profileEmail.textContent = currentUser.email;
+                profileUsername.textContent = currentUser.username;
+                showModal('profile-view-modal');
+            });
+            document.querySelectorAll('.close-modal-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => e.target.closest('.modal').classList.remove('active'));
+            });
+
+            // --- FRIEND MANAGEMENT ---
+            sendFriendRequestBtn.addEventListener('click', async () => {
+                const friendUsername = addFriendUsernameInput.value.trim().toLowerCase();
+                if (friendUsername === currentUser.username) {
+                    renderError(addFriendError, "You cannot add yourself.");
+                    return;
+                }
+                const usernameRef = db.ref('usernames').child(friendUsername);
+                const snapshot = await usernameRef.once('value');
+                if (!snapshot.exists()) {
+                    renderError(addFriendError, "User not found.");
+                } else {
+                    const friendId = snapshot.val();
+                    const friendRequestRef = db.ref(`friend_requests/${friendId}/${currentUser.uid}`);
+                    await friendRequestRef.set({ from: currentUser.username, status: 'pending' });
+                    addFriendUsernameInput.value = '';
+                    hideModal('add-friend-modal');
+                    alert("Friend request sent!");
+                }
+            });
+
+            function listenForFriendRequests() {
+                const requestsRef = db.ref(`friend_requests/${currentUser.uid}`);
+                requestsRef.on('value', snapshot => {
+                    notificationsContent.innerHTML = '';
+                    let count = 0;
+                    if (snapshot.exists()) {
+                        snapshot.forEach(childSnapshot => {
+                            const request = childSnapshot.val();
+                            if (request.status === 'pending') {
+                                count++;
+                                const requestorId = childSnapshot.key;
+                                const requestorUsername = request.from;
+                                const item = createFriendRequestElement(requestorId, requestorUsername);
+                                notificationsContent.appendChild(item);
+                            }
+                        });
+                    }
+                    if (count > 0) {
+                        notificationsBadge.textContent = count;
+                        notificationsBadge.style.display = 'block';
+                    } else {
+                        notificationsBadge.style.display = 'none';
+                    }
+                });
+            }
+
+            function createFriendRequestElement(requestorId, requestorUsername) {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <div class="list-item-avatar">${requestorUsername.charAt(0).toUpperCase()}</div>
+                    <div class="list-item-details">
+                        <div class="list-item-name">${requestorUsername}</div>
+                        <div class="list-item-subtext">Sent you a friend request</div>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="accept-btn">Accept</button>
+                        <button class="reject-btn">Reject</button>
+                    </div>
+                `;
+                div.querySelector('.accept-btn').addEventListener('click', () => acceptFriendRequest(requestorId, requestorUsername));
+                div.querySelector('.reject-btn').addEventListener('click', () => rejectFriendRequest(requestorId));
+                return div;
+            }
+
+            async function acceptFriendRequest(friendId, friendUsername) {
+                const chatId = currentUser.uid < friendId ? `${currentUser.uid}_${friendId}` : `${friendId}_${currentUser.uid}`;
+                
+                const updates = {};
+                updates[`friends/${currentUser.uid}/${friendId}`] = { username: friendUsername, chatId: chatId };
+                updates[`friends/${friendId}/${currentUser.uid}`] = { username: currentUser.username, chatId: chatId };
+                updates[`friend_requests/${currentUser.uid}/${friendId}`] = null;
+
+                await db.ref().update(updates);
+            }
+
+            async function rejectFriendRequest(requestorId) {
+                await db.ref(`friend_requests/${currentUser.uid}/${requestorId}`).remove();
+            }
+
+             // --- CHAT FUNCTIONALITY ---
+            function listenForChats() {
+                const friendsRef = db.ref(`friends/${currentUser.uid}`);
+                friendsRef.on('value', snapshot => {
+                    homeContent.innerHTML = '';
+                    if (snapshot.exists()) {
+                        snapshot.forEach(childSnapshot => {
+                            const friend = childSnapshot.val();
+                            const friendId = childSnapshot.key;
+                            friends[friendId] = friend; // Cache friend data
+                            const chatItem = createChatItemElement(friendId, friend);
+                            homeContent.appendChild(chatItem);
+                        });
+                    }
+                });
+            }
+            
+            function createChatItemElement(friendId, friendData) {
+                 const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <div class="list-item-avatar">${friendData.username.charAt(0).toUpperCase()}</div>
+                    <div class="list-item-details">
+                        <div class="list-item-name">${friendData.username}</div>
+                        <div class="list-item-subtext">Tap to chat</div>
+                    </div>
+                `;
+                div.addEventListener('click', () => openChat(friendId));
+                return div;
+            }
+            
+            function openChat(friendId) {
+                currentChat.friendId = friendId;
+                currentChat.friendUsername = friends[friendId].username;
+                currentChat.chatId = friends[friendId].chatId;
+
+                chatContactName.textContent = currentChat.friendUsername;
+                chatContactAvatar.textContent = currentChat.friendUsername.charAt(0).toUpperCase();
+                chatMessages.innerHTML = ''; // Clear previous messages
+                
+                listenForMessages();
+                showView('chat-view');
+            }
+            
+            chatBackBtn.addEventListener('click', () => {
+                db.ref(`chats/${currentChat.chatId}`).off(); // Stop listening to messages
+                currentChat = {}; // Reset current chat
+                showView('main-view');
+            });
+            
+            chatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const messageText = chatInput.value.trim();
+                if (messageText) {
+                    sendMessage(messageText);
+                    chatInput.value = '';
+                }
+            });
+
+            function sendMessage(text) {
+                const message = {
+                    text: text,
+                    senderId: currentUser.uid,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+                const messagesRef = db.ref(`chats/${currentChat.chatId}/messages`);
+                messagesRef.push(message);
+            }
+            
+            function listenForMessages() {
+                const messagesRef = db.ref(`chats/${currentChat.chatId}/messages`).limitToLast(50);
+                messagesRef.on('child_added', snapshot => {
+                    const message = snapshot.val();
+                    const messageBubble = document.createElement('div');
+                    messageBubble.classList.add('message-bubble');
+                    messageBubble.textContent = message.text;
+                    
+                    if (message.senderId === currentUser.uid) {
+                        messageBubble.classList.add('message-sent');
+                    } else {
+                        messageBubble.classList.add('message-received');
+                    }
+                    chatMessages.appendChild(messageBubble);
+                    chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+                });
+            }
+
+            // --- CALLING (SIGNALING PLACEHOLDER) ---
+            // NOTE: Full WebRTC implementation is complex and requires a separate, large script.
+            // This is a placeholder for the signaling part.
+            document.getElementById('video-call-btn').addEventListener('click', () => initiateCall('video'));
+            document.getElementById('voice-call-btn').addEventListener('click', () => initiateCall('voice'));
+
+            function initiateCall(type) {
+                alert(`Initiating ${type} call with ${currentChat.friendUsername}. \n(WebRTC logic not yet implemented)`);
+                // 1. Create a unique call ID
+                // 2. Send a "call-offer" signal to the friend via Firebase
+                // 3. Navigate to the appropriate call view
+                // 4. Start WebRTC peer connection process
+            }
+
+        });
+    </script>
+
+</body>
+</html>
