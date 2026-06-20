@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSCOIN PREMIUM - Live Optimization Matrix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background-color: #f8f9fa;
+            color: #202124;
+        }
+        .google-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+        .google-input {
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .google-input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+        .google-btn-blue {
+            background-color: #1a73e8;
+            color: white;
+            border-radius: 24px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .google-btn-blue:hover {
+            background-color: #1557b0;
+        }
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            position: relative;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="app-container flex flex-col justify-between min-h-screen">
+        
+        <div id="auth-screen" class="flex-1 flex flex-col items-center justify-center px-6 py-12">
+            <div class="w-full space-y-6 text-center">
+                <h1 class="text-4xl font-bold tracking-tight mb-2">
+                    <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span><span class="text-[#FBBC05]">C</span><span class="text-[#4285F4]">O</span><span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
+                </h1>
+                <p class="text-sm text-gray-500 font-medium">Premium Multi-App Reward System</p>
+                
+                <div class="google-card p-6 text-left space-y-4">
+                    <div class="flex border-b border-gray-200 mb-4">
+                        <button id="tab-login" onclick="setAuthLayoutMode('login')" class="flex-1 pb-3 text-sm font-medium text-[#1a73e8] border-b-2 border-[#1a73e8] text-center transition-all">Login</button>
+                        <button id="tab-signup" onclick="setAuthLayoutMode('signup')" class="flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all">Sign Up</button>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Email ID</label>
+                        <input type="email" id="auth-email" placeholder="username@gmail.com" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Password</label>
+                        <input type="password" id="auth-password" placeholder="Enter password" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none">
+                    </div>
+                    <div id="referral-field-box" class="hidden">
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Referral Code (Optional)</label>
+                        <input type="text" id="auth-referral" placeholder="Enter referral code" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none">
+                    </div>
+                    
+                    <button onclick="executeAuthenticationGateway()" id="btn-auth-trigger" class="w-full google-btn-blue p-3.5 text-sm mt-2 focus:outline-none">
+                        Continue to Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="user-app" class="hidden flex-1 flex flex-col">
+            <header class="bg-white border-b border-gray-200 p-3 sticky top-0 z-50 flex justify-between items-center px-4">
+                <span class="text-xl font-bold tracking-tight">
+                    <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span><span class="text-[#FBBC05]">C</span><span class="text-[#4285F4]">O</span><span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
+                </span>
+                
+                <div class="bg-[#E8F0FE] px-3 py-1 rounded-full flex items-center gap-1 border border-[#D2E3FC]">
+                    <i class="fa-solid fa-indian-rupee-sign text-[#1a73e8] text-[11px]"></i>
+                    <span id="global-balance" class="font-bold text-[#1a73e8] text-xs tracking-wide">0.00</span>
+                </div>
+            </header>
+
+            <div id="tracking-status-box" class="mx-4 mt-3 p-2.5 rounded-lg border border-gray-200 bg-gray-50 flex flex-col gap-1 transition-all">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Live Task Status</span>
+                    <span id="status-badge" class="bg-gray-200 text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Idle</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] font-medium border-t border-gray-200/60 pt-1">
+                    <div class="text-gray-600">Session: <span id="live-timer" class="font-mono font-bold text-gray-900">00:00:00</span></div>
+                    <div class="text-right text-gray-600">Internet: <span id="network-badge" class="font-bold text-green-600">ONLINE</span></div>
+                </div>
+            </div>
+
+            <div id="refund-matrix-box" class="hidden mx-4 mt-2 p-3 rounded-lg border border-blue-200 bg-blue-50 flex flex-col gap-2">
+                <p class="text-xs text-blue-800 font-medium"><i class="fa-solid fa-circle-info"></i> Uncredited task time detected from your previous session.</p>
+                <button onclick="claimOfflineMatrixRefund()" class="w-full bg-[#1a73e8] text-white font-medium py-2 rounded-lg text-xs hover:bg-[#1557b0] transition-all">
+                    Claim Pending Rewards & Seconds
+                </button>
+            </div>
+
+            <main class="p-4 flex-1 space-y-4 pb-28 overflow-y-auto max-h-[calc(100vh-140px)]">
+                
+                <section id="screen-tasks" class="user-screen space-y-4">
+                    <div class="google-card p-3 flex justify-between items-center text-xs">
+                        <span class="font-bold text-[#1a73e8]">System Earning Gateways</span>
+                        <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded border border-green-200 font-medium text-[11px]">Max ₹120 / 12h</span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3.5">
+                        <div onclick="launchTargetTaskWindow('https://www.google.com', 'Google')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-brands fa-google text-3xl text-[#4285F4] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Google</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://m.youtube.com', 'YouTube')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-brands fa-youtube text-3xl text-[#FF0000] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">YouTube</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://m.facebook.com', 'Facebook')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-brands fa-facebook text-3xl text-[#1877F2] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Facebook</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.instagram.com', 'Instagram')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-brands fa-instagram text-3xl text-[#E1306C] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Instagram</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.pinterest.com', 'Pinterest')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-brands fa-pinterest text-3xl text-[#BD081C] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Pinterest</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.flipkart.com', 'Flipkart')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-bag-shopping text-3xl text-[#2874F0] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Flipkart</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.meesho.com', 'Meesho')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-store text-3xl text-[#9F206C] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Meesho</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://kukufm.com', 'Kuku FM')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-microphone-lines text-3xl text-[#03A9F4] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Kuku FM</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.amazon.in', 'Amazon')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-brands fa-amazon text-3xl text-[#FF9900] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Amazon</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.jiocinema.com', 'JioCinema')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-clapperboard text-3xl text-[#D81B60] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">JioCinema</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.nykaa.com', 'Nykaa')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-sparkles text-3xl text-[#FC2779] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Nykaa</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.hotstar.com', 'Disney+ Hotstar')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-video text-3xl text-[#0A192F] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Hotstar</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.myntra.com', 'Myntra')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-shirt text-3xl text-[#FE3F6C] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Myntra</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.crazygames.com', 'Online Game 1')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-gamepad text-3xl text-[#00E676] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Game Zone 1</p>
+                        </div>
+                        <div onclick="launchTargetTaskWindow('https://www.poki.com', 'Online Game 2')" class="google-card p-4 text-center cursor-pointer hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200 flex flex-col items-center justify-center min-h-[95px]">
+                            <i class="fa-solid fa-headset text-3xl text-[#29B6F6] mb-1"></i>
+                            <p class="text-[11px] font-semibold text-gray-800">Game Zone 2</p>
+                        </div>
+                    </div>
+
+                    <div class="google-card p-3 text-center bg-gray-50/50">
+                        <p class="text-[11px] text-gray-500 leading-relaxed">⚠️ <strong>Note:</strong> Closing the app or hitting back will trigger an <strong>Instant Logout</strong>. Your progress is securely saved in the Optimization Matrix and can be claimed upon next login.</p>
+                    </div>
+                </section>
+
+                <section id="screen-wallet" class="user-screen hidden space-y-4">
+                    <div class="google-card p-4 space-y-2">
+                        <h2 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-share-nodes text-[#1a73e8]"></i> Referral Network</h2>
+                        <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200 flex justify-between items-center">
+                            <div>
+                                <p class="text-[10px] text-gray-400 font-medium">Your Unique Referral System Identity Key</p>
+                                <span id="referral-code-display" class="font-mono text-xs font-bold text-gray-800 tracking-wide">Connecting...</span>
+                            </div>
+                            <button onclick="navigator.clipboard.writeText(document.getElementById('referral-code-display').innerText); alert('Referral code copied to clipboard!');" class="bg-white border text-gray-600 font-medium px-2.5 py-1 rounded text-[11px] shadow-sm hover:bg-gray-50">Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="google-card p-5 space-y-3">
+                        <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-building-columns text-[#1a73e8]"></i>Settlement Bank Profile</h2>
+                        <input type="text" id="bank-holder" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Account Holder Official Name">
+                        <input type="text" id="bank-name" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Bank Title Structure">
+                        <input type="text" id="bank-acc" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Account Storage String">
+                        <input type="text" id="bank-ifsc" class="w-full bg-white google-input p-3 text-xs text-gray-900 uppercase focus:outline-none" placeholder="IFSC Clearance Parameter">
+                        <button onclick="commitBankProfile()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium p-3 rounded-xl text-xs transition-all tracking-wider uppercase border border-gray-300">Save Bank Parameters</button>
+                    </div>
+
+                    <div class="google-card p-5 space-y-4">
+                        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <span class="text-xs text-gray-600 font-medium">Withdrawable Ledger:</span>
+                            <span id="wallet-balance-display" class="font-bold text-lg text-green-600">₹ 0.00</span>
+                        </div>
+                        <div class="text-[11px] text-gray-400 text-center font-medium">Gate Lock Limits: Min ₹2000 — Max ₹5000</div>
+                        <button onclick="dispatchWithdrawalMatrixRequest()" class="w-full google-btn-blue text-white font-medium p-3.5 text-xs uppercase tracking-widest transition-all">Execute Cashout Protocol</button>
+                    </div>
+                </section>
+
+                <section id="screen-admin" class="user-screen hidden space-y-4">
+                    <h2 class="text-sm font-bold text-red-600 uppercase tracking-widest border-b border-gray-200 pb-2 flex items-center gap-2"><i class="fa-solid fa-circle-nodes"></i> Admin Control Terminal</h2>
+                    
+                    <div class="google-card p-4 space-y-3">
+                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">User Ecosystem Management</h3>
+                        <div id="admin-user-management-node" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+                    </div>
+
+                    <div class="google-card p-4 space-y-3">
+                        <h3 class="text-xs font-bold text-amber-600 uppercase tracking-wider">Pending Payout Clearance Stack</h3>
+                        <div id="admin-payouts-list" class="space-y-2 text-xs"></div>
+                    </div>
+
+                    <div class="google-card p-4 space-y-3">
+                        <h3 class="text-xs font-bold text-green-600 uppercase tracking-wider">Completed Payout History</h3>
+                        <div id="admin-completed-payouts-list" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
+                    </div>
+                </section>
+            </main>
+
+            <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2.5 flex justify-between items-center z-50">
+                <button onclick="switchUserScreenLayout('tasks')" class="flex flex-col items-center gap-1 text-[#1a73e8] nav-btn flex-1" id="nav-tasks">
+                    <i class="fa-solid fa-layer-group text-lg"></i><span class="text-[10px] font-medium">Gateways</span>
+                </button>
+                <button onclick="switchUserScreenLayout('wallet')" class="flex flex-col items-center gap-1 text-gray-400 nav-btn flex-1" id="nav-wallet">
+                    <i class="fa-solid fa-vault text-lg"></i><span class="text-[10px] font-medium">Vault</span>
+                </button>
+                <button onclick="switchUserScreenLayout('admin')" class="hidden flex-col items-center gap-1 text-red-500 nav-btn flex-1" id="nav-admin">
+                    <i class="fa-solid fa-terminal text-lg"></i><span class="text-[10px] font-medium">Terminal</span>
+                </button>
+                <button onclick="terminateSessionLogout()" class="flex flex-col items-center gap-1 text-gray-500 flex-1">
+                    <i class="fa-solid fa-circle-power-off text-lg text-red-500"></i><span class="text-[10px] font-medium text-gray-500">Logout</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, set, get, update, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVHBNMZAffSaX9JeAexBGV60zUlGyeb54",
+            authDomain: "vscoin-ba376.firebaseapp.com",
+            databaseURL: "https://vscoin-ba376-default-rtdb.firebaseio.com",
+            projectId: "vscoin-ba376",
+            storageBucket: "vscoin-ba376.firebasestorage.app"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const rtdb = getDatabase(app);
+
+        const ADMIN_EMAIL = "grtts24@gmail.com";
+        const ADMIN_PASS = "Ras@2004GDYPR2051D";
+        
+        let currentUser = null, userData = {}, authMode = 'login';
+        let targetTaskWindow = null;
+        let trackingInterval = null;
+        let networkCheckInterval = null;
+        let sessionSeconds = 0;
+        let isInternetOnline = true;
+
+        // INSTANT LOGOUT PROTOCOL (BACK / CEASING EVENT LISTENER)
+        function triggerInstantLogoutProtocol() {
+            if (currentUser && currentUser.email.toLowerCase() !== ADMIN_EMAIL) {
+                // Save current timestamp to matrix node before immediate signing out
+                const dbRefPath = `users/${currentUser.uid}`;
+                const now = Date.now();
+                
+                // standard synchronous update trigger simulation across network
+                const payload = {
+                    lastLogoutTimestamp: now,
+                    lastActiveTimestamp: now
+                };
+                
+                // Send beacon/fetch to save states dynamically before wipe
+                navigator.sendBeacon && navigator.sendBeacon(`${firebaseConfig.databaseURL}/users/${currentUser.uid}.json`, JSON.stringify(payload));
+                signOut(auth);
+            }
+        }
+
+        window.addEventListener('beforeunload', triggerInstantLogoutProtocol);
+        window.addEventListener('pagehide', triggerInstantLogoutProtocol);
+
+        // TARGET POPUP LIFECYCLE CONTROLLERS
+        window.launchTargetTaskWindow = async (url, name) => {
+            if(!isInternetOnline) {
+                return alert("Cannot launch task. Internet connection is offline.");
+            }
+
+            // Save active task name into DB matrix
+            if (currentUser) {
+                await update(ref(rtdb, 'users/' + currentUser.uid), {
+                    active_task_name: name,
+                    task_start_time: Date.now()
+                });
+            }
+
+            targetTaskWindow = window.open(url, '_blank');
+            if(!targetTaskWindow) {
+                return alert("Popup Blocker detected! Please permit system windows to establish connections.");
+            }
+
+            startLiveTrackingEngine(name);
+        };
+
+        function startLiveTrackingEngine(appName) {
+            clearInterval(trackingInterval);
+            sessionSeconds = 0;
+            updateTrackingUI(true);
+
+            trackingInterval = setInterval(async () => {
+                if (!targetTaskWindow || targetTaskWindow.closed) {
+                    clearInterval(trackingInterval);
+                    updateTrackingUI(false);
+                    return;
+                }
+
+                // INTERNET CONNECTION CHECKER
+                if (!navigator.onLine || !isInternetOnline) {
+                    document.getElementById('status-badge').className = "bg-red-100 text-red-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase";
+                    document.getElementById('status-badge').innerText = "Paused (No Internet)";
+                    document.getElementById('network-badge').className = "font-bold text-red-600";
+                    document.getElementById('network-badge').innerText = "OFFLINE";
+                    return; // Timer paused, money tracking ceases
+                }
+
+                document.getElementById('status-badge').className = "bg-green-100 text-green-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase animate-pulse";
+                document.getElementById('status-badge').innerText = `Tracking: ${appName}`;
+                document.getElementById('network-badge').className = "font-bold text-green-600";
+                document.getElementById('network-badge').innerText = "ONLINE";
+
+                sessionSeconds++;
+                renderTimerStrings(sessionSeconds);
+
+                // Incremental save state update sequence loops
+                if (sessionSeconds % 5 === 0) {
+                    await update(ref(rtdb, 'users/' + currentUser.uid), {
+                        lastActiveTimestamp: Date.now()
+                    });
+                }
+            }, 1000);
+        }
+
+        function renderTimerStrings(totalSecs) {
+            let hrs = Math.floor(totalSecs / 3600);
+            let mins = Math.floor((totalSecs % 3600) / 60);
+            let secs = totalSecs % 60;
+            document.getElementById('live-timer').innerText = 
+                `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTrackingUI(isActive) {
+            const badge = document.getElementById('status-badge');
+            if(isActive) {
+                badge.className = "bg-green-100 text-green-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase";
+                badge.innerText = "Active Link Tracking";
+            } else {
+                badge.className = "bg-gray-200 text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase";
+                badge.innerText = "Idle";
+                document.getElementById('live-timer').innerText = "00:00:00";
+            }
+        }
+
+        // BACKGROUND REALTIME NETWORK FAULT MONITORING (INTERNET CHECKER)
+        function initNetworkEcosystemChecker() {
+            setInterval(() => {
+                if(!navigator.onLine) {
+                    isInternetOnline = false;
+                    document.getElementById('network-badge').className = "font-bold text-red-600";
+                    document.getElementById('network-badge').innerText = "OFFLINE";
+                } else {
+                    isInternetOnline = true;
+                    document.getElementById('network-badge').className = "font-bold text-green-600";
+                    document.getElementById('network-badge').innerText = "ONLINE";
+                }
+            }, 1000);
+        }
+        initNetworkEcosystemChecker();
+
+        // TIME OPTIMIZATION MATRIX (REFUND AND VERIFICATION MATRIX CALCULATOR)
+        async function checkTimeOptimizationMatrix(profile) {
+            if (profile.active_task_name && profile.task_start_time && profile.lastLogoutTimestamp) {
+                const startTime = profile.task_start_time;
+                const logoutTime = profile.lastLogoutTimestamp;
+
+                if (logoutTime > startTime) {
+                    // Display Refund module box UI
+                    document.getElementById('refund-matrix-box').classList.remove('hidden');
+                }
+            }
+        }
+
+        window.claimOfflineMatrixRefund = async () => {
+            if(!isInternetOnline) return alert("Internet connection required to claim matrix parameters.");
+            
+            const snapshot = await get(ref(rtdb, 'users/' + currentUser.uid));
+            if(!snapshot.exists()) return;
+
+            const profile = snapshot.val();
+            const startTime = profile.task_start_time;
+            const logoutTime = profile.lastLogoutTimestamp;
+            
+            const elapsedSeconds = Math.floor((logoutTime - startTime) / 1000);
+
+            if (elapsedSeconds <= 0) {
+                alert("No structural valid offline frames observed.");
+                document.getElementById('refund-matrix-box').classList.add('hidden');
+                return;
+            }
+
+            // Calculations based on 12 Hour Max limits -> Max ₹120 allocation
+            let currentPerSecondRate = 120.00 / 43200; 
+            let totalRefundYield = elapsedSeconds * currentPerSecondRate;
+
+            let finalAppTime = (profile.activeAppTime || 0) + elapsedSeconds;
+            let finalBalance = (profile.balance || 0) + totalRefundYield;
+
+            // Enforce Daily Cap bounds maximum limit checks
+            if (finalBalance > 120.00) finalBalance = 120.00;
+
+            // Wipe specific tracking nodes to prevent duplicate credit requests
+            await update(ref(rtdb, 'users/' + currentUser.uid), {
+                balance: finalBalance,
+                activeAppTime: finalAppTime,
+                active_task_name: null,
+                task_start_time: null,
+                lastLogoutTimestamp: null
+            });
+
+            alert(`Matrix optimization verification matched successfully!\n\nRefund Allocated:\nSeconds: +${elapsedSeconds}s\nEarnings: +₹${totalRefundYield.toFixed(4)} credited to Main Wallet.`);
+            document.getElementById('refund-matrix-box').classList.add('hidden');
+            fetchUserData();
+        };
+
+        window.setAuthLayoutMode = (mode) => {
+            authMode = mode;
+            document.getElementById('tab-login').className = mode === 'login' ? "flex-1 pb-3 text-sm font-medium text-[#1a73e8] border-b-2 border-[#1a73e8] text-center" : "flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center";
+            document.getElementById('tab-signup').className = mode === 'signup' ? "flex-1 pb-3 text-sm font-medium text-[#1a73e8] border-b-2 border-[#1a73e8] text-center" : "flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center";
+            
+            if(mode === 'signup') {
+                document.getElementById('referral-field-box').classList.remove('hidden');
+            } else {
+                document.getElementById('referral-field-box').classList.add('hidden');
+            }
+        };
+
+        window.executeAuthenticationGateway = async () => {
+            const email = document.getElementById('auth-email').value.trim().toLowerCase();
+            const password = document.getElementById('auth-password').value;
+            const refCodeInput = document.getElementById('auth-referral').value.trim();
+
+            if(!email || !password) return alert("Credentials fields cannot be left empty.");
+
+            try {
+                if(authMode === 'signup') {
+                    const res = await createUserWithEmailAndPassword(auth, email, password);
+                    let initialBalance = 0.00;
+                    let signupBonus = 0.00;
+                    let referralBonus = 0.00;
+
+                    if(refCodeInput !== "") {
+                        const referrerCheck = await get(ref(rtdb, 'users/' + refCodeInput));
+                        if(referrerCheck.exists()) {
+                            initialBalance = 50.00;
+                            signupBonus = 50.00;
+                            let currentReferrerBalance = referrerCheck.val().balance || 0;
+                            let currentReferrerRefBal = referrerCheck.val().referralBalance || 0;
+                            await update(ref(rtdb, 'users/' + refCodeInput), {
+                                balance: currentReferrerBalance + 25.00,
+                                referralBalance: currentReferrerRefBal + 25.00
+                            });
+                        }
+                    }
+
+                    await set(ref(rtdb, 'users/' + res.user.uid), {
+                        email: email, password: password, balance: initialBalance,
+                        signupBalance: signupBonus, referralBalance: referralBonus,
+                        activeAppTime: 0, status: "active", lastActiveTimestamp: Date.now()
+                    });
+                    alert("Registration complete.");
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+            } catch (err) { alert(err.message); }
+        };
+
+        window.terminateSessionLogout = () => signOut(auth);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const userRefPath = ref(rtdb, 'users/' + currentUser.uid);
+                const checkBlock = await get(userRefPath);
+                
+                if(checkBlock.exists()) {
+                    const profile = checkBlock.val();
+                    if(profile.status === "blocked") {
+                        alert("ACCESS DENIED: ACCOUNT BLOCKED.");
+                        signOut(auth); return;
+                    }
+                    await update(userRefPath, { lastActiveTimestamp: Date.now() });
+                    // RUN TIME OPTIMIZATION MATRIX CHECK UPON LOGIN SUCCESS
+                    checkTimeOptimizationMatrix(profile);
+                }
+
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('user-app').classList.remove('hidden');
+                document.getElementById('referral-code-display').innerText = currentUser.uid;
+
+                if(currentUser.email.toLowerCase() === ADMIN_EMAIL) {
+                    document.getElementById('nav-admin').classList.remove('hidden');
+                }
+                await fetchUserData();
+                if(currentUser.email.toLowerCase() === ADMIN_EMAIL) window.invokeSystemAdminModule();
+            } else {
+                currentUser = null;
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('user-app').classList.add('hidden');
+                document.getElementById('nav-admin').classList.add('hidden');
+                document.getElementById('refund-matrix-box').classList.add('hidden');
+            }
+        });
+
+        async function fetchUserData() {
+            if(!currentUser) return;
+            const snapshot = await get(ref(rtdb, 'users/' + currentUser.uid));
+            if(snapshot.exists()) {
+                userData = snapshot.val();
+                document.getElementById('global-balance').innerText = (userData.balance || 0).toFixed(2);
+                document.getElementById('wallet-balance-display').innerText = "₹ " + (userData.balance || 0).toFixed(2);
+                document.getElementById('bank-holder').value = userData.bankHolder || "";
+                document.getElementById('bank-name').value = userData.bankName || "";
+                document.getElementById('bank-acc').value = userData.bankAccount || "";
+                document.getElementById('bank-ifsc').value = userData.bankIfsc || "";
+            }
+        }
+
+        window.switchUserScreenLayout = (screenId) => {
+            document.querySelectorAll('.user-screen').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-[#1a73e8]', 'text-gray-400'));
+            document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+            document.getElementById(`nav-${screenId}`).classList.replace('text-gray-400', 'text-[#1a73e8]');
+        };
+
+        window.dispatchWithdrawalMatrixRequest = async () => {
+            const currentBal = userData.balance || 0;
+            if(currentBal < 2000 || currentBal > 5000) return alert("Limit Error: Withdrawal amount must be between ₹2000 and ₹5000.");
+            if(!userData.bankAccount || !userData.bankIfsc) return alert("Error: Account billing vectors incomplete.");
+
+            try {
+                const payoutRef = push(ref(rtdb, 'payouts'));
+                await set(payoutRef, {
+                    uid: currentUser.uid, email: currentUser.email, amount: currentBal,
+                    holder: userData.bankHolder, bank: userData.bankName, account: userData.bankAccount, ifsc: userData.bankIfsc, 
+                    status: "pending", timestamp: Date.now()
+                });
+                await update(ref(rtdb, `users/${currentUser.uid}`), { balance: 0.00 });
+                alert("Withdrawal request logged successfully.");
+                await fetchUserData();
+                if(currentUser.email.toLowerCase() === ADMIN_EMAIL) window.invokeSystemAdminModule();
+            } catch (err) { alert("Pipeline error."); }
+        };
+
+        window.commitBankProfile = async () => {
+            await update(ref(rtdb, 'users/' + currentUser.uid), {
+                bankHolder: document.getElementById('bank-holder').value.trim(),
+                bankName: document.getElementById('bank-name').value.trim(),
+                bankAccount: document.getElementById('bank-acc').value.trim(),
+                bankIfsc: document.getElementById('bank-ifsc').value.trim().toUpperCase()
+            });
+            alert("Bank profile saved."); 
+            await fetchUserData();
+        };
+
+        // ADMIN MODULE
+        window.invokeSystemAdminModule = async () => {
+            if(currentUser.email.toLowerCase() !== ADMIN_EMAIL) return;
+            
+            const usersControlDiv = document.getElementById('admin-user-management-node'); 
+            usersControlDiv.innerHTML = "";
+            const usersSnap = await get(ref(rtdb, 'users'));
+            
+            if(usersSnap.exists()) {
+                usersSnap.forEach(snap => {
+                    const uId = snap.key; 
+                    const uData = snap.val();
+                    if(uData.email !== ADMIN_EMAIL) {
+                        const row = document.createElement('div');
+                        row.className = "bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2 text-xs flex flex-col";
+                        row.innerHTML = `
+                            <div class="flex flex-col gap-0.5 border-b border-gray-200/60 pb-1.5">
+                                <span class="font-mono text-gray-800 font-bold break-all">Email ID: ${uData.email}</span>
+                                <span class="font-mono text-amber-600 font-medium">Password: ${uData.password || 'N/A'}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-y-1 text-[11px] text-gray-600">
+                                <div>Balance: <strong class="text-green-600 font-bold">₹${(uData.balance || 0).toFixed(2)}</strong></div>
+                                <div>Total App Use Time: <strong class="text-gray-900 font-bold">${uData.activeAppTime || 0}s</strong></div>
+                                <div>Signup Balance: <span class="text-gray-700 font-medium">₹${(uData.signupBalance || 0).toFixed(2)}</span></div>
+                                <div>Referral Balance: <span class="text-gray-700 font-medium">₹${(uData.referralBalance || 0).toFixed(2)}</span></div>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] pt-1">
+                                <span class="text-gray-400">UID: ${uId}</span>
+                                <span class="uppercase font-bold ${uData.status === 'blocked' ? 'text-red-500':'text-green-600'}">${uData.status || 'active'}</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-1.5 pt-1 border-t border-gray-200">
+                                <button onclick="modifyUserNodeBalance('${uId}', ${(uData.balance || 0)})" class="bg-white border border-gray-300 text-gray-700 rounded-lg py-1 font-medium text-[10px]">Balance Edit</button>
+                                <button onclick="toggleUserNodeBlock('${uId}', '${uData.status || 'active'}')" class="bg-amber-50 text-amber-700 border border-amber-200 rounded-lg py-1 font-medium text-[10px]">${uData.status === 'blocked' ? 'Unblock':'Block'}</button>
+                                <button onclick="deleteUserNodeData('${uId}')" class="bg-red-50 text-red-600 border border-red-200 rounded-lg py-1 font-medium text-[10px]">Delete</button>
+                            </div>
+                        `;
+                        usersControlDiv.appendChild(row);
+                    }
+                });
+            }
+
+            const payoutsDiv = document.getElementById('admin-payouts-list'); 
+            const completedPayoutsDiv = document.getElementById('admin-completed-payouts-list');
+            payoutsDiv.innerHTML = "";
+            completedPayoutsDiv.innerHTML = "";
+            
+            const paySnap = await get(ref(rtdb, 'payouts'));
+            if(paySnap.exists()) {
+                paySnap.forEach(snap => {
+                    const data = snap.val(); 
+                    const payId = snap.key;
+                    
+                    if (data.status === "pending" || !data.status) {
+                        const card = document.createElement('div');
+                        card.className = "bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2";
+                        card.innerHTML = `
+                            <div class="flex justify-between font-bold text-gray-800"><span>${data.email}</span><span class="text-green-600">₹ ${data.amount.toFixed(2)}</span></div>
+                            <p class="text-gray-500 text-[10px]">${data.bank} | A/C: ${data.account} | IFSC: ${data.ifsc}</p>
+                            <div class="flex gap-2">
+                                <button onclick="approvePayoutRequest('${payId}')" class="flex-1 bg-green-600 font-medium text-white py-1 rounded-md text-center text-[11px]">Approve</button>
+                                <button onclick="rejectPayoutRequest('${payId}', '${data.uid}', ${data.amount})" class="flex-1 bg-red-50 text-red-600 font-medium border border-red-200 py-1 rounded-md text-center text-[11px]">Reject</button>
+                            </div>
+                        `;
+                        payoutsDiv.appendChild(card);
+                    } else {
+                        const card = document.createElement('div');
+                        card.className = "bg-gray-50 p-2 rounded-lg border border-gray-100 flex flex-col text-[11px]";
+                        card.innerHTML = `
+                            <div class="flex justify-between font-medium text-gray-700"><span>${data.email}</span><span class="font-bold text-green-600">₹${data.amount.toFixed(2)}</span></div>
+                            <div class="text-[10px] text-gray-400 mt-1 uppercase font-bold text-right text-green-700">${data.status}</div>
+                        `;
+                        completedPayoutsDiv.appendChild(card);
+                    }
+                });
+            }
+        };
+
+        window.modifyUserNodeBalance = async (uid, curBal) => {
+            const inputVal = prompt(`Enter balance for user:`, curBal);
+            if(inputVal === null || inputVal.trim() === "") return;
+            await update(ref(rtdb, `users/${uid}`), { balance: parseFloat(inputVal) });
+            window.invokeSystemAdminModule();
+        };
+
+        window.toggleUserNodeBlock = async (uid, currentStatus) => {
+            const targetStatus = currentStatus === "blocked" ? "active" : "blocked";
+            await update(ref(rtdb, `users/${uid}`), { status: targetStatus });
+            window.invokeSystemAdminModule();
+        };
+
+        window.deleteUserNodeData = async (uid) => {
+            if(confirm("Delete user?")) {
+                await remove(ref(rtdb, `users/${uid}`));
+                window.invokeSystemAdminModule();
+            }
+        };
+
+        window.approvePayoutRequest = async (payId) => {
+            await update(ref(rtdb, `payouts/${payId}`), { status: "completed" }); 
+            window.invokeSystemAdminModule();
+        };
+
+        window.rejectPayoutRequest = async (payId, uid, amount) => {
+            const uSnap = await get(ref(rtdb, `users/${uid}`));
+            if(uSnap.exists()) {
+                await update(ref(rtdb, `users/${uid}`), { balance: (uSnap.val().balance || 0) + amount });
+            }
+            await update(ref(rtdb, `payouts/${payId}`), { status: "rejected" }); 
+            window.invokeSystemAdminModule();
+        };
+    </script>
+</body>
+</html>
