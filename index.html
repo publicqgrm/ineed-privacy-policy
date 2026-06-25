@@ -2,7 +2,7 @@
 <html lang="en-IN">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>VSCOIN PREMIUM — Advanced Terminal</title>
     <script src="https://cdn.tailwindcss.com">
     </script>
@@ -45,16 +45,12 @@
             box-shadow: 0 0 0 2px rgba(11, 87, 208, 0.2);
             outline: none;
         }
-        .google-input.error {
-            border-color: #d93025;
-            box-shadow: 0 0 0 2px rgba(217, 48, 37, 0.2);
-        }
         .google-btn-blue {
             background-color: #0b57d0;
             color: white;
             border-radius: 100px;
             font-weight: 500;
-            transition: background 0.2s, opacity 0.2s;
+            transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
             border: none;
             cursor: pointer;
         }
@@ -66,8 +62,6 @@
             opacity: 0.65;
             cursor: not-allowed;
         }
-
-        /* Spinner */
         @keyframes spinner-rotate {
             100% {
                 transform: rotate(360deg);
@@ -96,8 +90,6 @@
             stroke-linecap: round;
             animation: spinner-dash 1.5s ease-in-out infinite;
         }
-
-        /* Toast */
         #toast-container {
             position: fixed;
             top: 20px;
@@ -159,46 +151,28 @@
             font-size: 18px;
             cursor: pointer;
             opacity: 0.7;
-            padding: 0 4px;
         }
-        .toast .toast-close:hover {
-            opacity: 1;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 8px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #c1c7cd;
-            border-radius: 8px;
-        }
-
         .nav-btn.active {
             color: #0b57d0;
         }
         .nav-btn:not(.active) {
             color: #9aa0a6;
         }
-
+        .nav-btn {
+            transition: color 0.15s;
+        }
         .balance-pulse {
             transition: all 0.3s ease;
         }
         .balance-pulse.pulse {
             transform: scale(1.02);
         }
-
         .user-screen {
             display: none;
         }
         .user-screen.active {
             display: block;
         }
-
         .task-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -236,18 +210,21 @@
             font-weight: 500;
             color: #3c4043;
             line-height: 1.2;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
-
-        /* Loader overlay */
-        #global-loading-overlay {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(6px);
+        .task-item .cat-tag {
+            font-size: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #e8eaed;
+            padding: 1px 6px;
+            border-radius: 10px;
+            margin-top: 2px;
+            color: #5f6368;
+            font-weight: 700;
         }
-
+        .task-item.hidden-item {
+            display: none;
+        }
         @media (max-width: 420px) {
             .task-grid {
                 gap: 6px;
@@ -263,14 +240,194 @@
                 font-size: 8px;
             }
         }
+        .admin-user-card {
+            transition: all 0.15s;
+        }
+        .admin-user-card:hover {
+            border-color: #0b57d0;
+            background: #f8f9fa;
+        }
+        .copy-btn {
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .copy-btn:hover {
+            background: #e8f0fe;
+            color: #0b57d0;
+        }
+        .refresh-spin {
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .stat-chip {
+            background: #f1f3f4;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 500;
+            color: #3c4043;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-chip i {
+            font-size: 8px;
+        }
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0b57d0, #1a73e8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(11, 87, 208, 0.3);
+        }
+        .settings-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border: 1px solid #f0f0f0;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+        .settings-option:hover {
+            background: #f1f3f4;
+            border-color: #dadce0;
+        }
+        .settings-option:active {
+            transform: scale(0.98);
+        }
+        .settings-option .icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+        .category-badge {
+            font-size: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .cat-filter-btn {
+            background: #f1f3f4;
+            border: none;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 9px;
+            font-weight: 500;
+            color: #3c4043;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .cat-filter-btn.active {
+            background: #0b57d0;
+            color: white;
+        }
+        .cat-filter-btn:hover:not(.active) {
+            background: #e8eaed;
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-box input {
+            padding-left: 32px;
+        }
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9aa0a6;
+            font-size: 14px;
+        }
+        .search-box .clear-search {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9aa0a6;
+            cursor: pointer;
+            font-size: 14px;
+            display: none;
+        }
+        .search-box .clear-search.visible {
+            display: block;
+        }
+        .admin-stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        .admin-stat-item {
+            background: #f8f9fa;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            border: 1px solid #f0f0f0;
+        }
+        .admin-stat-item .label {
+            color: #5f6368;
+            font-weight: 400;
+        }
+        .admin-stat-item .value {
+            font-weight: 600;
+            color: #1f1f1f;
+        }
+        .clear-history-btn {
+            background: #d93025;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .clear-history-btn:hover {
+            background: #c62828;
+        }
+        .withdrawal-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px 12px;
+            font-size: 10px;
+        }
+        .withdrawal-detail-grid .label {
+            color: #5f6368;
+        }
+        .withdrawal-detail-grid .value {
+            font-weight: 500;
+            color: #1f1f1f;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Toast Container -->
     <div id="toast-container"></div>
 
-    <!-- Global Loading Overlay -->
     <div id="global-loading-overlay" class="hidden fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center space-y-4">
         <svg class="animate-google-spinner w-14 h-14" viewBox="0 0 50 50">
             <circle class="animate-google-spinner-circle stroke-[#0b57d0]" cx="25" cy="25" r="20" fill="none" stroke-width="4" />
@@ -296,27 +453,58 @@
                         <button id="tab-signup" onclick="setAuthMode('signup')" class="flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all">Create Account</button>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
-                        <input type="email" id="auth-email" placeholder="example@gmail.com" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="email" />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Password</label>
-                        <input type="password" id="auth-password" placeholder="Enter password" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="current-password" />
-                    </div>
-                    <div id="referral-field-box" class="hidden">
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Referral Code <span class="text-gray-400 font-normal">(optional)</span></label>
-                        <input type="text" id="auth-referral" placeholder="Enter referrer code" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" />
-                    </div>
-
-                    <div id="forgot-password-box" class="text-right">
-                        <button onclick="triggerPasswordReset()" class="text-xs font-medium text-[#0b57d0] hover:underline">Forgot password?</button>
+                    <!-- Login Fields -->
+                    <div id="login-fields">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
+                            <input type="email" id="auth-email" placeholder="example@gmail.com" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="email" />
+                        </div>
+                        <div class="mt-3">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Password</label>
+                            <input type="password" id="auth-password" placeholder="Enter password" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="current-password" />
+                        </div>
+                        <div id="forgot-password-box" class="text-right mt-2">
+                            <button onclick="triggerPasswordReset()" class="text-xs font-medium text-[#0b57d0] hover:underline">Forgot password?</button>
+                        </div>
                     </div>
 
-                    <button onclick="handleAuth()" id="btn-auth-trigger" class="w-full google-btn-blue p-3.5 text-sm mt-1 focus:outline-none flex items-center justify-center gap-2">
+                    <!-- Signup Fields -->
+                    <div id="signup-fields" class="hidden space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Full Name</label>
+                            <input type="text" id="signup-fullname" placeholder="Enter your full name" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
+                            <input type="email" id="signup-email" placeholder="example@gmail.com" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="email" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Mobile Number</label>
+                            <input type="tel" id="signup-mobile" placeholder="Enter mobile number" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Password</label>
+                            <input type="password" id="signup-password" placeholder="Min 6 characters" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="new-password" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Referral Code <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <input type="text" id="signup-referral" placeholder="Enter referrer's UID" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Withdrawal Method</label>
+                            <select id="signup-method" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none">
+                                <option value="Mobile Recharge">Mobile Recharge</option>
+                                <option value="Redeem Code">Redeem Code</option>
+                                <option value="Flipkart Gift Card">Flipkart Gift Card</option>
+                                <option value="Amazon Gift Card">Amazon Gift Card</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="handleAuth()" id="btn-auth-trigger" class="w-full google-btn-blue p-3.5 text-sm mt-2 focus:outline-none flex items-center justify-center gap-2">
                         <span id="btn-auth-text">Continue</span>
                         <svg id="btn-auth-spinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
                     </button>
@@ -326,8 +514,6 @@
 
         <!-- ===== DASHBOARD ===== -->
         <div id="user-app" class="hidden flex-1 flex-col">
-
-            <!-- Header -->
             <header class="bg-white border-b border-gray-100 p-4 sticky top-0 z-50 flex justify-between items-center">
                 <span class="text-2xl font-bold tracking-tight">
                     <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span>
@@ -335,7 +521,7 @@
                     <span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
                 </span>
                 <div class="flex items-center gap-2">
-                    <span id="header-timer-countdown" class="text-[10px] bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-mono font-bold border border-red-200">Reset: 00:00:00</span>
+                    <span id="header-timer-countdown" class="text-[10px] bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-mono font-bold border border-red-200">Reset: --:--:--</span>
                 </div>
             </header>
 
@@ -353,7 +539,7 @@
                 </div>
             </div>
 
-            <!-- Status Panel -->
+            <!-- Status -->
             <div id="tracking-status-box" class="mx-4 mt-3 p-3 rounded-xl border border-gray-100 bg-gray-50 flex flex-col gap-1.5">
                 <div class="flex justify-between items-center">
                     <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Gateway Status Radar</span>
@@ -365,108 +551,123 @@
                 </div>
             </div>
 
-            <!-- Main Content -->
             <main class="p-4 flex-1 space-y-4 pb-28 overflow-y-auto max-h-[calc(100vh-210px)]">
 
-                <!-- TASKS SCREEN -->
-                <section id="screen-tasks" class="user-screen active space-y-4">
+                <!-- ===== HOME SCREEN (TASKS) ===== -->
+                <section id="screen-home" class="user-screen active space-y-4">
                     <div class="flex gap-2">
                         <div class="google-card p-3 flex-1 flex justify-between items-center text-xs">
                             <span class="font-bold text-[#0b57d0]"><i class="fa-solid fa-bolt mr-1"></i> Production Cap</span>
                             <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded font-medium text-[11px]">₹30 / 12 Hrs</span>
                         </div>
                         <button onclick="claimDailyBonus()" class="bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 hover:bg-amber-100 transition-all">
-                            <i class="fa-solid fa-calendar-star"></i> Check-In
+                            <i class="fa-solid fa-calendar-check"></i> Check-In
                         </button>
                     </div>
 
-                    <div class="task-grid">
-                        <!-- row 1 -->
-                        <div onclick="launchTask('https://www.google.com','Google')" class="task-item"><i class="fa-brands fa-google text-[#4285F4]"></i><span>Google</span></div>
-                        <div onclick="launchTask('https://m.youtube.com','YouTube')" class="task-item"><i class="fa-brands fa-youtube text-[#FF0000]"></i><span>YouTube</span></div>
-                        <div onclick="launchTask('https://m.facebook.com','Facebook')" class="task-item"><i class="fa-brands fa-facebook text-[#1877F2]"></i><span>Facebook</span></div>
-                        <div onclick="launchTask('https://www.instagram.com','Instagram')" class="task-item"><i class="fa-brands fa-instagram text-[#E1306C]"></i><span>Instagram</span></div>
-                        <!-- row 2 -->
-                        <div onclick="launchTask('https://www.pinterest.com','Pinterest')" class="task-item"><i class="fa-brands fa-pinterest text-[#BD081C]"></i><span>Pinterest</span></div>
-                        <div onclick="launchTask('https://www.flipkart.com','Flipkart')" class="task-item"><i class="fa-solid fa-bag-shopping text-[#2874F0]"></i><span>Flipkart</span></div>
-                        <div onclick="launchTask('https://www.meesho.com','Meesho')" class="task-item"><i class="fa-solid fa-store text-[#9F206C]"></i><span>Meesho</span></div>
-                        <div onclick="launchTask('https://kukufm.com','Kuku FM')" class="task-item"><i class="fa-solid fa-microphone-lines text-[#03A9F4]"></i><span>Kuku FM</span></div>
-                        <!-- row 3 -->
-                        <div onclick="launchTask('https://www.amazon.in','Amazon')" class="task-item"><i class="fa-brands fa-amazon text-[#FF9900]"></i><span>Amazon</span></div>
-                        <div onclick="launchTask('https://www.nykaa.com','Nykaa')" class="task-item"><i class="fa-solid fa-sparkles text-[#FC2779]"></i><span>Nykaa</span></div>
-                        <div onclick="launchTask('https://www.netflix.com','Netflix')" class="task-item"><i class="fa-solid fa-film text-[#E50914]"></i><span>Netflix</span></div>
-                        <div onclick="launchTask('https://www.crazygames.com','CrazyGames')" class="task-item"><i class="fa-solid fa-gamepad text-[#34A853]"></i><span>CrazyGames</span></div>
-                        <!-- row 4 -->
-                        <div onclick="launchTask('https://chat.openai.com','ChatGPT')" class="task-item"><i class="fa-solid fa-robot text-[#10a37f]"></i><span>ChatGPT</span></div>
-                        <div onclick="launchTask('https://www.wikipedia.org','Wikipedia')" class="task-item"><i class="fa-solid fa-book-open text-gray-600"></i><span>Wikipedia</span></div>
-                        <div onclick="launchTask('https://www.linkedin.com','LinkedIn')" class="task-item"><i class="fa-brands fa-linkedin text-[#0a66c2]"></i><span>LinkedIn</span></div>
-                        <div onclick="launchTask('https://twitter.com','X')" class="task-item"><i class="fa-brands fa-x-twitter text-black"></i><span>X Twitter</span></div>
-                        <!-- row 5 -->
-                        <div onclick="launchTask('https://www.microsoft.com','Microsoft')" class="task-item"><i class="fa-brands fa-microsoft text-[#f25022]"></i><span>Microsoft</span></div>
-                        <div onclick="launchTask('https://github.com','GitHub')" class="task-item"><i class="fa-brands fa-github text-[#24292e]"></i><span>GitHub</span></div>
-                        <div onclick="launchTask('https://www.reddit.com','Reddit')" class="task-item"><i class="fa-brands fa-reddit text-[#ff4500]"></i><span>Reddit</span></div>
-                        <div onclick="launchTask('https://www.twitch.tv','Twitch')" class="task-item"><i class="fa-brands fa-twitch text-[#9146ff]"></i><span>Twitch</span></div>
+                    <!-- Search & Category Filters -->
+                    <div class="space-y-2.5">
+                        <div class="search-box relative">
+                            <i class="fa-solid fa-search"></i>
+                            <input type="text" id="task-search" placeholder="Search apps..." class="w-full google-input p-2.5 text-xs focus:outline-none rounded-lg" oninput="filterTasks()" />
+                            <span id="clear-search-btn" class="clear-search" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></span>
+                        </div>
+                        <div class="flex gap-1.5 overflow-x-auto pb-1 hide-scrollbar" id="category-filters">
+                            <button class="cat-filter-btn active" data-cat="all" onclick="filterByCategory('all')">All</button>
+                            <button class="cat-filter-btn" data-cat="social" onclick="filterByCategory('social')">Social</button>
+                            <button class="cat-filter-btn" data-cat="islamic" onclick="filterByCategory('islamic')">Islamic</button>
+                            <button class="cat-filter-btn" data-cat="tools" onclick="filterByCategory('tools')">Tools</button>
+                            <button class="cat-filter-btn" data-cat="health" onclick="filterByCategory('health')">Health</button>
+                            <button class="cat-filter-btn" data-cat="games" onclick="filterByCategory('games')">Games</button>
+                            <button class="cat-filter-btn" data-cat="shopping" onclick="filterByCategory('shopping')">Shopping</button>
+                            <button class="cat-filter-btn" data-cat="entertainment" onclick="filterByCategory('entertainment')">Entertainment</button>
+                            <button class="cat-filter-btn" data-cat="education" onclick="filterByCategory('education')">Education</button>
+                        </div>
                     </div>
 
-                    <div class="google-card p-3 text-center bg-gray-50/50 border border-gray-100">
-                        <p class="text-[11px] text-gray-500 leading-relaxed">⚠️ <strong>Notice:</strong> Verification Active. System tracking remains fully operational.</p>
-                    </div>
+                    <div class="task-grid" id="task-grid"></div>
+                    <p class="text-[8px] text-gray-400 text-center mt-2"><i class="fa-regular fa-clock mr-1"></i> Tap any gateway to start earning — each session auto-credits to your ledger</p>
                 </section>
 
-                <!-- WALLET SCREEN -->
-                <section id="screen-wallet" class="user-screen space-y-4">
-                    <!-- Referral -->
-                    <div class="google-card p-4 space-y-2">
-                        <h2 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-share-nodes text-[#0b57d0]"></i> Referral Network</h2>
-                        <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200 flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] text-gray-400 font-medium">Your Unique Invitation Code</p>
-                                <span id="referral-code-display" class="font-mono text-xs font-bold text-gray-800 tracking-wide">—</span>
+                <!-- ===== PROFILE SCREEN ===== -->
+                <section id="screen-profile" class="user-screen space-y-4">
+                    <div class="google-card p-5 space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="profile-avatar" id="profile-avatar-text">U</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-bold text-gray-800 truncate" id="profile-display-name">User</p>
+                                <p class="text-[10px] text-gray-400 font-mono truncate" id="profile-display-uid">UID: —</p>
+                                <p class="text-[10px] text-gray-400" id="profile-display-email">—</p>
                             </div>
-                            <button onclick="copyReferralCode()" class="bg-white border text-gray-600 font-medium px-3 py-1.5 rounded text-[11px] shadow-sm hover:bg-gray-50 transition-all">Copy</button>
                         </div>
+
+                        <!-- Profile Stats -->
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-center">
+                                <p class="text-[9px] text-gray-400 font-medium">Total Invites</p>
+                                <p class="font-bold text-gray-800" id="profile-invites">0</p>
+                            </div>
+                            <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-center">
+                                <p class="text-[9px] text-gray-400 font-medium">Referral Earnings</p>
+                                <p class="font-bold text-green-600" id="profile-referral-earnings">₹0.00</p>
+                            </div>
+                            <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-center">
+                                <p class="text-[9px] text-gray-400 font-medium">Active Time</p>
+                                <p class="font-bold text-gray-800" id="profile-active-time">0s</p>
+                            </div>
+                            <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-center">
+                                <p class="text-[9px] text-gray-400 font-medium">Total Earned</p>
+                                <p class="font-bold text-blue-600" id="profile-total-earned">₹0.00</p>
+                            </div>
+                        </div>
+
+                        <!-- Profile Info Display -->
+                        <div class="border-t border-gray-200 pt-3 space-y-2">
+                            <div class="flex justify-between text-xs"><span class="text-gray-500">Full Name</span><span class="font-medium text-gray-800" id="profile-full-name">—</span></div>
+                            <div class="flex justify-between text-xs"><span class="text-gray-500">Mobile</span><span class="font-medium text-gray-800" id="profile-mobile">—</span></div>
+                            <div class="flex justify-between text-xs"><span class="text-gray-500">Email</span><span class="font-medium text-gray-800" id="profile-email-display">—</span></div>
+                            <div class="flex justify-between text-xs"><span class="text-gray-500">Withdrawal Method</span><span class="font-medium text-gray-800" id="profile-redeem-method">—</span></div>
+                            <div class="flex justify-between text-xs"><span class="text-gray-500">Referral Code (UID)</span><span class="font-medium text-gray-800 font-mono text-[10px]" id="profile-referral-code">—</span></div>
+                        </div>
+                        <button onclick="copyReferralCode()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium p-2.5 rounded-xl text-xs transition-all border border-gray-300 flex items-center justify-center gap-2">
+                            <i class="fa-regular fa-copy"></i> Copy My UID
+                        </button>
                     </div>
 
-                    <!-- Security -->
+                    <!-- Edit Profile Form -->
                     <div class="google-card p-4 space-y-3">
-                        <h2 class="text-xs font-bold text-red-600 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> Security</h2>
-                        <div class="space-y-2">
-                            <input type="password" id="settings-new-password" placeholder="Enter new password (min 6 chars)" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" />
-                            <button onclick="updateUserPassword()" class="w-full bg-gray-900 text-white font-medium p-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-gray-800 transition-all">Update Password</button>
-                        </div>
-                    </div>
-
-                    <!-- Withdrawal Profile -->
-                    <div class="google-card p-5 space-y-3">
-                        <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-address-card text-[#0b57d0]"></i> Withdrawal Profile</h2>
+                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-regular fa-pen-to-square text-[#0b57d0]"></i> Edit Profile</h3>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Full Name</label>
-                            <input type="text" id="user-full-name" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter full name" />
+                            <input type="text" id="profile-edit-name" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" placeholder="Enter full name" />
                         </div>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Mobile Number</label>
-                            <input type="tel" id="user-mobile-num" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter mobile number" />
+                            <input type="tel" id="profile-edit-mobile" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" placeholder="Enter mobile number" />
                         </div>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Email ID</label>
-                            <input type="email" id="user-email-id" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter email ID" />
+                            <input type="email" id="profile-edit-email" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none bg-gray-50 text-gray-500" disabled placeholder="Email cannot be changed" />
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Redeem Method</label>
-                            <select id="user-redeem-method" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" onchange="toggleRechargeNotice()">
-                                <option value="Mobile Recharge">Mobile Recharge (1-Month Validity)</option>
+                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">New Password <span class="text-gray-400 font-normal">(leave blank to keep current)</span></label>
+                            <input type="password" id="profile-edit-password" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" placeholder="Enter new password (min 6 chars)" />
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Withdrawal Method</label>
+                            <select id="profile-edit-method" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none">
+                                <option value="Mobile Recharge">Mobile Recharge</option>
                                 <option value="Redeem Code">Redeem Code</option>
                                 <option value="Flipkart Gift Card">Flipkart Gift Card</option>
                                 <option value="Amazon Gift Card">Amazon Gift Card</option>
                             </select>
                         </div>
-                        <div id="recharge-validity-notice" class="bg-blue-50 text-blue-700 p-2.5 rounded-lg border border-blue-200 text-[11px] font-medium leading-relaxed">
-                            💡 <strong>Notice:</strong> Mobile Recharge grants a maximum of 1‑month validity.
-                        </div>
-                        <button onclick="saveProfile()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium p-3 rounded-xl text-xs transition-all border border-gray-300">Save Profile</button>
+                        <button onclick="updateFullProfile()" class="w-full google-btn-blue text-white font-medium p-2.5 text-xs uppercase tracking-wider transition-all">Update Profile</button>
                     </div>
+                </section>
 
-                    <!-- Payout -->
+                <!-- ===== WITHDRAWAL SCREEN ===== -->
+                <section id="screen-withdrawal" class="user-screen space-y-4">
                     <div class="google-card p-5 space-y-4">
                         <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200">
                             <span class="text-xs text-gray-600 font-medium">Withdrawable Balance:</span>
@@ -484,71 +685,98 @@
                         <button onclick="requestPayout()" class="w-full google-btn-blue text-white font-medium p-3.5 text-xs uppercase tracking-widest transition-all">Request Withdrawal</button>
                     </div>
 
-                    <!-- History -->
                     <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fa-solid fa-clock-history text-[#0b57d0]"></i> Transaction History
-                        </h3>
+                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-[#0b57d0]"></i> Transaction History</h3>
                         <div id="user-withdrawal-history-box" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1">
                             <p class="text-gray-400 text-center py-2">No transactions yet.</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- ADMIN SCREEN -->
-                <section id="screen-admin" class="user-screen space-y-4">
-                    <h2 class="text-sm font-bold text-red-600 uppercase tracking-widest border-b border-gray-200 pb-2 flex items-center gap-2"><i class="fa-solid fa-circle-nodes"></i> Admin Terminal</h2>
-
-                    <div class="google-card p-4 space-y-3 bg-slate-900 text-white">
-                        <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-sliders"></i> System Parameters</h3>
-                        <div>
-                            <label class="block text-[10px] text-gray-400 font-medium mb-1">Referral Reward (₹)</label>
-                            <div class="flex gap-2">
-                                <input type="number" id="admin-global-refer-reward" class="bg-slate-800 border border-slate-700 rounded p-2 text-xs font-mono font-bold text-green-400 flex-1 focus:outline-none" placeholder="e.g. 15" />
-                                <button onclick="saveSystemConfig()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-blue-500 transition-all">Save</button>
-                            </div>
+                <!-- ===== SETTINGS SCREEN ===== -->
+                <section id="screen-settings" class="user-screen space-y-4">
+                    <div class="google-card p-4 space-y-3">
+                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-red-500"></i> Security</h3>
+                        <div class="space-y-2">
+                            <input type="password" id="settings-new-password" placeholder="Enter new password (min 6 chars)" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" />
+                            <button onclick="updateUserPassword()" class="w-full bg-gray-900 text-white font-medium p-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-gray-800 transition-all">Update Password</button>
                         </div>
                     </div>
 
-                    <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">User Directory</h3>
-                        <div id="admin-user-management-node" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+                    <!-- Admin Panel -->
+                    <div id="admin-panel-container" class="hidden space-y-4">
+                        <div class="flex items-center gap-2 border-b border-red-200 pb-2">
+                            <i class="fa-solid fa-circle-nodes text-red-500 text-sm"></i>
+                            <h2 class="text-sm font-bold text-red-600 uppercase tracking-widest">Admin Terminal</h2>
+                            <button onclick="refreshAdminPanel()" class="ml-auto bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-lg text-[10px] font-medium flex items-center gap-1 transition-all border border-gray-300">
+                                <i id="admin-refresh-icon" class="fa-solid fa-rotate text-[9px]"></i> Refresh
+                            </button>
+                        </div>
+
+                        <!-- System Parameters -->
+                        <div class="google-card p-4 space-y-3 bg-slate-900 text-white">
+                            <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-sliders"></i> System Parameters</h3>
+                            <div>
+                                <label class="block text-[10px] text-gray-400 font-medium mb-1">Referral Reward (₹)</label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="admin-global-refer-reward" class="bg-slate-800 border border-slate-700 rounded p-2 text-xs font-mono font-bold text-green-400 flex-1 focus:outline-none focus:border-amber-400" placeholder="e.g. 15" />
+                                    <button onclick="saveSystemConfig()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-blue-500 transition-all">Save</button>
+                                </div>
+                                <p class="text-[10px] text-gray-500 mt-1.5">Current value: ₹<span id="admin-current-refer-display">15.00</span></p>
+                                <p id="admin-perm-error" class="text-[10px] text-red-400 hidden mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Permission denied. Please check Firebase security rules.</p>
+                            </div>
+                        </div>
+
+                        <!-- User Directory -->
+                        <div class="google-card p-4 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">User Directory <span id="user-count-badge" class="ml-1 text-[10px] font-normal text-gray-400"></span></h3>
+                            </div>
+                            <div id="admin-user-management-node" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+                        </div>
+
+                        <!-- Pending Withdrawals -->
+                        <div class="google-card p-4 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-xs font-bold text-amber-600 uppercase tracking-wider">Pending Withdrawals</h3>
+                                <button onclick="clearAllHistory()" class="clear-history-btn"><i class="fa-solid fa-trash-can mr-1"></i> Clear All History</button>
+                            </div>
+                            <div id="admin-payouts-list" class="space-y-3 text-xs"></div>
+                        </div>
+
+                        <!-- Completed Withdrawals -->
+                        <div class="google-card p-4 space-y-3">
+                            <h3 class="text-xs font-bold text-green-600 uppercase tracking-wider">Completed Withdrawals</h3>
+                            <div id="admin-completed-payouts-list" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
+                        </div>
                     </div>
 
-                    <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-amber-600 uppercase tracking-wider">Pending Withdrawals</h3>
-                        <div id="admin-payouts-list" class="space-y-2 text-xs"></div>
-                    </div>
-
-                    <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-green-600 uppercase tracking-wider">Completed Withdrawals</h3>
-                        <div id="admin-completed-payouts-list" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
-                    </div>
+                    <button onclick="logout()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium p-3.5 rounded-xl text-xs uppercase tracking-wider transition-all border border-red-200 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+                    </button>
                 </section>
             </main>
 
-            <!-- Bottom Nav -->
-            <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2.5 flex justify-between items-center z-50">
-                <button onclick="switchScreen('tasks')" class="flex flex-col items-center gap-1 nav-btn active flex-1" id="nav-tasks">
-                    <i class="fa-solid fa-layer-group text-lg"></i><span class="text-[10px] font-medium">Gateways</span>
+            <!-- ===== BOTTOM NAV ===== -->
+            <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-1.5 flex justify-between items-center z-50">
+                <button onclick="switchScreen('home')" class="flex flex-col items-center gap-0.5 nav-btn active flex-1 py-1" id="nav-home">
+                    <i class="fa-solid fa-house text-xl"></i><span class="text-[9px] font-medium">Home</span>
                 </button>
-                <button onclick="switchScreen('wallet')" class="flex flex-col items-center gap-1 nav-btn flex-1" id="nav-wallet">
-                    <i class="fa-solid fa-vault text-lg"></i><span class="text-[10px] font-medium">Vault</span>
+                <button onclick="switchScreen('profile')" class="flex flex-col items-center gap-0.5 nav-btn flex-1 py-1" id="nav-profile">
+                    <i class="fa-solid fa-user text-xl"></i><span class="text-[9px] font-medium">Profile</span>
                 </button>
-                <button onclick="switchScreen('admin')" class="hidden flex-col items-center gap-1 nav-btn flex-1" id="nav-admin">
-                    <i class="fa-solid fa-terminal text-lg"></i><span class="text-[10px] font-medium">Terminal</span>
+                <button onclick="switchScreen('withdrawal')" class="flex flex-col items-center gap-0.5 nav-btn flex-1 py-1" id="nav-withdrawal">
+                    <i class="fa-solid fa-wallet text-xl"></i><span class="text-[9px] font-medium">Withdrawal</span>
                 </button>
-                <button onclick="logout()" class="flex flex-col items-center gap-1 flex-1 text-gray-400">
-                    <i class="fa-solid fa-circle-power-off text-lg text-red-500"></i><span class="text-[10px] font-medium text-gray-500">Logout</span>
+                <button onclick="switchScreen('settings')" class="flex flex-col items-center gap-0.5 nav-btn flex-1 py-1" id="nav-settings">
+                    <i class="fa-solid fa-gear text-xl"></i><span class="text-[9px] font-medium">Settings</span>
                 </button>
             </nav>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- FIREBASE MODULE -->
+    <!-- ===== FIREBASE APPLICATION MODULE ===== -->
     <script type="module">
-        // -------- IMPORTS --------
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import {
             getAuth,
@@ -566,7 +794,11 @@
             get,
             update,
             push,
-            remove
+            remove,
+            runTransaction,
+            query,
+            orderByChild,
+            limitToLast
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const FIREBASE_CONFIG = {
@@ -583,7 +815,6 @@
 
         const ADMIN_EMAIL = "grtts24@gmail.com";
 
-        // -------- GLOBALS --------
         let currentUser = null;
         let userData = {};
         let authMode = 'login';
@@ -593,37 +824,154 @@
         let totalActiveSeconds = 0;
         let globalReferralReward = 15.00;
         let isTracking = false;
-        let logoutTimer = null;
+        let currentCategory = 'all';
+        let currentSearch = '';
 
-        // -------- DOM REFS --------
         const $ = id => document.getElementById(id);
         const toastContainer = $('toast-container');
         const loadingOverlay = $('global-loading-overlay');
         const loadingText = $('loading-overlay-text');
 
-        // -------- TOAST SYSTEM --------
+        // ---- APPS DEFINITION ----
+        const APPS = [
+            { id: 1, name: 'YouTube', url: 'https://m.youtube.com', icon: 'fa-brands fa-youtube', color: '#FF0000',
+                cat: 'entertainment' },
+            { id: 2, name: 'Instagram', url: 'https://www.instagram.com', icon: 'fa-brands fa-instagram',
+                color: '#E1306C', cat: 'social' },
+            { id: 3, name: 'Facebook', url: 'https://m.facebook.com', icon: 'fa-brands fa-facebook', color: '#1877F2',
+                cat: 'social' },
+            { id: 4, name: 'Google', url: 'https://www.google.com', icon: 'fa-brands fa-google', color: '#4285F4',
+                cat: 'tools' },
+            { id: 5, name: 'ChatGPT', url: 'https://chat.openai.com', icon: 'fa-solid fa-robot', color: '#10a37f',
+                cat: 'tools' },
+            { id: 6, name: 'Audio Quran', url: 'https://quran.com/audio', icon: 'fa-solid fa-headphones-simple',
+                color: '#1a6e1a', cat: 'islamic' },
+            { id: 7, name: 'Islamic Books', url: 'https://www.islamicbookstore.com', icon: 'fa-solid fa-book-quran',
+                color: '#2e7d32', cat: 'islamic' },
+            { id: 8, name: 'Remove BG', url: 'https://www.remove.bg', icon: 'fa-solid fa-wand-magic-sparkles',
+                color: '#6c4fcb', cat: 'tools' },
+            { id: 9, name: 'Health', url: 'https://www.healthline.com', icon: 'fa-solid fa-heart-pulse',
+                color: '#d93025', cat: 'health' },
+            { id: 10, name: 'Online Games', url: 'https://www.crazygames.com', icon: 'fa-solid fa-gamepad',
+                color: '#34A853', cat: 'games' },
+            { id: 11, name: 'Flipkart', url: 'https://www.flipkart.com', icon: 'fa-solid fa-bag-shopping',
+                color: '#2874F0', cat: 'shopping' },
+            { id: 12, name: 'Image to PDF', url: 'https://www.ilovepdf.com/image_to_pdf', icon: 'fa-solid fa-file-pdf',
+                color: '#d93025', cat: 'tools' },
+            { id: 13, name: 'Image Compressor', url: 'https://www.ilovepdf.com/compress_image',
+                icon: 'fa-solid fa-compress', color: '#fbbc04', cat: 'tools' },
+            { id: 14, name: 'PDF to Image', url: 'https://www.ilovepdf.com/pdf_to_image', icon: 'fa-solid fa-file-image',
+                color: '#4285F4', cat: 'tools' },
+            { id: 15, name: 'Amazon', url: 'https://www.amazon.in', icon: 'fa-brands fa-amazon', color: '#FF9900',
+                cat: 'shopping' },
+            { id: 16, name: 'APK Download', url: 'https://apkpure.com', icon: 'fa-solid fa-download', color: '#0b57d0',
+                cat: 'tools' },
+            { id: 17, name: 'Meesho', url: 'https://www.meesho.com', icon: 'fa-solid fa-store', color: '#9F206C',
+                cat: 'shopping' },
+            { id: 18, name: 'Telegram', url: 'https://telegram.org', icon: 'fa-brands fa-telegram', color: '#26A5E4',
+                cat: 'social' },
+            { id: 19, name: 'Kuku FM', url: 'https://kukufm.com', icon: 'fa-solid fa-microphone-lines', color: '#03A9F4',
+                cat: 'entertainment' },
+            { id: 20, name: 'Pocket FM', url: 'https://www.pocketfm.com', icon: 'fa-solid fa-podcast', color: '#FF6F00',
+                cat: 'entertainment' },
+            { id: 21, name: 'Pinterest', url: 'https://www.pinterest.com', icon: 'fa-brands fa-pinterest',
+                color: '#BD081C', cat: 'social' },
+            { id: 22, name: 'Spotify', url: 'https://open.spotify.com', icon: 'fa-brands fa-spotify', color: '#1DB954',
+                cat: 'entertainment' }
+        ];
+
+        const CATEGORIES = {
+            all: { label: 'All', icon: 'fa-solid fa-th-large' },
+            social: { label: 'Social', icon: 'fa-solid fa-users' },
+            islamic: { label: 'Islamic', icon: 'fa-solid fa-star-and-crescent' },
+            tools: { label: 'Tools', icon: 'fa-solid fa-wrench' },
+            health: { label: 'Health', icon: 'fa-solid fa-heart-pulse' },
+            games: { label: 'Games', icon: 'fa-solid fa-gamepad' },
+            shopping: { label: 'Shopping', icon: 'fa-solid fa-cart-shopping' },
+            entertainment: { label: 'Entertainment', icon: 'fa-solid fa-film' },
+            education: { label: 'Education', icon: 'fa-solid fa-graduation-cap' }
+        };
+
+        function renderTasks() {
+            const grid = $('task-grid');
+            grid.innerHTML = '';
+            let filtered = APPS;
+
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(app => app.cat === currentCategory);
+            }
+            if (currentSearch.trim()) {
+                const q = currentSearch.trim().toLowerCase();
+                filtered = filtered.filter(app => app.name.toLowerCase().includes(q));
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML =
+                    `<div class="col-span-4 text-center py-6 text-gray-400 text-xs">No apps match your search.</div>`;
+                return;
+            }
+
+            filtered.forEach(app => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.setAttribute('data-cat', app.cat);
+                div.setAttribute('data-name', app.name.toLowerCase());
+                div.innerHTML = `
+                        <i class="${app.icon}" style="color:${app.color}"></i>
+                        <span>${app.name}</span>
+                        <span class="cat-tag">${CATEGORIES[app.cat]?.label || app.cat}</span>
+                    `;
+                div.addEventListener('click', () => launchTask(app.url, app.name));
+                grid.appendChild(div);
+            });
+        }
+
+        window.filterTasks = function() {
+            const searchInput = $('task-search');
+            currentSearch = searchInput.value;
+            const clearBtn = $('clear-search-btn');
+            if (currentSearch.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+            renderTasks();
+        };
+
+        window.clearSearch = function() {
+            const searchInput = $('task-search');
+            searchInput.value = '';
+            currentSearch = '';
+            $('clear-search-btn').classList.remove('visible');
+            renderTasks();
+        };
+
+        window.filterByCategory = function(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.cat === cat);
+            });
+            const searchInput = $('task-search');
+            searchInput.value = '';
+            currentSearch = '';
+            $('clear-search-btn').classList.remove('visible');
+            renderTasks();
+        };
+
         function showToast(message, type = 'info', duration = 4500) {
-            const icons = {
-                success: 'fa-check-circle',
-                error: 'fa-exclamation-circle',
-                warning: 'fa-triangle-exclamation',
-                info: 'fa-circle-info'
-            };
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-triangle-exclamation',
+                info: 'fa-circle-info' };
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             toast.innerHTML = `
-                <i class="fa-solid ${icons[type] || icons.info}"></i>
-                <span style="flex:1">${message}</span>
-                <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
-            `;
+                    <i class="fa-solid ${icons[type] || icons.info}"></i>
+                    <span style="flex:1">${message}</span>
+                    <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+                `;
             toastContainer.appendChild(toast);
             setTimeout(() => { if (toast.parentElement) toast.remove(); }, duration);
         }
 
-        // Expose toast to window
-        window.showToast = showToast;
-
-        // -------- LOADING --------
         function showLoading(msg = 'Syncing…') {
             loadingText.textContent = msg;
             loadingOverlay.classList.remove('hidden');
@@ -633,259 +981,289 @@
             loadingOverlay.classList.add('hidden');
         }
 
-        // -------- AUTH UI --------
-        window.setAuthMode = (mode) => {
+        // ---- AUTH MODE TOGGLE ----
+        window.setAuthMode = function(mode) {
             authMode = mode;
-            const tabLogin = $('tab-login');
-            const tabSignup = $('tab-signup');
-            const referralBox = $('referral-field-box');
-            const forgotBox = $('forgot-password-box');
+            document.getElementById('tab-login').className = mode === 'login' ?
+                'flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all' :
+                'flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all';
+            document.getElementById('tab-signup').className = mode === 'signup' ?
+                'flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all' :
+                'flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all';
 
-            tabLogin.className = mode === 'login' ?
-                'flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center' :
-                'flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center';
+            document.getElementById('login-fields').classList.toggle('hidden', mode === 'signup');
+            document.getElementById('signup-fields').classList.toggle('hidden', mode === 'login');
+            document.getElementById('forgot-password-box').classList.toggle('hidden', mode === 'signup');
 
-            tabSignup.className = mode === 'signup' ?
-                'flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center' :
-                'flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center';
-
-            referralBox.classList.toggle('hidden', mode === 'login');
-            forgotBox.classList.toggle('hidden', mode === 'signup');
+            // Update button text
+            document.getElementById('btn-auth-text').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
         };
 
-        // -------- AUTH HANDLER --------
+        // ---- SYNC CONFIG ----
+        async function syncConfig() {
+            try {
+                const snap = await get(ref(db, 'system_config'));
+                if (snap.exists() && snap.val().referralAmount !== undefined) {
+                    globalReferralReward = parseFloat(snap.val().referralAmount);
+                } else {
+                    await set(ref(db, 'system_config'), { referralAmount: 15.00 });
+                    globalReferralReward = 15.00;
+                }
+                const rewardInput = $('admin-global-refer-reward');
+                if (rewardInput) rewardInput.value = globalReferralReward;
+                const displaySpan = $('admin-current-refer-display');
+                if (displaySpan) displaySpan.textContent = globalReferralReward.toFixed(2);
+                const refRewardSpan = $('referral-reward-display');
+                if (refRewardSpan) refRewardSpan.textContent = globalReferralReward.toFixed(2);
+                // Hide permission error if shown
+                const permError = $('admin-perm-error');
+                if (permError) permError.classList.add('hidden');
+            } catch (e) {
+                console.warn('syncConfig error:', e);
+                if (e.message && e.message.includes('permission_denied')) {
+                    const permError = $('admin-perm-error');
+                    if (permError) permError.classList.remove('hidden');
+                }
+                globalReferralReward = 15.00;
+            }
+        }
+
+        // ---- HANDLE AUTH ----
         window.handleAuth = async () => {
-            const email = $('auth-email').value.trim().toLowerCase();
-            const password = $('auth-password').value;
-            const referral = $('auth-referral').value.trim();
-
-            if (!email || !password) {
-                showToast('Please fill in all required fields.', 'error');
-                return;
-            }
-            if (password.length < 6) {
-                showToast('Password must be at least 6 characters.', 'error');
-                return;
-            }
-
             const btn = $('btn-auth-trigger');
-            const txt = $('btn-auth-text');
-            const spinner = $('btn-auth-spinner');
             btn.disabled = true;
-            spinner.classList.remove('hidden');
-            txt.textContent = authMode === 'signup' ? 'Creating…' : 'Signing in…';
+            $('btn-auth-spinner').classList.remove('hidden');
 
             try {
                 await syncConfig();
 
-                if (authMode === 'signup') {
-                    if (email === ADMIN_EMAIL) {
-                        showToast('Cannot create admin account via signup.', 'error');
-                        return;
-                    }
+                if (authMode === 'login') {
+                    const email = $('auth-email').value.trim().toLowerCase();
+                    const password = $('auth-password').value;
+                    if (!email || !password) { throw new Error('Please enter email and password.'); }
+                    $('btn-auth-text').textContent = 'Signing in…';
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showToast('Welcome back!', 'success');
+                } else {
+                    // Signup
+                    const fullName = $('signup-fullname').value.trim();
+                    const email = $('signup-email').value.trim().toLowerCase();
+                    const mobile = $('signup-mobile').value.trim();
+                    const password = $('signup-password').value;
+                    const referral = $('signup-referral').value.trim();
+                    const method = $('signup-method').value;
+
+                    if (!fullName) { throw new Error('Please enter your full name.'); }
+                    if (!email) { throw new Error('Please enter your email.'); }
+                    if (!mobile) { throw new Error('Please enter your mobile number.'); }
+                    if (!password || password.length < 6) { throw new Error('Password must be at least 6 characters.'); }
+                    if (email === ADMIN_EMAIL) { throw new Error('Cannot register using admin credentials.'); }
+
+                    $('btn-auth-text').textContent = 'Creating…';
+
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     let initialBalance = 0;
 
-                    // Referral
-                    if (referral) {
-                        const snap = await get(ref(db, 'users/' + referral));
-                        if (snap.exists()) {
-                            const refData = snap.val();
-                            initialBalance = 10;
-                            const newBal = (refData.balance || 0) + globalReferralReward;
-                            const newCount = (refData.referralCount || 0) + 1;
-                            await update(ref(db, 'users/' + referral), {
-                                balance: newBal,
-                                referralCount: newCount,
-                                lastReferralTimestamp: Date.now()
-                            });
-                            showToast(`Referral credited! You got ₹10 bonus.`, 'success');
+                    // Process referral
+                    if (referral && referral.length > 0) {
+                        if (referral.length < 20) {
+                            showToast('Referral UID seems invalid. Proceeding without bonus.', 'warning');
                         } else {
-                            showToast('Referral code not found. Proceeding without bonus.', 'warning');
+                            try {
+                                const rSnap = await get(ref(db, 'users/' + referral));
+                                if (rSnap.exists()) {
+                                    initialBalance = 10.00;
+                                    await runTransaction(ref(db, 'users/' + referral), (current) => {
+                                        if (current) {
+                                            current.balance = (current.balance || 0) + globalReferralReward;
+                                            current.referralCount = (current.referralCount || 0) + 1;
+                                            current.referralEarnings = (current.referralEarnings || 0) +
+                                                globalReferralReward;
+                                            current.lastReferralTimestamp = Date.now();
+                                        }
+                                        return current;
+                                    });
+                                    showToast('✅ Referral applied! You got ₹10 bonus.', 'success');
+                                } else {
+                                    showToast('Referral UID not found. Proceeding without bonus.', 'warning');
+                                }
+                            } catch (refErr) {
+                                console.warn('Referral error:', refErr);
+                                showToast('Could not verify referral. Proceeding without bonus.', 'warning');
+                            }
                         }
                     }
 
                     await set(ref(db, 'users/' + cred.user.uid), {
-                        email,
-                        password,
+                        email: email,
+                        password: password,
+                        fullName: fullName,
+                        mobileNumber: mobile,
+                        emailId: email,
+                        redeemMethod: method,
                         balance: initialBalance,
                         activeAppTime: 0,
                         status: 'active',
                         signupTimestamp: Date.now(),
                         lastActiveTimestamp: Date.now(),
-                        lastReferralTimestamp: Date.now(),
                         referralCount: 0,
-                        fullName: '',
-                        mobileNumber: '',
-                        emailId: '',
-                        redeemMethod: 'Mobile Recharge'
+                        referralEarnings: 0,
+                        lastDailyCheckIn: ''
                     });
-                    showToast('Account created successfully!', 'success');
-                } else {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    showToast('✅ Account created successfully!', 'success');
                 }
             } catch (err) {
                 showToast(err.message, 'error');
             } finally {
                 btn.disabled = false;
-                spinner.classList.add('hidden');
-                txt.textContent = 'Continue';
+                $('btn-auth-spinner').classList.add('hidden');
+                $('btn-auth-text').textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
             }
         };
 
-        // -------- PASSWORD RESET --------
+        // ---- PASSWORD RESET ----
         window.triggerPasswordReset = async () => {
             const email = $('auth-email').value.trim().toLowerCase();
-            if (!email) {
-                showToast('Please enter your email address first.', 'warning');
-                return;
-            }
+            if (!email) return showToast('Please enter your email address first.', 'warning');
             try {
-                showLoading('Sending recovery mail…');
+                showLoading('Sending reset link…');
                 await sendPasswordResetEmail(auth, email);
-                showToast('Password reset link sent to your email.', 'success');
-                hideLoading();
+                showToast('✅ Password reset link sent to your email!', 'success');
             } catch (err) {
-                hideLoading();
                 showToast(err.message, 'error');
+            } finally {
+                hideLoading();
             }
         };
 
-        // -------- UPDATE PASSWORD --------
+        // ---- UPDATE PASSWORD (Settings) ----
         window.updateUserPassword = async () => {
             const newPass = $('settings-new-password').value;
-            if (!newPass || newPass.length < 6) {
-                showToast('New password must be at least 6 characters.', 'error');
-                return;
-            }
+            if (!newPass || newPass.length < 6) return showToast('Password must be at least 6 characters.', 'error');
             try {
                 showLoading('Updating password…');
                 await updatePassword(auth.currentUser, newPass);
                 await update(ref(db, 'users/' + auth.currentUser.uid), { password: newPass });
-                showToast('Password updated successfully.', 'success');
+                showToast('✅ Password updated successfully.', 'success');
                 $('settings-new-password').value = '';
-                hideLoading();
             } catch (err) {
-                hideLoading();
                 showToast(err.message, 'error');
+            } finally {
+                hideLoading();
             }
         };
 
-        // -------- LOGOUT --------
-        window.logout = () => {
-            if (trackingInterval) {
-                clearInterval(trackingInterval);
-                trackingInterval = null;
-                isTracking = false;
+        // ---- FULL PROFILE UPDATE ----
+        window.updateFullProfile = async () => {
+            const name = $('profile-edit-name').value.trim();
+            const mobile = $('profile-edit-mobile').value.trim();
+            const method = $('profile-edit-method').value;
+            const newPass = $('profile-edit-password').value;
+
+            if (!name || !mobile) return showToast('Please enter both name and mobile.', 'error');
+
+            try {
+                showLoading('Updating profile…');
+                const updates = {
+                    fullName: name,
+                    mobileNumber: mobile,
+                    redeemMethod: method
+                };
+
+                // Update password if provided
+                if (newPass && newPass.length >= 6) {
+                    await updatePassword(auth.currentUser, newPass);
+                    updates.password = newPass;
+                } else if (newPass && newPass.length < 6) {
+                    showToast('Password must be at least 6 characters. Skipping password update.', 'warning');
+                }
+
+                await update(ref(db, 'users/' + currentUser.uid), updates);
+                showToast('✅ Profile updated successfully!', 'success');
+                await fetchUserData();
+                $('profile-edit-password').value = '';
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                hideLoading();
             }
+        };
+
+        // ---- LOGOUT ----
+        window.logout = () => {
+            if (trackingInterval) { clearInterval(trackingInterval);
+                trackingInterval = null; }
+            isTracking = false;
             clearKodularTokens();
             showLoading('Logging out…');
             signOut(auth).finally(() => hideLoading());
         };
 
-        // -------- COPY REFERRAL --------
+        // ---- COPY REFERRAL CODE ----
         window.copyReferralCode = () => {
-            const code = $('referral-code-display').textContent;
-            if (code && code !== '—') {
-                navigator.clipboard.writeText(code).then(() => {
-                    showToast('Referral code copied!', 'success');
-                }).catch(() => {
-                    // fallback
-                    const ta = document.createElement('textarea');
-                    ta.value = code;
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    ta.remove();
-                    showToast('Referral code copied!', 'success');
-                });
-            } else {
-                showToast('No referral code available.', 'warning');
-            }
+            const code = currentUser?.uid;
+            if (!code) return showToast('Identifier not ready.', 'warning');
+            navigator.clipboard.writeText(code).then(() => showToast('✅ UID copied to clipboard!', 'success'))
+                .catch(() => showToast('Failed to copy.', 'error'));
         };
 
-        // -------- DAILY BONUS --------
+        // ---- CLAIM DAILY BONUS ----
         window.claimDailyBonus = async () => {
             if (!currentUser) return;
             const today = new Date().toDateString();
-            if (userData.lastDailyCheckIn === today) {
-                showToast('You already claimed today\'s check-in bonus.', 'warning');
-                return;
-            }
+            if (userData.lastDailyCheckIn === today) return showToast('Already claimed today.', 'warning');
             try {
                 showLoading('Claiming bonus…');
-                const bal = (userData.balance || 0) + 2.50;
                 await update(ref(db, 'users/' + currentUser.uid), {
-                    balance: bal,
+                    balance: (userData.balance || 0) + 2.50,
                     lastDailyCheckIn: today
                 });
-                showToast('🎉 Check-In Bonus ₹2.50 credited!', 'success');
+                showToast('✅ +₹2.50 check-in bonus!', 'success');
                 await fetchUserData();
-                hideLoading();
-            } catch (err) {
-                hideLoading();
-                showToast(err.message, 'error');
-            }
+            } catch (err) { showToast(err.message, 'error'); } finally { hideLoading(); }
         };
 
-        // -------- TASK LAUNCH --------
+        // ---- LAUNCH TASK ----
         window.launchTask = (url, name) => {
-            if (isTracking) {
-                showToast('A task is already running. Complete it first.', 'warning');
-                return;
-            }
+            if (isTracking) return showToast('A task is already running.', 'warning');
             localStorage.setItem('kodular_task_running', 'true');
             localStorage.setItem('kodular_task_name', name);
             localStorage.setItem('kodular_start_time', Date.now().toString());
-
             window.open(url, '_blank');
             startTracking(name);
         };
 
-        // -------- TRACKING --------
         function startTracking(appName) {
-            if (trackingInterval) {
-                clearInterval(trackingInterval);
-                trackingInterval = null;
-            }
+            if (trackingInterval) clearInterval(trackingInterval);
             isTracking = true;
             sessionSeconds = 0;
             sessionMoneyEarned = 0;
             totalActiveSeconds = userData.activeAppTime || 0;
-
             updateStatusUI(true, appName);
 
             trackingInterval = setInterval(async () => {
                 if (totalActiveSeconds >= 43200) {
-                    stopTracking('Daily limit reached (12 hours).');
-                    showToast('Daily earning limit reached.', 'warning');
+                    stopTracking('Daily limit reached.');
                     return;
                 }
-
                 sessionSeconds++;
                 totalActiveSeconds++;
+                sessionMoneyEarned += (30 / 43200);
 
-                const rate = 30 / 43200;
-                sessionMoneyEarned += rate;
-
-                renderTimer(sessionSeconds);
+                $('live-timer').textContent = String(Math.floor(sessionSeconds / 3600)).padStart(2, '0') + ':' +
+                    String(Math.floor((sessionSeconds % 3600) / 60)).padStart(2, '0') + ':' +
+                    String(sessionSeconds % 60).padStart(2, '0');
                 $('session-earned').textContent = '₹' + sessionMoneyEarned.toFixed(4);
                 $('live-timer-progress').textContent = `${totalActiveSeconds}s / 43200s`;
 
-                localStorage.setItem('kodular_session_secs', sessionSeconds.toString());
-                localStorage.setItem('kodular_money_earned', sessionMoneyEarned.toString());
-
                 if (sessionSeconds % 5 === 0) {
-                    await syncEarning(rate * 5);
+                    await syncEarning(5 * (30 / 43200));
                 }
             }, 1000);
         }
 
         function stopTracking(msg) {
-            if (trackingInterval) {
-                clearInterval(trackingInterval);
-                trackingInterval = null;
-            }
+            if (trackingInterval) clearInterval(trackingInterval);
             isTracking = false;
             clearKodularTokens();
             updateStatusUI(false);
@@ -905,175 +1283,75 @@
             }
         }
 
-        function renderTimer(secs) {
-            const h = String(Math.floor(secs / 3600)).padStart(2, '0');
-            const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
-            const s = String(secs % 60).padStart(2, '0');
-            $('live-timer').textContent = `${h}:${m}:${s}`;
-        }
-
         async function syncEarning(amount) {
             if (!currentUser) return;
             try {
                 const snap = await get(ref(db, 'users/' + currentUser.uid));
                 if (snap.exists()) {
                     const data = snap.val();
-                    const newBal = (data.balance || 0) + amount;
+                    const nBal = (data.balance || 0) + amount;
                     await update(ref(db, 'users/' + currentUser.uid), {
-                        balance: newBal,
+                        balance: nBal,
                         activeAppTime: totalActiveSeconds,
                         lastActiveTimestamp: Date.now()
                     });
-                    // update UI balance
-                    const balEl = $('global-balance');
-                    balEl.textContent = newBal.toFixed(2);
-                    balEl.classList.add('pulse');
-                    setTimeout(() => balEl.classList.remove('pulse'), 300);
-                    $('wallet-balance-display').textContent = '₹ ' + newBal.toFixed(2);
+                    $('global-balance').textContent = nBal.toFixed(2);
+                    $('wallet-balance-display').textContent = '₹ ' + nBal.toFixed(2);
                 }
-            } catch (e) { /* silent */ }
+            } catch (e) { console.warn('syncEarning error:', e); }
         }
 
         function clearKodularTokens() {
-            localStorage.removeItem('kodular_task_running');
-            localStorage.removeItem('kodular_task_name');
-            localStorage.removeItem('kodular_start_time');
-            localStorage.removeItem('kodular_session_secs');
-            localStorage.removeItem('kodular_money_earned');
+            ['kodular_task_running', 'kodular_task_name', 'kodular_start_time', 'kodular_session_secs', 'kodular_money_earned']
+                .forEach(k => localStorage.removeItem(k));
         }
 
-        // -------- RECOVER SESSION --------
-        async function recoverSession() {
-            const running = localStorage.getItem('kodular_task_running');
-            if (running !== 'true' || !currentUser) return;
-
-            const startTime = parseInt(localStorage.getItem('kodular_start_time') || Date.now());
-            let elapsed = Math.floor((Date.now() - startTime) / 1000);
-            if (elapsed <= 0 || elapsed > 43200) {
-                clearKodularTokens();
-                return;
-            }
-
-            try {
-                const snap = await get(ref(db, 'users/' + currentUser.uid));
-                if (!snap.exists()) return;
-                const data = snap.val();
-                let dbTime = data.activeAppTime || 0;
-                if (dbTime >= 43200) { clearKodularTokens(); return; }
-                if (dbTime + elapsed > 43200) elapsed = 43200 - dbTime;
-
-                const rate = 30 / 43200;
-                const credit = elapsed * rate;
-                await update(ref(db, 'users/' + currentUser.uid), {
-                    balance: (data.balance || 0) + credit,
-                    activeAppTime: dbTime + elapsed,
-                    lastActiveTimestamp: Date.now()
-                });
-                clearKodularTokens();
-                showToast(`Recovered ${elapsed}s of lost session. ₹${credit.toFixed(2)} credited.`, 'success');
-                await fetchUserData();
-            } catch (e) { /* ignore */ }
-        }
-
-        // -------- GST CALC --------
+        // ---- GST CALC ----
         window.recalcGst = () => {
             const val = parseFloat($('user-payout-amount').value) || 0;
             const gst = val * 0.18;
-            const total = val + gst;
             $('display-base-val').textContent = '₹ ' + val.toFixed(2);
             $('display-gst-tax').textContent = '+ ₹ ' + gst.toFixed(2);
-            $('display-gross-total').textContent = '₹ ' + total.toFixed(2);
+            $('display-gross-total').textContent = '₹ ' + (val + gst).toFixed(2);
         };
 
-        // -------- TOGGLE RECHARGE NOTICE --------
-        window.toggleRechargeNotice = () => {
-            const method = $('user-redeem-method').value;
-            $('recharge-validity-notice').classList.toggle('hidden', method !== 'Mobile Recharge');
-        };
-
-        // -------- SAVE PROFILE --------
-        window.saveProfile = async () => {
-            if (!currentUser) return;
-            const fullName = $('user-full-name').value.trim();
-            const mobile = $('user-mobile-num').value.trim();
-            const emailId = $('user-email-id').value.trim();
-            const method = $('user-redeem-method').value;
-
-            if (!fullName || !mobile || !emailId) {
-                showToast('Please fill in all profile fields.', 'error');
-                return;
-            }
-            try {
-                showLoading('Saving profile…');
-                await update(ref(db, 'users/' + currentUser.uid), {
-                    fullName,
-                    mobileNumber: mobile,
-                    emailId,
-                    redeemMethod: method
-                });
-                showToast('Profile saved successfully.', 'success');
-                await fetchUserData();
-                hideLoading();
-            } catch (err) {
-                hideLoading();
-                showToast(err.message, 'error');
-            }
-        };
-
-        // -------- REQUEST PAYOUT --------
+        // ---- REQUEST PAYOUT ----
         window.requestPayout = async () => {
-            if (!currentUser) return;
-            const balance = userData.balance || 0;
-            const amount = parseFloat($('user-payout-amount').value) || 0;
+            const amt = parseFloat($('user-payout-amount').value) || 0;
+            if (amt < 300 || amt > 1000) return showToast('Amount must be between ₹300 and ₹1000.', 'error');
+            if (!userData.fullName || !userData.mobileNumber || !userData.emailId) return showToast(
+                'Please complete your profile first.', 'warning');
 
-            if (amount < 300 || amount > 1000) {
-                showToast('Amount must be between ₹300 and ₹1000.', 'error');
-                return;
-            }
-            if (!userData.fullName || !userData.mobileNumber || !userData.emailId) {
-                showToast('Please complete your withdrawal profile first.', 'warning');
-                return;
-            }
-
-            const gst = amount * 0.18;
-            const gross = amount + gst;
-            if (balance < gross) {
-                showToast('Insufficient balance. Required: ₹' + gross.toFixed(2), 'error');
-                return;
-            }
+            const gross = amt * 1.18;
+            if ((userData.balance || 0) < gross) return showToast(`Insufficient balance. Need ₹${gross.toFixed(2)}`,
+                'error');
 
             try {
-                showLoading('Processing withdrawal…');
-                const payoutRef = push(ref(db, 'payouts'));
-                await set(payoutRef, {
+                showLoading('Submitting withdrawal…');
+                const pRef = push(ref(db, 'payouts'));
+                await set(pRef, {
                     uid: currentUser.uid,
                     email: currentUser.email,
-                    amount: amount,
-                    gstLevied: gst,
-                    grossCharged: gross,
                     fullName: userData.fullName,
                     mobileNumber: userData.mobileNumber,
                     emailId: userData.emailId,
                     redeemMethod: userData.redeemMethod || 'Mobile Recharge',
+                    amount: amt,
+                    gstLevied: amt * 0.18,
+                    grossCharged: gross,
                     status: 'pending',
                     timestamp: Date.now()
                 });
-
-                const newBal = balance - gross;
-                await update(ref(db, 'users/' + currentUser.uid), { balance: newBal });
-                showToast('Withdrawal request submitted for admin approval.', 'success');
+                await update(ref(db, 'users/' + currentUser.uid), { balance: (userData.balance || 0) - gross });
+                showToast('✅ Withdrawal request submitted.', 'success');
                 await fetchUserData();
                 await fetchUserHistory();
                 $('user-payout-amount').value = '';
                 recalcGst();
-                hideLoading();
-            } catch (err) {
-                hideLoading();
-                showToast(err.message, 'error');
-            }
+            } catch (err) { showToast(err.message, 'error'); } finally { hideLoading(); }
         };
 
-        // -------- FETCH USER DATA --------
+        // ---- FETCH USER DATA ----
         async function fetchUserData() {
             if (!currentUser) return;
             try {
@@ -1084,353 +1362,464 @@
                     $('global-balance').textContent = bal.toFixed(2);
                     $('wallet-balance-display').textContent = '₹ ' + bal.toFixed(2);
                     $('live-timer-progress').textContent = `${userData.activeAppTime || 0}s / 43200s`;
+
+                    const name = userData.fullName || 'User';
+                    $('profile-display-name').textContent = name;
+                    $('profile-display-uid').textContent = 'UID: ' + currentUser.uid;
+                    $('profile-display-email').textContent = userData.email || currentUser.email;
+                    $('profile-avatar-text').textContent = name.charAt(0).toUpperCase();
+                    $('profile-invites').textContent = userData.referralCount || 0;
+                    $('profile-referral-earnings').textContent = '₹' + (userData.referralEarnings || 0).toFixed(2);
+                    $('profile-active-time').textContent = (userData.activeAppTime || 0) + 's';
+                    $('profile-total-earned').textContent = '₹' + bal.toFixed(2);
+                    $('profile-full-name').textContent = userData.fullName || '—';
+                    $('profile-mobile').textContent = userData.mobileNumber || '—';
+                    $('profile-email-display').textContent = userData.emailId || userData.email || '—';
+                    $('profile-redeem-method').textContent = userData.redeemMethod || '—';
+                    $('profile-referral-code').textContent = currentUser.uid;
+
+                    // Edit form
+                    $('profile-edit-name').value = userData.fullName || '';
+                    $('profile-edit-mobile').value = userData.mobileNumber || '';
+                    $('profile-edit-email').value = userData.emailId || userData.email || '';
+                    if (userData.redeemMethod) {
+                        $('profile-edit-method').value = userData.redeemMethod;
+                    }
                     $('referral-code-display').textContent = currentUser.uid;
 
-                    $('user-full-name').value = userData.fullName || '';
-                    $('user-mobile-num').value = userData.mobileNumber || '';
-                    $('user-email-id').value = userData.emailId || '';
-                    if (userData.redeemMethod) {
-                        $('user-redeem-method').value = userData.redeemMethod;
-                    }
+                    if (userData.redeemMethod) $('user-redeem-method').value = userData.redeemMethod;
                     toggleRechargeNotice();
                     recalcGst();
                 }
-            } catch (e) { /* ignore */ }
+            } catch (e) { console.warn('fetchUserData error:', e); }
         }
 
-        // -------- FETCH USER HISTORY --------
+        window.toggleRechargeNotice = () => {
+            const el = $('recharge-validity-notice');
+            if (el) el.classList.toggle('hidden', $('user-redeem-method').value !== 'Mobile Recharge');
+        };
+
+        // ---- FETCH USER HISTORY ----
         async function fetchUserHistory() {
             if (!currentUser) return;
             const box = $('user-withdrawal-history-box');
             try {
                 const snap = await get(ref(db, 'payouts'));
                 box.innerHTML = '';
-                let found = false;
+                let match = false;
                 if (snap.exists()) {
-                    snap.forEach(child => {
-                        const data = child.val();
-                        if (data.uid === currentUser.uid) {
-                            found = true;
-                            const div = document.createElement('div');
-                            div.className = 'bg-gray-50 p-2.5 rounded-lg border border-gray-100 flex justify-between items-center';
-                            const statusColor = data.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
-                                data.status === 'rejected' ? 'bg-red-50 text-red-600 border-red-200' :
+                    snap.forEach(c => {
+                        const d = c.val();
+                        if (d.uid === currentUser.uid) {
+                            match = true;
+                            const cl = d.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
+                                d.status === 'rejected' ? 'bg-red-50 text-red-600 border-red-200' :
                                 'bg-amber-50 text-amber-700 border-amber-200';
-                            div.innerHTML = `
-                                <span class="font-bold text-gray-800">₹${(data.amount || 0).toFixed(2)}</span>
-                                <span class="px-2 py-0.5 border text-[9px] font-bold rounded uppercase ${statusColor}">${data.status || 'pending'}</span>
-                            `;
-                            box.appendChild(div);
+                            const item = document.createElement('div');
+                            item.className =
+                                'bg-gray-50 p-2.5 rounded-lg border border-gray-100 flex justify-between items-center';
+                            item.innerHTML =
+                                `<span class="font-bold text-gray-800">₹${(d.amount || 0).toFixed(2)}</span><span class="px-2 py-0.5 border text-[9px] font-bold rounded uppercase ${cl}">${d.status || 'pending'}</span>`;
+                            box.appendChild(item);
                         }
                     });
                 }
-                if (!found) {
-                    box.innerHTML = '<p class="text-gray-400 text-center py-2">No transactions yet.</p>';
-                }
-            } catch (e) { /* ignore */ }
+                if (!match) box.innerHTML = '<p class="text-gray-400 text-center py-2">No transactions yet.</p>';
+            } catch (e) { console.warn('fetchUserHistory error:', e); }
         }
 
-        // -------- SYNC CONFIG --------
-        async function syncConfig() {
-            try {
-                const snap = await get(ref(db, 'system_config'));
-                if (snap.exists()) {
-                    globalReferralReward = parseFloat(snap.val().referralAmount) || 15;
-                } else {
-                    await set(ref(db, 'system_config'), { referralAmount: 15 });
-                }
-                const adminInput = $('admin-global-refer-reward');
-                if (adminInput) adminInput.value = globalReferralReward;
-            } catch (e) { /* ignore */ }
-        }
-
-        // -------- SAVE SYSTEM CONFIG --------
+        // ---- ADMIN: SAVE SYSTEM CONFIG ----
         window.saveSystemConfig = async () => {
-            const val = parseFloat($('admin-global-refer-reward').value);
-            if (isNaN(val) || val < 0) {
-                showToast('Enter a valid positive number.', 'error');
-                return;
-            }
+            const v = parseFloat($('admin-global-refer-reward').value);
+            if (isNaN(v) || v < 0) return showToast('Please enter a valid positive number.', 'error');
             try {
-                showLoading('Updating system config…');
-                await set(ref(db, 'system_config'), { referralAmount: val });
-                globalReferralReward = val;
-                showToast(`Referral reward set to ₹${val}`, 'success');
-                hideLoading();
+                showLoading('Saving config…');
+                await set(ref(db, 'system_config'), { referralAmount: v });
+                globalReferralReward = v;
+                const displaySpan = $('admin-current-refer-display');
+                if (displaySpan) displaySpan.textContent = v.toFixed(2);
+                const refRewardSpan = $('referral-reward-display');
+                if (refRewardSpan) refRewardSpan.textContent = v.toFixed(2);
+                // Hide permission error
+                const permError = $('admin-perm-error');
+                if (permError) permError.classList.add('hidden');
+                showToast(`✅ Referral reward set to ₹${v.toFixed(2)}`, 'success');
+                await renderAdminPanel();
             } catch (err) {
+                if (err.message && err.message.includes('permission_denied')) {
+                    const permError = $('admin-perm-error');
+                    if (permError) permError.classList.remove('hidden');
+                    showToast('⚠️ Permission denied. Please update Firebase security rules.', 'error');
+                } else {
+                    showToast(err.message, 'error');
+                }
+            } finally {
                 hideLoading();
-                showToast(err.message, 'error');
             }
         };
 
-        // -------- ADMIN PANEL --------
+        // ---- ADMIN: RENDER PANEL ----
         async function renderAdminPanel() {
             if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+            const uNode = $('admin-user-management-node');
+            uNode.innerHTML =
+                '<div class="text-center py-4"><svg class="animate-google-spinner w-8 h-8 mx-auto" viewBox="0 0 50 50"><circle class="animate-google-spinner-circle stroke-[#0b57d0]" cx="25" cy="25" r="20" fill="none" stroke-width="4"/></svg><p class="text-xs text-gray-400 mt-2">Loading directory…</p></div>';
 
-            // Users
-            const usersDiv = $('admin-user-management-node');
-            usersDiv.innerHTML = '';
             try {
+                await syncConfig();
                 const snap = await get(ref(db, 'users'));
+                uNode.innerHTML = '';
+                let userCount = 0;
+
                 if (snap.exists()) {
-                    snap.forEach(child => {
-                        const uid = child.key;
-                        const data = child.val();
-                        if (data.email === ADMIN_EMAIL) return;
-
-                        const row = document.createElement('div');
-                        row.className = 'bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2 text-xs';
-
-                        const profileHtml = (data.fullName || data.mobileNumber || data.emailId) ?
-                            `<div class="bg-blue-50/50 p-1.5 rounded text-[10px] text-gray-700 border border-blue-100">
-                                <strong>Profile:</strong> ${data.fullName || 'N/A'} | ${data.mobileNumber || 'N/A'} | ${data.emailId || 'N/A'}<br>
-                                <strong>Method:</strong> ${data.redeemMethod || 'N/A'}
-                            </div>` :
-                            `<div class="text-[10px] text-gray-400 italic">No profile saved.</div>`;
-
-                        row.innerHTML = `
-                            <div class="flex flex-col border-b border-gray-200/60 pb-1">
-                                <span class="font-mono text-gray-800 font-bold break-all">${data.email}</span>
-                                <span class="font-mono text-amber-600 text-[10px]">Pass: ${data.password || 'N/A'}</span>
-                            </div>
-                            <div class="grid grid-cols-2 text-[11px] text-gray-600">
-                                <div>Ledger: <strong class="text-green-600">₹${(data.balance || 0).toFixed(2)}</strong></div>
-                                <div>Time: <strong>${data.activeAppTime || 0}s</strong></div>
-                            </div>
-                            ${profileHtml}
-                            <div class="grid grid-cols-3 gap-1.5 pt-1.5 border-t">
-                                <button onclick="adminEditBalance('${uid}')" class="bg-white border rounded py-1 text-[10px] hover:bg-gray-50">Edit Bal</button>
-                                <button onclick="adminToggleBlock('${uid}','${data.status||'active'}')" class="bg-amber-50 text-amber-700 border border-amber-200 rounded py-1 text-[10px] hover:bg-amber-100">${data.status === 'blocked' ? 'Unblock' : 'Block'}</button>
-                                <button onclick="adminDeleteUser('${uid}')" class="bg-red-50 text-red-600 border border-red-200 rounded py-1 text-[10px] hover:bg-red-100">Delete</button>
-                            </div>
-                        `;
-                        usersDiv.appendChild(row);
+                    const users = [];
+                    snap.forEach(c => {
+                        const uid = c.key;
+                        const d = c.val();
+                        if (d.email === ADMIN_EMAIL) return;
+                        users.push({ uid, ...d });
+                        userCount++;
                     });
-                }
-            } catch (e) { /* ignore */ }
 
-            // Payouts
-            const pendingDiv = $('admin-payouts-list');
-            const completedDiv = $('admin-completed-payouts-list');
-            pendingDiv.innerHTML = '';
-            completedDiv.innerHTML = '';
+                    users.sort((a, b) => (b.signupTimestamp || 0) - (a.signupTimestamp || 0));
+
+                    if (users.length === 0) {
+                        uNode.innerHTML =
+                            '<div class="text-center py-6 text-gray-400 text-sm border border-dashed border-gray-200 rounded-xl"><i class="fa-regular fa-user text-3xl block mb-2 opacity-40"></i>No users</div>';
+                    } else {
+                        users.forEach((d) => {
+                            const timeStr = d.activeAppTime ? Math.floor(d.activeAppTime / 3600) + 'h ' + Math
+                                .floor((d.activeAppTime % 3600) / 60) + 'm' : '0s';
+
+                            const card = document.createElement('div');
+                            card.className =
+                                'admin-user-card bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2 text-xs transition-all';
+                            card.innerHTML = `
+                                    <div class="flex flex-col border-b border-gray-200/60 pb-1.5">
+                                        <div class="flex justify-between items-start">
+                                            <span class="font-mono text-gray-800 font-bold break-all text-xs">${d.email}</span>
+                                            <span class="px-1.5 py-0.5 border rounded text-[8px] font-bold uppercase ${d.status === 'blocked' ? 'text-red-600 bg-red-50 border-red-200' : 'text-green-600 bg-green-50 border-green-200'}">${d.status || 'active'}</span>
+                                        </div>
+                                        <span class="text-[9px] text-gray-400 font-mono break-all">UID: ${d.uid || '—'}</span>
+                                        <span class="font-mono text-amber-600 text-[9px]">Pass: ${d.password || 'N/A'}</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[9px]">
+                                        <div><span class="text-gray-500">Name:</span> <strong>${d.fullName || '—'}</strong></div>
+                                        <div><span class="text-gray-500">Mobile:</span> <strong>${d.mobileNumber || '—'}</strong></div>
+                                        <div><span class="text-gray-500">Invites:</span> <strong class="text-blue-600">${d.referralCount || 0}</strong></div>
+                                        <div><span class="text-gray-500">Active:</span> <strong>${timeStr}</strong></div>
+                                        <div class="col-span-2"><span class="text-gray-500">Referral Reward:</span> <strong class="text-green-600">₹${(d.referralEarnings || 0).toFixed(2)}</strong></div>
+                                        <div class="col-span-2"><span class="text-gray-500">Total Earning:</span> <strong class="text-blue-600">₹${(d.balance || 0).toFixed(2)}</strong></div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-1.5 pt-1.5 border-t border-gray-200/60">
+                                        <button onclick="adminEditBalance('${d.uid}')" class="bg-white border rounded py-1.5 text-[9px] font-medium hover:bg-gray-50 transition-all">Edit Bal</button>
+                                        <button onclick="adminToggleBlock('${d.uid}','${d.status||'active'}')" class="${d.status === 'blocked' ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'} border rounded py-1.5 text-[9px] font-medium transition-all">${d.status === 'blocked' ? 'Unblock' : 'Block'}</button>
+                                        <button onclick="adminDeleteUser('${d.uid}')" class="bg-red-50 text-red-600 border border-red-200 rounded py-1.5 text-[9px] font-medium hover:bg-red-100 transition-all">Delete</button>
+                                    </div>
+                                `;
+                            uNode.appendChild(card);
+                        });
+                    }
+                } else {
+                    uNode.innerHTML =
+                        '<div class="text-center py-6 text-gray-400 text-sm border border-dashed border-gray-200 rounded-xl"><i class="fa-regular fa-database text-3xl block mb-2 opacity-40"></i>No user records</div>';
+                }
+
+                const badge = $('user-count-badge');
+                if (badge) badge.textContent = `(${userCount})`;
+
+            } catch (e) {
+                console.error('renderAdminPanel error:', e);
+                uNode.innerHTML =
+                    `<div class="text-center py-6 text-red-500 text-sm border border-red-200 rounded-xl bg-red-50"><i class="fa-regular fa-circle-exclamation text-2xl block mb-2"></i>Error: ${e.message}</div>`;
+            }
+            await renderAdminPayouts();
+        }
+
+        // ---- ADMIN: RENDER PAYOUTS ----
+        async function renderAdminPayouts() {
+            const pList = $('admin-payouts-list');
+            const cList = $('admin-completed-payouts-list');
+            pList.innerHTML = '';
+            cList.innerHTML = '';
 
             try {
                 const snap = await get(ref(db, 'payouts'));
                 if (snap.exists()) {
-                    snap.forEach(child => {
-                        const id = child.key;
-                        const data = child.val();
-                        const status = data.status || 'pending';
-
-                        if (status === 'pending') {
-                            const card = document.createElement('div');
-                            card.className = 'bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-1.5';
-                            card.innerHTML = `
-                                <div class="flex justify-between font-bold">
-                                    <span>${data.email}</span>
-                                    <span class="text-green-600">₹${(data.amount || 0).toFixed(2)}</span>
-                                </div>
-                                <div class="text-[10px] text-gray-500">${data.fullName || 'N/A'} | ${data.redeemMethod || 'N/A'}</div>
-                                <div class="flex gap-2 text-[11px]">
-                                    <button onclick="adminApprovePayout('${id}')" class="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-500">Approve</button>
-                                    <button onclick="adminRejectPayout('${id}','${data.uid}',${data.grossCharged||0})" class="flex-1 bg-red-50 text-red-600 border py-1 rounded hover:bg-red-100">Reject</button>
-                                </div>
-                            `;
-                            pendingDiv.appendChild(card);
+                    let pendingCount = 0,
+                        completedCount = 0;
+                    snap.forEach(c => {
+                        const id = c.key;
+                        const d = c.val();
+                        if (d.status === 'pending') {
+                            pendingCount++;
+                            const row = document.createElement('div');
+                            row.className = 'bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2';
+                            row.innerHTML = `
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-gray-800 text-xs">₹${(d.amount || 0).toFixed(2)}</span>
+                                        <span class="text-[9px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Pending</span>
+                                    </div>
+                                    <div class="withdrawal-detail-grid">
+                                        <span class="label">Full Name</span><span class="value">${d.fullName || '—'}</span>
+                                        <span class="label">Email</span><span class="value text-[9px] font-mono">${d.email || '—'}</span>
+                                        <span class="label">Mobile</span><span class="value">${d.mobileNumber || '—'}</span>
+                                        <span class="label">Method</span><span class="value">${d.redeemMethod || '—'}</span>
+                                    </div>
+                                    <div class="flex gap-2 text-[10px] pt-1">
+                                        <button onclick="adminApprovePayout('${id}')" class="flex-1 bg-green-600 text-white py-1.5 rounded hover:bg-green-500 transition-all font-medium">Approve</button>
+                                        <button onclick="adminRejectPayout('${id}','${d.uid}',${d.grossCharged||0})" class="flex-1 bg-red-50 text-red-600 border border-red-200 py-1.5 rounded hover:bg-red-100 transition-all font-medium">Reject</button>
+                                    </div>
+                                `;
+                            pList.appendChild(row);
                         } else {
-                            const card = document.createElement('div');
-                            card.className = 'bg-gray-50 p-2 border rounded flex justify-between text-[11px]';
-                            card.innerHTML = `<span>${data.email}</span><span class="text-green-600 font-bold">₹${(data.amount||0).toFixed(2)} (${status})</span>`;
-                            completedDiv.appendChild(card);
+                            completedCount++;
+                            const row = document.createElement('div');
+                            const statusLabel = d.status === 'completed' ? '✅ Done' : '❌ Rejected';
+                            const statusColor = d.status === 'completed' ? 'text-green-600' : 'text-red-500';
+                            row.className =
+                                'bg-gray-50 p-2 border rounded flex flex-col gap-1 text-[10px] hover:bg-gray-100 transition-all';
+                            row.innerHTML = `
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-mono truncate max-w-[100px]">${d.email || '—'}</span>
+                                        <span class="font-bold text-green-600">₹${(d.amount||0).toFixed(2)}</span>
+                                    </div>
+                                    <div class="flex justify-between text-[9px] text-gray-500">
+                                        <span>${d.fullName || '—'}</span>
+                                        <span>${d.mobileNumber || '—'}</span>
+                                        <span class="${statusColor} font-medium">${statusLabel}</span>
+                                    </div>
+                                `;
+                            cList.appendChild(row);
                         }
                     });
+                    if (pendingCount === 0) {
+                        pList.innerHTML =
+                            '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl">✨ No pending withdrawals</div>';
+                    }
+                    if (completedCount === 0) {
+                        cList.innerHTML =
+                            '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl">📭 No completed transactions</div>';
+                    }
+                } else {
+                    pList.innerHTML =
+                        '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl">📭 No payout records</div>';
+                    cList.innerHTML =
+                        '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl">📭 No completed transactions</div>';
                 }
-            } catch (e) { /* ignore */ }
+            } catch (e) {
+                console.warn('renderAdminPayouts error:', e);
+                pList.innerHTML =
+                    `<div class="text-center py-4 text-red-400 text-xs">Error: ${e.message}</div>`;
+                cList.innerHTML =
+                    `<div class="text-center py-4 text-red-400 text-xs">Error: ${e.message}</div>`;
+            }
         }
 
-        // Admin actions (exposed to window)
+        // ---- ADMIN: CLEAR ALL HISTORY (15 days auto + manual) ----
+        window.clearAllHistory = async () => {
+            if (!confirm('⚠️ This will permanently delete ALL payout history (pending & completed). Are you sure?')) return;
+            try {
+                showLoading('Clearing history…');
+                const snap = await get(ref(db, 'payouts'));
+                if (snap.exists()) {
+                    const updates = {};
+                    snap.forEach(c => {
+                        updates[c.key] = null;
+                    });
+                    await update(ref(db, 'payouts'), updates);
+                }
+                showToast('✅ All history cleared successfully!', 'success');
+                await renderAdminPanel();
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        };
+
+        // ---- AUTO CLEAR HISTORY (15 days old) ----
+        async function autoClearOldHistory() {
+            try {
+                const snap = await get(ref(db, 'payouts'));
+                if (!snap.exists()) return;
+                const now = Date.now();
+                const fifteenDays = 15 * 24 * 60 * 60 * 1000;
+                const toRemove = {};
+                snap.forEach(c => {
+                    const d = c.val();
+                    if (d.timestamp && (now - d.timestamp) > fifteenDays) {
+                        toRemove[c.key] = null;
+                    }
+                });
+                if (Object.keys(toRemove).length > 0) {
+                    await update(ref(db, 'payouts'), toRemove);
+                    console.log(`Auto-cleared ${Object.keys(toRemove).length} old records`);
+                }
+            } catch (e) {
+                console.warn('autoClearOldHistory error:', e);
+            }
+        }
+
+        // ---- ADMIN ACTIONS ----
         window.adminEditBalance = async (uid) => {
-            const snap = await get(ref(db, 'users/' + uid));
-            if (!snap.exists()) return showToast('User not found.', 'error');
-            const cur = snap.val().balance || 0;
-            const input = prompt('Enter new balance:', cur);
-            if (input === null) return;
-            const val = parseFloat(input);
-            if (isNaN(val)) return showToast('Invalid number.', 'error');
-            await update(ref(db, 'users/' + uid), { balance: val });
-            showToast('Balance updated.', 'success');
-            renderAdminPanel();
+            try {
+                const snap = await get(ref(db, 'users/' + uid));
+                if (!snap.exists()) return showToast('User not found.', 'error');
+                const res = prompt('Set user balance (₹):', snap.val().balance || 0);
+                if (res === null) return;
+                const val = parseFloat(res);
+                if (isNaN(val) || val < 0) return showToast('Invalid amount.', 'error');
+                await update(ref(db, 'users/' + uid), { balance: val });
+                showToast('✅ Balance updated.', 'success');
+                await renderAdminPanel();
+            } catch (e) { showToast(e.message, 'error'); }
         };
 
         window.adminToggleBlock = async (uid, status) => {
-            const newStatus = status === 'blocked' ? 'active' : 'blocked';
-            await update(ref(db, 'users/' + uid), { status: newStatus });
-            showToast(`User ${newStatus === 'blocked' ? 'blocked' : 'unblocked'}.`, 'success');
-            renderAdminPanel();
+            try {
+                const next = status === 'blocked' ? 'active' : 'blocked';
+                await update(ref(db, 'users/' + uid), { status: next });
+                showToast(`✅ User ${next === 'blocked' ? 'blocked' : 'unblocked'}.`, 'success');
+                await renderAdminPanel();
+            } catch (e) { showToast(e.message, 'error'); }
         };
 
         window.adminDeleteUser = async (uid) => {
-            if (!confirm('Permanently delete this user?')) return;
-            await remove(ref(db, 'users/' + uid));
-            showToast('User deleted.', 'success');
-            renderAdminPanel();
+            if (!confirm('⚠️ Permanently delete this user?')) return;
+            try {
+                await remove(ref(db, 'users/' + uid));
+                showToast('🗑️ User deleted.', 'success');
+                await renderAdminPanel();
+            } catch (e) { showToast(e.message, 'error'); }
         };
 
         window.adminApprovePayout = async (id) => {
-            if (!confirm('Approve this withdrawal?')) return;
-            await update(ref(db, 'payouts/' + id), { status: 'completed' });
-            showToast('Payout approved.', 'success');
-            renderAdminPanel();
+            if (!confirm('Approve this payout?')) return;
+            try {
+                await update(ref(db, 'payouts/' + id), { status: 'completed' });
+                showToast('✅ Payout approved.', 'success');
+                await renderAdminPanel();
+            } catch (e) { showToast(e.message, 'error'); }
         };
 
         window.adminRejectPayout = async (id, uid, gross) => {
-            if (!confirm('Reject and refund this payout?')) return;
-            const snap = await get(ref(db, 'users/' + uid));
-            if (snap.exists()) {
-                const bal = snap.val().balance || 0;
-                await update(ref(db, 'users/' + uid), { balance: bal + gross });
-            }
-            await update(ref(db, 'payouts/' + id), { status: 'rejected' });
-            showToast('Payout rejected, funds refunded.', 'success');
-            renderAdminPanel();
+            if (!confirm('Reject this payout and return funds?')) return;
+            try {
+                const snap = await get(ref(db, 'users/' + uid));
+                if (snap.exists()) {
+                    await update(ref(db, 'users/' + uid), { balance: (snap.val().balance || 0) + gross });
+                }
+                await update(ref(db, 'payouts/' + id), { status: 'rejected' });
+                showToast('✅ Payout rejected. Funds returned.', 'success');
+                await renderAdminPanel();
+            } catch (e) { showToast(e.message, 'error'); }
         };
 
-        // -------- SCREEN SWITCH --------
+        window.refreshAdminPanel = async () => {
+            const icon = $('admin-refresh-icon');
+            if (icon) icon.classList.add('refresh-spin');
+            try {
+                await autoClearOldHistory();
+                await syncConfig();
+                await renderAdminPanel();
+                showToast('🔄 Admin panel refreshed', 'info', 2000);
+            } catch (e) { showToast('Refresh error: ' + e.message, 'error'); } finally {
+                if (icon) icon.classList.remove('refresh-spin');
+            }
+        };
+
+        // ---- SCREEN SWITCHING ----
         window.switchScreen = (screen) => {
             document.querySelectorAll('.user-screen').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-
             const target = $('screen-' + screen);
             if (target) target.classList.add('active');
+            const nav = $('nav-' + screen);
+            if (nav) nav.classList.add('active');
 
-            const navBtn = $('nav-' + screen);
-            if (navBtn) navBtn.classList.add('active');
-
-            if (screen === 'wallet') {
-                fetchUserData();
-                fetchUserHistory();
+            if (screen === 'profile') fetchUserData();
+            if (screen === 'withdrawal') { fetchUserData();
+                fetchUserHistory(); }
+            if (screen === 'settings') {
+                const adminContainer = $('admin-panel-container');
+                if (currentUser && currentUser.email === ADMIN_EMAIL) {
+                    adminContainer.classList.remove('hidden');
+                    syncConfig().then(() => {
+                        renderAdminPanel();
+                        autoClearOldHistory();
+                    });
+                } else {
+                    adminContainer.classList.add('hidden');
+                }
             }
-            if (screen === 'admin' && currentUser && currentUser.email === ADMIN_EMAIL) {
-                renderAdminPanel();
+            if (screen === 'home') {
+                renderTasks();
             }
         };
 
-        // -------- MIDNIGHT RESET --------
-        function startMidnightTimer() {
-            setInterval(async () => {
-                const now = new Date();
-                const h = String(23 - now.getHours()).padStart(2, '0');
-                const m = String(59 - now.getMinutes()).padStart(2, '0');
-                const s = String(59 - now.getSeconds()).padStart(2, '0');
-                $('header-timer-countdown').textContent = `Reset: ${h}:${m}:${s}`;
-
-                if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-                    if (currentUser) {
-                        showLoading('Midnight reset…');
-                        await update(ref(db, 'users/' + currentUser.uid), { activeAppTime: 0 });
-                        totalActiveSeconds = 0;
-                        clearKodularTokens();
-                        await fetchUserData();
-                        hideLoading();
-                        showToast('Daily timer reset.', 'info');
-                    }
-                }
-            }, 1000);
-        }
-
-        // -------- AUTO-LOGOUT (inactivity) --------
-        function resetLogoutTimer() {
-            if (logoutTimer) clearTimeout(logoutTimer);
-            logoutTimer = setTimeout(() => {
-                if (currentUser) {
-                    showToast('Logged out due to inactivity.', 'warning');
-                    logout();
-                }
-            }, 30 * 60 * 1000); // 30 min
-        }
-
-        // -------- AUTH STATE --------
+        // ---- AUTH STATE ----
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                showLoading('Loading dashboard…');
-
-                // Check if blocked
-                const snap = await get(ref(db, 'users/' + user.uid));
-                if (snap.exists() && snap.val().status === 'blocked') {
-                    showToast('Your account has been suspended.', 'error');
-                    await signOut(auth);
-                    hideLoading();
-                    return;
-                }
-
-                $('auth-screen').classList.add('hidden');
-                $('user-app').classList.remove('hidden');
-                $('referral-code-display').textContent = user.uid;
-
-                if (user.email === ADMIN_EMAIL) {
-                    $('nav-admin').classList.remove('hidden');
-                }
-
-                await fetchUserData();
-                await fetchUserHistory();
-                await syncConfig();
-
-                // Recover session
-                await recoverSession();
-
-                // Render admin if needed
-                if (user.email === ADMIN_EMAIL) {
-                    await renderAdminPanel();
-                    // auto-switch to admin if admin wants
-                }
-
-                // Switch to tasks by default
-                switchScreen('tasks');
-
+                showLoading('Loading profile…');
+                try {
+                    const snap = await get(ref(db, 'users/' + user.uid));
+                    if (snap.exists() && snap.val().status === 'blocked') {
+                        showToast('⛔ Account blocked by admin.', 'error');
+                        await signOut(auth);
+                        hideLoading();
+                        return;
+                    }
+                    $('auth-screen').classList.add('hidden');
+                    $('user-app').classList.remove('hidden');
+                    await fetchUserData();
+                    await fetchUserHistory();
+                    await syncConfig();
+                    renderTasks();
+                    switchScreen('home');
+                    // Auto-clear old history on load
+                    autoClearOldHistory();
+                } catch (e) { console.warn('Auth load error:', e); }
                 hideLoading();
-                resetLogoutTimer();
-
-                // Listen for user activity to reset logout timer
-                ['click', 'keydown', 'scroll', 'touchstart'].forEach(ev => {
-                    document.addEventListener(ev, resetLogoutTimer);
-                });
-
             } else {
                 currentUser = null;
                 isTracking = false;
-                if (trackingInterval) {
-                    clearInterval(trackingInterval);
-                    trackingInterval = null;
-                }
+                if (trackingInterval) { clearInterval(trackingInterval);
+                    trackingInterval = null; }
                 clearKodularTokens();
                 $('auth-screen').classList.remove('hidden');
                 $('user-app').classList.add('hidden');
-                $('nav-admin').classList.add('hidden');
                 hideLoading();
             }
         });
 
-        // -------- INIT --------
+        // ---- INIT ----
         window.addEventListener('load', () => {
             showLoading('Initializing…');
-            startMidnightTimer();
-            // set default auth mode
             setAuthMode('login');
-            // load config
+
+            setInterval(() => {
+                const now = new Date();
+                const hrs = String(23 - now.getHours()).padStart(2, '0');
+                const mins = String(59 - now.getMinutes()).padStart(2, '0');
+                const secs = String(59 - now.getSeconds()).padStart(2, '0');
+                const el = $('header-timer-countdown');
+                if (el) el.textContent = `Reset: ${hrs}:${mins}:${secs}`;
+            }, 1000);
+
             syncConfig().then(() => {
+                const refRewardSpan = $('referral-reward-display');
+                if (refRewardSpan) refRewardSpan.textContent = globalReferralReward.toFixed(2);
+                const adminDisplay = $('admin-current-refer-display');
+                if (adminDisplay) adminDisplay.textContent = globalReferralReward.toFixed(2);
+                renderTasks();
                 hideLoading();
-            }).catch(() => hideLoading());
+            }).catch(() => {
+                renderTasks();
+                hideLoading();
+            });
         });
-
-        // expose some functions globally
-        window.fetchUserData = fetchUserData;
-        window.fetchUserHistory = fetchUserHistory;
-        window.renderAdminPanel = renderAdminPanel;
-        window.syncConfig = syncConfig;
-
-        console.log('🚀 VSCOIN PREMIUM loaded successfully.');
     </script>
 </body>
 </html>
