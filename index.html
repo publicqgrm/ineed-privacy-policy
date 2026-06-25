@@ -314,13 +314,9 @@
         const ADMIN_EMAIL = "grtts24@gmail.com";
 
         let currentUser = null, userData = {}, authMode = 'login';
-        let trackingInterval = null;
-        let sessionSeconds = 0;
-        let sessionMoneyEarned = 0;
-        let isTracking = false;
-        let trackingStartTime = null;
+        let trackingStartTime = null;       // timestamp when session started
         let trackingAppName = '';
-        let isOpeningNewWindow = false;   // flag to prevent stop on new window
+        let isTracking = false;
 
         const $ = id => document.getElementById(id);
         const toastContainer = $('toast-container');
@@ -495,8 +491,10 @@
 
         // ===== LOGOUT =====
         window.logout = () => {
-            if (isTracking) stopTracking('Logging out…');
-            if (trackingInterval) { clearInterval(trackingInterval); trackingInterval = null; }
+            // If tracking active, credit time before logout
+            if (isTracking) {
+                creditSession();
+            }
             showLoading('Logging out…');
             signOut(auth).finally(() => hideLoading());
         };
@@ -513,15 +511,162 @@
         };
 
         // ============================================================
-        //  TRACKING — now with flag to prevent stop on new window
+        //  NEW TRACKING SYSTEM — based on start time only
         // ============================================================
         const EARN_PER_SEC = 0.15 / 180;
 
-        function updateTrackingUI() {
-            $('live-timer').textContent = String(Math.floor(sessionSeconds / 3600)).padStart(2,'0') + ':' +
-                String(Math.floor((sessionSeconds % 3600)/60)).padStart(2,'0') + ':' +
-                String(sessionSeconds % 60).padStart(2,'0');
-            $('session-earned').textContent = '₹' + sessionMoneyEarned.toFixed(4);
+        // Called when user launches an app
+        function startTracking(appName) {
+            // If there is an existing active session, credit it first
+            if (isTracking) {
+                creditSession();
+            }
+            // Start new session
+            trackingStartTime = Date.now();
+            trackingAppName = appName;
+            isTracking = true;
+            // Save to localStorage so we can restore if page reloads
+            localStorage.setItem('vscoin_tracking_start', trackingStartTime.toString());
+            localStorage.setItem('vscoin_tracking_app', appName);
+            localStorage.setItem('vscoin_tracking_active', 'true');
+
+            // Update UI
+            updateStatusUI(true, appName);
+            // Reset timer display to 00:00:00 (will update when session ends)
+            $('live-timer').textContent = '00:00:00';
+            $('session-earned').textContent = '₹0.0000';
+        }
+
+        // Called when user returns to the page (visible) or when starting a new app
+        function creditSession() {
+            if (!isTracking || !trackingStartTime) {
+                // No active session
+                return;
+            }
+            const now = Date.now();
+            const elapsedSeconds = (now - trackingStartTime) / 1000;
+            if (elapsedSeconds > 0) {
+                const earned = elapsedSeconds * EARN_PER_SEC;
+                // Update UI
+                const hrs = String(Math.floor(elapsedSeconds / 3600)).padStart(2,'0');
+                const mins = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2,'0');
+                const secs = String(Math.floor(elapsedSeconds % 60)).padStart(2,'0');
+                $('live-timer').textContent = `${hrs}:${mins}:${secs}`;
+                $('session-earned').textContent = `₹${earned.toFixed(4)}`;
+
+                // Sync to Firebase
+                syncEarning(earned, elapsedSeconds).then(() => {
+                    showToast(`✅ ₹${earned.toFixed(4)} credited for ${Math.floor(elapsedSeconds)}s`, 'success');
+                });
+            }
+            // Clear session
+            isTracking = false;
+            trackingStartTime = null;
+            localStorage.removeItem('vscoin_tracking_start');
+            localStorage.removeItem('vscoin_tracking_app');
+            localStorage.setItem('vscoin_tracking_active', 'false');
+            updateStatusUI(false);
+        }
+
+        // Called when page becomes visible (user returns)
+        function handlePageVisible() {
+            const active = localStorage.getItem('vscoin_tracking_active') === 'true';
+            if (active) {
+                // There was a tracking session in localStorage, likely from before page reload or when hidden.
+                // Restore it.
+                const start = localStorage.getItem('vscoin_tracking_start');
+                const app = localStorage.getItem('vscoin_tracking_app');
+                if (start && app) {
+                    trackingStartTime = parseInt(start);
+                    trackingAppName = app;
+                    isTracking = true;
+                    // Credit the session immediately (this will also clear it)
+                    creditSession();
+                } else {
+                    // Stale state, clear
+                    localStorage.removeItem('vscoin_tracking_start');
+                    localStorage.removeItem('vscoin_tracking_app');
+                    localStorage.setItem('vscoin_tracking_active', 'false');
+                }
+            }
+            // Also check for pending earnings from beforeunload
+            checkPendingEarnings();
+        }
+
+        // Called when page becomes hidden (user leaves)
+        function handlePageHidden() {
+            // If tracking is active, save the start time to localStorage (already saved)
+            // No need to do anything else; we will credit on return.
+            // But we must ensure the start time is saved.
+            if (isTracking && trackingStartTime) {
+                localStorage.setItem('vscoin_tracking_start', trackingStartTime.toString());
+                localStorage.setItem('vscoin_tracking_app', trackingAppName);
+                localStorage.setItem('vscoin_tracking_active', 'true');
+            }
+        }
+
+        // ===== VISIBILITY CHANGE LISTENER =====
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Page went to background (new window opened, or user switched tabs)
+                handlePageHidden();
+            } else {
+                // Page became visible again (user came back)
+                handlePageVisible();
+            }
+        });
+
+        // ===== BEFORE UNLOAD =====
+        window.addEventListener('beforeunload', () => {
+            // If tracking is active, save the earned amount to localStorage
+            // so we can credit after reload.
+            if (isTracking && trackingStartTime) {
+                const now = Date.now();
+                const elapsed = (now - trackingStartTime) / 1000;
+                if (elapsed > 0) {
+                    const earn = elapsed * EARN_PER_SEC;
+                    localStorage.setItem('vscoin_pending_earn', earn.toString());
+                    localStorage.setItem('vscoin_pending_seconds', elapsed.toString());
+                }
+            }
+        });
+
+        // Check for pending earnings on page load
+        function checkPendingEarnings() {
+            const pendingEarn = localStorage.getItem('vscoin_pending_earn');
+            if (pendingEarn && currentUser) {
+                const earn = parseFloat(pendingEarn);
+                const seconds = parseFloat(localStorage.getItem('vscoin_pending_seconds') || '0');
+                if (earn > 0) {
+                    syncEarning(earn, seconds).then(() => {
+                        showToast(`₹${earn.toFixed(4)} credited from previous session.`, 'success');
+                    });
+                }
+                localStorage.removeItem('vscoin_pending_earn');
+                localStorage.removeItem('vscoin_pending_seconds');
+            }
+        }
+
+        // ===== SYNC EARNING TO FIREBASE =====
+        async function syncEarning(amount, seconds) {
+            if (!currentUser || amount <= 0) return;
+            try {
+                const snap = await get(ref(db, 'users/' + currentUser.uid));
+                if (snap.exists()) {
+                    const data = snap.val();
+                    const nBal = (data.balance || 0) + amount;
+                    const newActiveTime = (data.activeAppTime || 0) + seconds;
+                    await update(ref(db, 'users/' + currentUser.uid), {
+                        balance: nBal,
+                        activeAppTime: newActiveTime,
+                        lastActiveTimestamp: Date.now()
+                    });
+                    $('global-balance').textContent = nBal.toFixed(2);
+                    $('wallet-balance-display').textContent = '₹ ' + nBal.toFixed(2);
+                    userData.balance = nBal;
+                    userData.activeAppTime = newActiveTime;
+                }
+            } catch(e) { console.warn('syncEarning error:', e); }
         }
 
         function updateStatusUI(active, name = '') {
@@ -537,180 +682,20 @@
             }
         }
 
-        function saveSessionState() {
-            if (isTracking && trackingStartTime) {
-                const now = Date.now();
-                const elapsed = (now - trackingStartTime) / 1000;
-                const totalSec = sessionSeconds + elapsed;
-                localStorage.setItem('vscoin_session_start', trackingStartTime.toString());
-                localStorage.setItem('vscoin_session_app', trackingAppName);
-                localStorage.setItem('vscoin_session_seconds', totalSec.toString());
-                localStorage.setItem('vscoin_session_active', 'true');
-            } else {
-                localStorage.removeItem('vscoin_session_start');
-                localStorage.removeItem('vscoin_session_app');
-                localStorage.removeItem('vscoin_session_seconds');
-                localStorage.setItem('vscoin_session_active', 'false');
-            }
-        }
-
-        function clearSessionState() {
-            localStorage.removeItem('vscoin_session_start');
-            localStorage.removeItem('vscoin_session_app');
-            localStorage.removeItem('vscoin_session_seconds');
-            localStorage.setItem('vscoin_session_active', 'false');
-        }
-
-        function startTracking(appName) {
-            // If already tracking, stop & collect first (but only if not opening new window)
-            if (isTracking) {
-                // If we're already tracking and user clicks another app, we should stop the previous
-                // and start new. But we don't want to stop on visibility change.
-                // So we stop manually here.
-                stopTracking(null);
-            }
-            clearSessionState();
-            const now = Date.now();
-            trackingStartTime = now;
-            trackingAppName = appName;
-            sessionSeconds = 0;
-            sessionMoneyEarned = 0;
-            isTracking = true;
-            saveSessionState();
-            updateStatusUI(true, appName);
-            updateTrackingUI();
-            if (trackingInterval) clearInterval(trackingInterval);
-            trackingInterval = setInterval(() => {
-                if (isTracking && trackingStartTime) {
-                    const now = Date.now();
-                    const elapsed = (now - trackingStartTime) / 1000;
-                    const newSeconds = Math.floor(elapsed - sessionSeconds);
-                    if (newSeconds > 0) {
-                        sessionSeconds += newSeconds;
-                        const earn = newSeconds * EARN_PER_SEC;
-                        sessionMoneyEarned += earn;
-                        updateTrackingUI();
-                        saveSessionState();
-                    }
-                }
-            }, 1000);
-        }
-
-        function stopTracking(msg) {
-            if (!isTracking) { clearSessionState(); return; }
-            if (trackingStartTime) {
-                const now = Date.now();
-                const finalElapsed = (now - trackingStartTime) / 1000;
-                const totalSec = sessionSeconds + finalElapsed;
-                if (totalSec > 0) {
-                    const earn = totalSec * EARN_PER_SEC;
-                    sessionMoneyEarned = earn;
-                    sessionSeconds = totalSec;
-                    updateTrackingUI();
-                    syncEarning(earn);
-                }
-            }
-            if (trackingInterval) { clearInterval(trackingInterval); trackingInterval = null; }
-            isTracking = false;
-            trackingStartTime = null;
-            clearSessionState();
-            updateStatusUI(false);
-            if (msg) showToast(msg, 'info');
-        }
-
-        async function syncEarning(amount) {
-            if (!currentUser || amount <= 0) return;
-            try {
-                const snap = await get(ref(db, 'users/' + currentUser.uid));
-                if (snap.exists()) {
-                    const data = snap.val();
-                    const nBal = (data.balance || 0) + amount;
-                    const newActiveTime = (data.activeAppTime || 0) + sessionSeconds;
-                    await update(ref(db, 'users/' + currentUser.uid), {
-                        balance: nBal,
-                        activeAppTime: newActiveTime,
-                        lastActiveTimestamp: Date.now()
-                    });
-                    $('global-balance').textContent = nBal.toFixed(2);
-                    $('wallet-balance-display').textContent = '₹ ' + nBal.toFixed(2);
-                    userData.balance = nBal;
-                    userData.activeAppTime = newActiveTime;
-                }
-            } catch(e) { console.warn('syncEarning error:', e); }
-        }
-
         // ============================================================
-        //  LAUNCH TASK — opens new window, sets flag to prevent stop
+        //  LAUNCH TASK — opens new window
         // ============================================================
         window.launchTask = (url, name) => {
-            // Set flag before opening window
-            isOpeningNewWindow = true;
-            // Start tracking (this will stop previous if any)
+            // If there is an active session, credit it first (user is starting a new app)
+            if (isTracking) {
+                creditSession();
+            }
+            // Start new tracking
             startTracking(name);
             // Open new window
             window.open(url, '_blank');
-            // After a short delay, reset flag (so that visibility change can work)
-            setTimeout(() => {
-                isOpeningNewWindow = false;
-            }, 1000);
+            // The page will go hidden automatically; we don't need to do anything.
         };
-
-        // ===== HANDLE PAGE VISIBILITY CHANGE =====
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                // If we are opening a new window, ignore this hide event
-                if (isOpeningNewWindow) {
-                    console.log('Ignoring hide because new window is opening.');
-                    return;
-                }
-                // Otherwise, user really left the page → stop tracking
-                if (isTracking) {
-                    stopTracking('Session ended. ₹' + sessionMoneyEarned.toFixed(4) + ' credited.');
-                }
-            } else {
-                // Page became visible again — just ensure UI is idle
-                // (No auto-restore)
-                const active = localStorage.getItem('vscoin_session_active') === 'true';
-                if (active) {
-                    clearSessionState();
-                    updateStatusUI(false);
-                    showToast('Previous session ended. Tap an app to start new.', 'info');
-                }
-            }
-        });
-
-        // ===== HANDLE BEFORE UNLOAD =====
-        window.addEventListener('beforeunload', () => {
-            if (isTracking) {
-                if (trackingStartTime) {
-                    const now = Date.now();
-                    const finalElapsed = (now - trackingStartTime) / 1000;
-                    const totalSec = sessionSeconds + finalElapsed;
-                    if (totalSec > 0) {
-                        const earn = totalSec * EARN_PER_SEC;
-                        localStorage.setItem('vscoin_pending_earn', earn.toString());
-                        localStorage.setItem('vscoin_pending_seconds', totalSec.toString());
-                    }
-                }
-                if (trackingInterval) clearInterval(trackingInterval);
-                isTracking = false;
-                clearSessionState();
-            }
-        });
-
-        function checkPendingEarnings() {
-            const pendingEarn = localStorage.getItem('vscoin_pending_earn');
-            if (pendingEarn && currentUser) {
-                const earn = parseFloat(pendingEarn);
-                if (earn > 0) {
-                    syncEarning(earn).then(() => {
-                        showToast('₹' + earn.toFixed(4) + ' credited from previous session.', 'success');
-                    });
-                }
-                localStorage.removeItem('vscoin_pending_earn');
-                localStorage.removeItem('vscoin_pending_seconds');
-            }
-        }
 
         // ===== GST CALC =====
         window.recalcGst = () => {
@@ -955,11 +940,23 @@
             }
             if (screen === 'home') {
                 renderTasks();
-                // Clear any stale session state
-                const active = localStorage.getItem('vscoin_session_active') === 'true';
+                // If there is a tracking session in localStorage, we should handle it.
+                const active = localStorage.getItem('vscoin_tracking_active') === 'true';
                 if (active) {
-                    clearSessionState();
-                    updateStatusUI(false);
+                    // There is a session that might have been left from previous page visit.
+                    // We will credit it now (if the user is back on home).
+                    const start = localStorage.getItem('vscoin_tracking_start');
+                    const app = localStorage.getItem('vscoin_tracking_app');
+                    if (start && app) {
+                        trackingStartTime = parseInt(start);
+                        trackingAppName = app;
+                        isTracking = true;
+                        creditSession();
+                    } else {
+                        localStorage.removeItem('vscoin_tracking_start');
+                        localStorage.removeItem('vscoin_tracking_app');
+                        localStorage.setItem('vscoin_tracking_active', 'false');
+                    }
                 }
             }
         };
@@ -978,8 +975,14 @@
                     await fetchUserHistory();
                     await syncConfig();
                     renderTasks();
+                    // Check for pending earnings from beforeunload
                     checkPendingEarnings();
-                    clearSessionState();
+                    // Clear any stale session (should be none)
+                    localStorage.removeItem('vscoin_tracking_start');
+                    localStorage.removeItem('vscoin_tracking_app');
+                    localStorage.setItem('vscoin_tracking_active', 'false');
+                    isTracking = false;
+                    trackingStartTime = null;
                     updateStatusUI(false);
                     switchScreen('home');
                     autoClearOldHistory();
@@ -987,9 +990,11 @@
                 hideLoading();
             } else {
                 currentUser = null;
-                if (isTracking) stopTracking(null);
-                if (trackingInterval) { clearInterval(trackingInterval); trackingInterval = null; }
-                clearSessionState();
+                isTracking = false;
+                trackingStartTime = null;
+                localStorage.removeItem('vscoin_tracking_start');
+                localStorage.removeItem('vscoin_tracking_app');
+                localStorage.setItem('vscoin_tracking_active', 'false');
                 $('auth-screen').classList.remove('hidden');
                 $('user-app').classList.add('hidden');
                 hideLoading();
