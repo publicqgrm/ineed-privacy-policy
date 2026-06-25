@@ -1,137 +1,351 @@
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VSCOIN PREMIUM - Advanced Google UI Terminal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VSCOIN PREMIUM — Advanced Terminal</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
     <style>
-        body { 
-            font-family: 'Google Sans', 'Roboto', sans-serif; 
-            background-color: #f8f9fa;
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Google Sans', 'Roboto', sans-serif;
+            background: #f1f3f4;
             color: #1f1f1f;
             user-select: none;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #ffffff;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
         }
         .google-card {
             background: #ffffff;
             border-radius: 16px;
-            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+            box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.12);
         }
         .google-input {
             border: 1px solid #747775;
             border-radius: 8px;
             transition: all 0.2s;
+            background: #ffffff;
         }
         .google-input:focus {
             border-color: #0b57d0;
-            box-shadow: 0 0 0 2px rgba(11,87,208,0.2);
+            box-shadow: 0 0 0 2px rgba(11, 87, 208, 0.2);
+            outline: none;
+        }
+        .google-input.error {
+            border-color: #d93025;
+            box-shadow: 0 0 0 2px rgba(217, 48, 37, 0.2);
         }
         .google-btn-blue {
             background-color: #0b57d0;
             color: white;
             border-radius: 100px;
             font-weight: 500;
-            transition: background 0.2s;
+            transition: background 0.2s, opacity 0.2s;
+            border: none;
+            cursor: pointer;
         }
-        .google-btn-blue:hover {
+        .google-btn-blue:hover:not(:disabled) {
             background-color: #0b57d0;
-            box-shadow: 0 1px 3px 1px rgba(60,64,67,0.15);
+            box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.2);
         }
-        .app-container {
-            max-width: 480px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background-color: #ffffff;
-            position: relative;
+        .google-btn-blue:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
         }
-        @keyframes spinner-rotate { 100% { transform: rotate(360deg); } }
+
+        /* Spinner */
+        @keyframes spinner-rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
         @keyframes spinner-dash {
-            0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
-            50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
-            100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+            0% {
+                stroke-dasharray: 1, 150;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -35;
+            }
+            100% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -124;
+            }
         }
-        .animate-google-spinner { animation: spinner-rotate 2s linear infinite; }
+        .animate-google-spinner {
+            animation: spinner-rotate 2s linear infinite;
+        }
         .animate-google-spinner-circle {
-            stroke-dasharray: 1, 150; stroke-dashoffset: 0; stroke-linecap: round;
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
             animation: spinner-dash 1.5s ease-in-out infinite;
+        }
+
+        /* Toast */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            pointer-events: auto;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.35s ease-out;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .toast-success {
+            background: #1e8e3e;
+            color: #fff;
+        }
+        .toast-error {
+            background: #d93025;
+            color: #fff;
+        }
+        .toast-warning {
+            background: #f9ab00;
+            color: #1f1f1f;
+        }
+        .toast-info {
+            background: #0b57d0;
+            color: #fff;
+        }
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .toast .toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.7;
+            padding: 0 4px;
+        }
+        .toast .toast-close:hover {
+            opacity: 1;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c7cd;
+            border-radius: 8px;
+        }
+
+        .nav-btn.active {
+            color: #0b57d0;
+        }
+        .nav-btn:not(.active) {
+            color: #9aa0a6;
+        }
+
+        .balance-pulse {
+            transition: all 0.3s ease;
+        }
+        .balance-pulse.pulse {
+            transform: scale(1.02);
+        }
+
+        .user-screen {
+            display: none;
+        }
+        .user-screen.active {
+            display: block;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .task-item {
+            background: #fff;
+            border-radius: 14px;
+            padding: 10px 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f0f0f0;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .task-item:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            border-color: #dadce0;
+        }
+        .task-item:active {
+            transform: scale(0.96);
+        }
+        .task-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        .task-item span {
+            font-size: 9px;
+            font-weight: 500;
+            color: #3c4043;
+            line-height: 1.2;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Loader overlay */
+        #global-loading-overlay {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+        }
+
+        @media (max-width: 420px) {
+            .task-grid {
+                gap: 6px;
+            }
+            .task-item {
+                min-height: 68px;
+                padding: 6px 2px;
+            }
+            .task-item i {
+                font-size: 18px;
+            }
+            .task-item span {
+                font-size: 8px;
+            }
         }
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <!-- Loading Overlay -->
-    <div id="global-loading-overlay" class="hidden fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center space-y-4">
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Global Loading Overlay -->
+    <div id="global-loading-overlay" class="hidden fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center space-y-4">
         <svg class="animate-google-spinner w-14 h-14" viewBox="0 0 50 50">
-            <circle class="animate-google-spinner-circle stroke-[#0b57d0]" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+            <circle class="animate-google-spinner-circle stroke-[#0b57d0]" cx="25" cy="25" r="20" fill="none" stroke-width="4" />
         </svg>
-        <p id="loading-overlay-text" class="text-sm font-medium text-gray-600 tracking-wide">Syncing secure connection...</p>
+        <p id="loading-overlay-text" class="text-sm font-medium text-gray-600 tracking-wide">Syncing secure connection…</p>
     </div>
 
-    <div class="app-container flex flex-col justify-between min-h-screen border-x border-gray-100 shadow-xl">
-        
-        <!-- Auth Screen Layer -->
+    <div class="app-container flex flex-col justify-between min-h-screen border-x border-gray-100">
+
+        <!-- ===== AUTH SCREEN ===== -->
         <div id="auth-screen" class="flex-1 flex flex-col items-center justify-center px-6 py-8">
-            <div class="w-full space-y-6 text-center">
+            <div class="w-full max-w-sm space-y-6 text-center">
                 <h1 class="text-5xl font-bold tracking-tight mb-1">
-                    <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span><span class="text-[#FBBC05]">C</span><span class="text-[#4285F4]">O</span><span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
+                    <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span>
+                    <span class="text-[#FBBC05]">C</span><span class="text-[#4285F4]">O</span>
+                    <span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
                 </h1>
-                <p class="text-xs text-gray-500 font-medium tracking-wide uppercase">Premium Rewards Ecosystem</p>
-                
+                <p class="text-[11px] text-gray-500 font-medium tracking-[0.2em] uppercase">Premium Rewards Ecosystem</p>
+
                 <div class="google-card p-6 text-left space-y-4">
-                    <div class="flex border-b border-gray-200 mb-4">
-                        <button id="tab-login" onclick="setAuthLayoutMode('login')" class="flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all">Sign In</button>
-                        <button id="tab-signup" onclick="setAuthLayoutMode('signup')" class="flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all">Create Account</button>
+                    <div class="flex border-b border-gray-200 mb-3">
+                        <button id="tab-login" onclick="setAuthMode('login')" class="flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all">Sign In</button>
+                        <button id="tab-signup" onclick="setAuthMode('signup')" class="flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all">Create Account</button>
                     </div>
-                    
+
                     <div>
                         <label class="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
-                        <input type="email" id="auth-email" placeholder="example@gmail.com" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none">
+                        <input type="email" id="auth-email" placeholder="example@gmail.com" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="email" />
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-600 mb-1">Password</label>
-                        <input type="password" id="auth-password" placeholder="Enter password" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none">
+                        <input type="password" id="auth-password" placeholder="Enter password" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="current-password" />
                     </div>
                     <div id="referral-field-box" class="hidden">
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Referral Code (Optional)</label>
-                        <input type="text" id="auth-referral" placeholder="Enter code" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none">
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Referral Code <span class="text-gray-400 font-normal">(optional)</span></label>
+                        <input type="text" id="auth-referral" placeholder="Enter referrer code" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" />
                     </div>
 
                     <div id="forgot-password-box" class="text-right">
-                        <button onclick="triggerForgotPasswordRecovery()" class="text-xs font-medium text-[#0b57d0] hover:underline">Forgot password?</button>
+                        <button onclick="triggerPasswordReset()" class="text-xs font-medium text-[#0b57d0] hover:underline">Forgot password?</button>
                     </div>
-                    
-                    <button onclick="executeAuthenticationGateway()" id="btn-auth-trigger" class="w-full google-btn-blue p-3.5 text-sm mt-2 focus:outline-none flex items-center justify-center gap-2">
+
+                    <button onclick="handleAuth()" id="btn-auth-trigger" class="w-full google-btn-blue p-3.5 text-sm mt-1 focus:outline-none flex items-center justify-center gap-2">
                         <span id="btn-auth-text">Continue</span>
                         <svg id="btn-auth-spinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Dashboard User Interface Layer -->
-        <div id="user-app" class="hidden flex-1 flex flex-col">
+        <!-- ===== DASHBOARD ===== -->
+        <div id="user-app" class="hidden flex-1 flex-col">
+
+            <!-- Header -->
             <header class="bg-white border-b border-gray-100 p-4 sticky top-0 z-50 flex justify-between items-center">
                 <span class="text-2xl font-bold tracking-tight">
-                    <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span><span class="text-[#FBBC05]">C</span><span class="text-[#4285F4]">O</span><span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
+                    <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span>
+                    <span class="text-[#FBBC05]">C</span><span class="text-[#4285F4]">O</span>
+                    <span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
                 </span>
                 <div class="flex items-center gap-2">
-                    <span id="header-timer-countdown" class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded-md font-bold font-mono">Reset: 00:00:00</span>
+                    <span id="header-timer-countdown" class="text-[10px] bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-mono font-bold border border-red-200">Reset: 00:00:00</span>
                 </div>
             </header>
 
-            <!-- Premium Mega Balance Hero Display Card -->
+            <!-- Balance Card -->
             <div class="mx-4 mt-4 bg-gradient-to-br from-[#0b57d0] to-[#1a73e8] p-6 rounded-2xl text-white shadow-lg relative overflow-hidden">
                 <div class="absolute right-[-10px] bottom-[-20px] opacity-10 text-9xl font-bold">₹</div>
                 <p class="text-xs font-medium tracking-widest text-blue-100 uppercase">Available Ledger Balance</p>
                 <div class="flex items-baseline gap-1 mt-2">
                     <span class="text-2xl font-medium">₹</span>
-                    <span id="global-balance" class="text-5xl font-bold tracking-tight animate-pulse">0.00</span>
+                    <span id="global-balance" class="text-5xl font-bold tracking-tight balance-pulse">0.00</span>
                 </div>
                 <div class="mt-4 flex justify-between items-center bg-white/10 p-2.5 rounded-xl border border-white/10 text-xs">
                     <span>Daily Progress:</span>
@@ -139,7 +353,7 @@
                 </div>
             </div>
 
-            <!-- Live Status Panel -->
+            <!-- Status Panel -->
             <div id="tracking-status-box" class="mx-4 mt-3 p-3 rounded-xl border border-gray-100 bg-gray-50 flex flex-col gap-1.5">
                 <div class="flex justify-between items-center">
                     <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Gateway Status Radar</span>
@@ -151,261 +365,211 @@
                 </div>
             </div>
 
-            <!-- Main Content Container Frame -->
+            <!-- Main Content -->
             <main class="p-4 flex-1 space-y-4 pb-28 overflow-y-auto max-h-[calc(100vh-210px)]">
-                
-                <!-- Screen Tasks Section Area (20 Gateways Integrated) -->
-                <section id="screen-tasks" class="user-screen space-y-4">
+
+                <!-- TASKS SCREEN -->
+                <section id="screen-tasks" class="user-screen active space-y-4">
                     <div class="flex gap-2">
                         <div class="google-card p-3 flex-1 flex justify-between items-center text-xs">
                             <span class="font-bold text-[#0b57d0]"><i class="fa-solid fa-bolt mr-1"></i> Production Cap</span>
-                            <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded font-medium text-[11px]">₹30 / 12 Hours</span>
+                            <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded font-medium text-[11px]">₹30 / 12 Hrs</span>
                         </div>
-                        <button onclick="claimDailyCheckInBonus()" class="bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 hover:bg-amber-100 transition-all">
-                            <i class="fa-solid fa-calendar-star"></i> Daily Check-In
+                        <button onclick="claimDailyBonus()" class="bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 hover:bg-amber-100 transition-all">
+                            <i class="fa-solid fa-calendar-star"></i> Check-In
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-4 gap-2.5">
+                    <div class="task-grid">
                         <!-- row 1 -->
-                        <div onclick="launchTargetTaskWindow('https://www.google.com', 'Google')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-google text-2xl text-[#4285F4] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Google</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://m.youtube.com', 'YouTube')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-youtube text-2xl text-[#FF0000] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">YouTube</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://m.facebook.com', 'Facebook')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-facebook text-2xl text-[#1877F2] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Facebook</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.instagram.com', 'Instagram')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-instagram text-2xl text-[#E1306C] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Instagram</p>
-                        </div>
+                        <div onclick="launchTask('https://www.google.com','Google')" class="task-item"><i class="fa-brands fa-google text-[#4285F4]"></i><span>Google</span></div>
+                        <div onclick="launchTask('https://m.youtube.com','YouTube')" class="task-item"><i class="fa-brands fa-youtube text-[#FF0000]"></i><span>YouTube</span></div>
+                        <div onclick="launchTask('https://m.facebook.com','Facebook')" class="task-item"><i class="fa-brands fa-facebook text-[#1877F2]"></i><span>Facebook</span></div>
+                        <div onclick="launchTask('https://www.instagram.com','Instagram')" class="task-item"><i class="fa-brands fa-instagram text-[#E1306C]"></i><span>Instagram</span></div>
                         <!-- row 2 -->
-                        <div onclick="launchTargetTaskWindow('https://www.pinterest.com', 'Pinterest')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-pinterest text-2xl text-[#BD081C] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Pinterest</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.flipkart.com', 'Flipkart')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-solid fa-bag-shopping text-2xl text-[#2874F0] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Flipkart</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.meesho.com', 'Meesho')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-solid fa-store text-2xl text-[#9F206C] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Meesho</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://kukufm.com', 'Kuku FM')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-solid fa-microphone-lines text-2xl text-[#03A9F4] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Kuku FM</p>
-                        </div>
+                        <div onclick="launchTask('https://www.pinterest.com','Pinterest')" class="task-item"><i class="fa-brands fa-pinterest text-[#BD081C]"></i><span>Pinterest</span></div>
+                        <div onclick="launchTask('https://www.flipkart.com','Flipkart')" class="task-item"><i class="fa-solid fa-bag-shopping text-[#2874F0]"></i><span>Flipkart</span></div>
+                        <div onclick="launchTask('https://www.meesho.com','Meesho')" class="task-item"><i class="fa-solid fa-store text-[#9F206C]"></i><span>Meesho</span></div>
+                        <div onclick="launchTask('https://kukufm.com','Kuku FM')" class="task-item"><i class="fa-solid fa-microphone-lines text-[#03A9F4]"></i><span>Kuku FM</span></div>
                         <!-- row 3 -->
-                        <div onclick="launchTargetTaskWindow('https://www.amazon.in', 'Amazon')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-amazon text-2xl text-[#FF9900] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Amazon</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.nykaa.com', 'Nykaa')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-solid fa-sparkles text-2xl text-[#FC2779] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Nykaa</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.netflix.com', 'Netflix')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-solid fa-film text-2xl text-[#E50914] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Netflix</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.crazygames.com', 'CrazyGames')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-solid fa-gamepad text-2xl text-[#34A853] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">CrazyGames</p>
-                        </div>
-                        <!-- row 4 New Additions -->
-                        <div onclick="launchTargetTaskWindow('https://chat.openai.com', 'ChatGPT')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-solid fa-robot text-2xl text-[#10a37f] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">ChatGPT</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.wikipedia.org', 'Wikipedia')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-solid fa-book-open text-2xl text-gray-700 mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Wikipedia</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.linkedin.com', 'LinkedIn')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-linkedin text-2xl text-[#0a66c2] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">LinkedIn</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://twitter.com', 'X / Twitter')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-x-twitter text-2xl text-black mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">X Twitter</p>
-                        </div>
-                        <!-- row 5 New Additions -->
-                        <div onclick="launchTargetTaskWindow('https://www.microsoft.com', 'Microsoft')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-microsoft text-2xl text-[#f25022] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Microsoft</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://github.com', 'GitHub')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-github text-2xl text-[#24292e] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">GitHub</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.reddit.com', 'Reddit')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-reddit text-2xl text-[#ff4500] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Reddit</p>
-                        </div>
-                        <div onclick="launchTargetTaskWindow('https://www.twitch.tv', 'Twitch')" class="google-card p-2 text-center cursor-pointer hover:bg-gray-50 transition-all flex flex-col items-center justify-center min-h-[85px]">
-                            <i class="fa-brands fa-twitch text-2xl text-[#9146ff] mb-1"></i>
-                            <p class="text-[10px] font-medium text-gray-800 truncate w-full">Twitch</p>
-                        </div>
+                        <div onclick="launchTask('https://www.amazon.in','Amazon')" class="task-item"><i class="fa-brands fa-amazon text-[#FF9900]"></i><span>Amazon</span></div>
+                        <div onclick="launchTask('https://www.nykaa.com','Nykaa')" class="task-item"><i class="fa-solid fa-sparkles text-[#FC2779]"></i><span>Nykaa</span></div>
+                        <div onclick="launchTask('https://www.netflix.com','Netflix')" class="task-item"><i class="fa-solid fa-film text-[#E50914]"></i><span>Netflix</span></div>
+                        <div onclick="launchTask('https://www.crazygames.com','CrazyGames')" class="task-item"><i class="fa-solid fa-gamepad text-[#34A853]"></i><span>CrazyGames</span></div>
+                        <!-- row 4 -->
+                        <div onclick="launchTask('https://chat.openai.com','ChatGPT')" class="task-item"><i class="fa-solid fa-robot text-[#10a37f]"></i><span>ChatGPT</span></div>
+                        <div onclick="launchTask('https://www.wikipedia.org','Wikipedia')" class="task-item"><i class="fa-solid fa-book-open text-gray-600"></i><span>Wikipedia</span></div>
+                        <div onclick="launchTask('https://www.linkedin.com','LinkedIn')" class="task-item"><i class="fa-brands fa-linkedin text-[#0a66c2]"></i><span>LinkedIn</span></div>
+                        <div onclick="launchTask('https://twitter.com','X')" class="task-item"><i class="fa-brands fa-x-twitter text-black"></i><span>X Twitter</span></div>
+                        <!-- row 5 -->
+                        <div onclick="launchTask('https://www.microsoft.com','Microsoft')" class="task-item"><i class="fa-brands fa-microsoft text-[#f25022]"></i><span>Microsoft</span></div>
+                        <div onclick="launchTask('https://github.com','GitHub')" class="task-item"><i class="fa-brands fa-github text-[#24292e]"></i><span>GitHub</span></div>
+                        <div onclick="launchTask('https://www.reddit.com','Reddit')" class="task-item"><i class="fa-brands fa-reddit text-[#ff4500]"></i><span>Reddit</span></div>
+                        <div onclick="launchTask('https://www.twitch.tv','Twitch')" class="task-item"><i class="fa-brands fa-twitch text-[#9146ff]"></i><span>Twitch</span></div>
                     </div>
 
-                    <div class="google-card p-3 text-center bg-gray-50/50">
-                        <p class="text-[11px] text-gray-500 leading-relaxed">⚠️ <strong>Notice:</strong> Matrix Verification Active. System tracking remains completely immune to layout interruptions.</p>
+                    <div class="google-card p-3 text-center bg-gray-50/50 border border-gray-100">
+                        <p class="text-[11px] text-gray-500 leading-relaxed">⚠️ <strong>Notice:</strong> Verification Active. System tracking remains fully operational.</p>
                     </div>
                 </section>
 
-                <!-- Vault/Wallet Screen -->
-                <section id="screen-wallet" class="user-screen hidden space-y-4">
-                    <!-- Referral Info -->
+                <!-- WALLET SCREEN -->
+                <section id="screen-wallet" class="user-screen space-y-4">
+                    <!-- Referral -->
                     <div class="google-card p-4 space-y-2">
-                        <h2 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-share-nodes text-[#0b57d0]"></i> Referral Network Identity</h2>
+                        <h2 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-share-nodes text-[#0b57d0]"></i> Referral Network</h2>
                         <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200 flex justify-between items-center">
                             <div>
-                                <p class="text-[10px] text-gray-400 font-medium">Your Unique Code Key</p>
-                                <span id="referral-code-display" class="font-mono text-xs font-bold text-gray-800 tracking-wide">Connecting...</span>
+                                <p class="text-[10px] text-gray-400 font-medium">Your Unique Invitation Code</p>
+                                <span id="referral-code-display" class="font-mono text-xs font-bold text-gray-800 tracking-wide">—</span>
                             </div>
-                            <button onclick="navigator.clipboard.writeText(document.getElementById('referral-code-display').innerText); alert('Referral code copied!');" class="bg-white border text-gray-600 font-medium px-2.5 py-1 rounded text-[11px] shadow-sm hover:bg-gray-50">Copy</button>
+                            <button onclick="copyReferralCode()" class="bg-white border text-gray-600 font-medium px-3 py-1.5 rounded text-[11px] shadow-sm hover:bg-gray-50 transition-all">Copy</button>
                         </div>
                     </div>
 
-                    <!-- Account Settings Security Area -->
+                    <!-- Security -->
                     <div class="google-card p-4 space-y-3">
-                        <h2 class="text-xs font-bold text-red-600 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> Security & Authentication</h2>
+                        <h2 class="text-xs font-bold text-red-600 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> Security</h2>
                         <div class="space-y-2">
-                            <input type="password" id="settings-new-password" placeholder="Enter New Password" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none">
-                            <button onclick="changeUserAccountPassword()" class="w-full bg-gray-900 text-white font-medium p-2 rounded-xl text-xs uppercase tracking-wider">Update Account Password</button>
+                            <input type="password" id="settings-new-password" placeholder="Enter new password (min 6 chars)" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" />
+                            <button onclick="updateUserPassword()" class="w-full bg-gray-900 text-white font-medium p-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-gray-800 transition-all">Update Password</button>
                         </div>
                     </div>
 
-                    <!-- Withdrawal Bio Update Parameters Form -->
+                    <!-- Withdrawal Profile -->
                     <div class="google-card p-5 space-y-3">
-                        <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-address-card text-[#0b57d0]"></i> Withdrawal Channel Profile</h2>
-                        
+                        <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-address-card text-[#0b57d0]"></i> Withdrawal Profile</h2>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Full Name</label>
-                            <input type="text" id="user-full-name" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter Full Name">
+                            <input type="text" id="user-full-name" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter full name" />
                         </div>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Mobile Number</label>
-                            <input type="tel" id="user-mobile-num" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter Mobile Number">
+                            <input type="tel" id="user-mobile-num" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter mobile number" />
                         </div>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Email ID</label>
-                            <input type="email" id="user-email-id" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter Email ID">
+                            <input type="email" id="user-email-id" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" placeholder="Enter email ID" />
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Redeem System Method Select</label>
-                            <select id="user-redeem-method" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" onchange="toggleRechargeNoticeDisplay()">
-                                <option value="Mobile Recharge">Mobile Recharge (1-Month Validity Only)</option>
+                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Redeem Method</label>
+                            <select id="user-redeem-method" class="w-full bg-white google-input p-3 text-xs text-gray-900 focus:outline-none" onchange="toggleRechargeNotice()">
+                                <option value="Mobile Recharge">Mobile Recharge (1-Month Validity)</option>
                                 <option value="Redeem Code">Redeem Code</option>
-                                <option value="Flipkart Gift Card">Flipkart Shopping Gift Card</option>
-                                <option value="Amazon Gift Card">Amazon Shopping Gift Card</option>
+                                <option value="Flipkart Gift Card">Flipkart Gift Card</option>
+                                <option value="Amazon Gift Card">Amazon Gift Card</option>
                             </select>
                         </div>
-                        
                         <div id="recharge-validity-notice" class="bg-blue-50 text-blue-700 p-2.5 rounded-lg border border-blue-200 text-[11px] font-medium leading-relaxed">
-                            💡 <strong>Recharge Rule Notice:</strong> Mobile Recharge amounts provide maximum 1-month plan validity limits.
+                            💡 <strong>Notice:</strong> Mobile Recharge grants a maximum of 1‑month validity.
                         </div>
-
-                        <button onclick="commitUserGatewayProfile()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium p-3 rounded-xl text-xs transition-all border border-gray-300">Save Configuration Parameters</button>
+                        <button onclick="saveProfile()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium p-3 rounded-xl text-xs transition-all border border-gray-300">Save Profile</button>
                     </div>
 
-                    <!-- Withdrawal Core Engine Structure -->
+                    <!-- Payout -->
                     <div class="google-card p-5 space-y-4">
                         <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <span class="text-xs text-gray-600 font-medium">Withdrawable Ledger:</span>
+                            <span class="text-xs text-gray-600 font-medium">Withdrawable Balance:</span>
                             <span id="wallet-balance-display" class="font-bold text-lg text-green-600">₹ 0.00</span>
                         </div>
-                        
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Enter Cashout Amount (₹300 - ₹1000)</label>
-                            <input type="number" id="user-payout-amount" oninput="recalculateGstOverheadDisplay()" min="300" max="1000" class="w-full bg-white google-input p-3 text-sm font-bold text-gray-900 focus:outline-none" placeholder="Value range: 300 to 1000">
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Cashout Amount (₹300 – ₹1000)</label>
+                            <input type="number" id="user-payout-amount" oninput="recalcGst()" min="300" max="1000" class="w-full bg-white google-input p-3 text-sm font-bold text-gray-900 focus:outline-none" placeholder="Enter amount" />
                         </div>
-
                         <div class="bg-gray-50/80 rounded-xl border border-gray-200 p-3 text-[11px] font-medium text-gray-600 space-y-1.5 shadow-inner">
-                            <div class="flex justify-between"><span>Base Cashout Target:</span><span id="display-base-val" class="font-mono text-gray-900 font-bold">₹0.00</span></div>
-                            <div class="flex justify-between text-amber-600"><span>Mandatory GST (18%):</span><span id="display-gst-tax" class="font-mono font-bold">+ ₹0.00</span></div>
+                            <div class="flex justify-between"><span>Base Amount:</span><span id="display-base-val" class="font-mono text-gray-900 font-bold">₹0.00</span></div>
+                            <div class="flex justify-between text-amber-600"><span>GST (18%):</span><span id="display-gst-tax" class="font-mono font-bold">+ ₹0.00</span></div>
                             <div class="flex justify-between border-t border-gray-200 pt-1 text-gray-900 font-bold"><span>Total Required:</span><span id="display-gross-total" class="font-mono text-blue-600">₹0.00</span></div>
                         </div>
-
-                        <button onclick="dispatchWithdrawalMatrixRequest()" class="w-full google-btn-blue text-white font-medium p-3.5 text-xs uppercase tracking-widest transition-all">Execute Cashout Protocol</button>
+                        <button onclick="requestPayout()" class="w-full google-btn-blue text-white font-medium p-3.5 text-xs uppercase tracking-widest transition-all">Request Withdrawal</button>
                     </div>
 
-                    <!-- User History Stack Container -->
+                    <!-- History -->
                     <div class="google-card p-4 space-y-3">
                         <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fa-solid fa-clock-history text-[#0b57d0]"></i> Withdrawal Logs Ledger
+                            <i class="fa-solid fa-clock-history text-[#0b57d0]"></i> Transaction History
                         </h3>
                         <div id="user-withdrawal-history-box" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1">
-                            <p class="text-gray-400 text-center py-2">No transaction history recorded.</p>
+                            <p class="text-gray-400 text-center py-2">No transactions yet.</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- Admin Core System Terminal Control Screen -->
-                <section id="screen-admin" class="user-screen hidden space-y-4">
-                    <h2 class="text-sm font-bold text-red-600 uppercase tracking-widest border-b border-gray-200 pb-2 flex items-center gap-2"><i class="fa-solid fa-circle-nodes"></i> Admin Framework Controls</h2>
-                    
-                    <!-- Global Configuration Settings Variables -->
+                <!-- ADMIN SCREEN -->
+                <section id="screen-admin" class="user-screen space-y-4">
+                    <h2 class="text-sm font-bold text-red-600 uppercase tracking-widest border-b border-gray-200 pb-2 flex items-center gap-2"><i class="fa-solid fa-circle-nodes"></i> Admin Terminal</h2>
+
                     <div class="google-card p-4 space-y-3 bg-slate-900 text-white">
-                        <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-sliders"></i> System Dynamic Matrices</h3>
+                        <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-sliders"></i> System Parameters</h3>
                         <div>
-                            <label class="block text-[10px] text-gray-400 font-medium mb-1">Referral Reward Allocation Payout Amount (₹)</label>
+                            <label class="block text-[10px] text-gray-400 font-medium mb-1">Referral Reward (₹)</label>
                             <div class="flex gap-2">
-                                <input type="number" id="admin-global-refer-reward" class="bg-slate-800 border border-slate-700 rounded p-2 text-xs font-mono font-bold text-green-400 flex-1 focus:outline-none" placeholder="Example: 15">
-                                <button onclick="commitGlobalSystemParameters()" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold font-sans">Save Settings</button>
+                                <input type="number" id="admin-global-refer-reward" class="bg-slate-800 border border-slate-700 rounded p-2 text-xs font-mono font-bold text-green-400 flex-1 focus:outline-none" placeholder="e.g. 15" />
+                                <button onclick="saveSystemConfig()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-blue-500 transition-all">Save</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">User Ecosystem Tree Base</h3>
+                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">User Directory</h3>
                         <div id="admin-user-management-node" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
                     </div>
 
                     <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-amber-600 uppercase tracking-wider">Pending Clearance Stack</h3>
+                        <h3 class="text-xs font-bold text-amber-600 uppercase tracking-wider">Pending Withdrawals</h3>
                         <div id="admin-payouts-list" class="space-y-2 text-xs"></div>
                     </div>
 
                     <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-green-600 uppercase tracking-wider">Completed Structural Archives</h3>
+                        <h3 class="text-xs font-bold text-green-600 uppercase tracking-wider">Completed Withdrawals</h3>
                         <div id="admin-completed-payouts-list" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
                     </div>
                 </section>
             </main>
 
-            <!-- Bottom Navigation Bar Layer Framework -->
+            <!-- Bottom Nav -->
             <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2.5 flex justify-between items-center z-50">
-                <button onclick="switchUserScreenLayout('tasks')" class="flex flex-col items-center gap-1 text-[#0b57d0] nav-btn flex-1" id="nav-tasks">
+                <button onclick="switchScreen('tasks')" class="flex flex-col items-center gap-1 nav-btn active flex-1" id="nav-tasks">
                     <i class="fa-solid fa-layer-group text-lg"></i><span class="text-[10px] font-medium">Gateways</span>
                 </button>
-                <button onclick="switchUserScreenLayout('wallet')" class="flex flex-col items-center gap-1 text-gray-400 nav-btn flex-1" id="nav-wallet">
+                <button onclick="switchScreen('wallet')" class="flex flex-col items-center gap-1 nav-btn flex-1" id="nav-wallet">
                     <i class="fa-solid fa-vault text-lg"></i><span class="text-[10px] font-medium">Vault</span>
                 </button>
-                <button onclick="switchUserScreenLayout('admin')" class="hidden flex-col items-center gap-1 text-red-500 nav-btn flex-1" id="nav-admin">
+                <button onclick="switchScreen('admin')" class="hidden flex-col items-center gap-1 nav-btn flex-1" id="nav-admin">
                     <i class="fa-solid fa-terminal text-lg"></i><span class="text-[10px] font-medium">Terminal</span>
                 </button>
-                <button onclick="terminateSessionLogout()" class="flex flex-col items-center gap-1 text-gray-400 flex-1">
+                <button onclick="logout()" class="flex flex-col items-center gap-1 flex-1 text-gray-400">
                     <i class="fa-solid fa-circle-power-off text-lg text-red-500"></i><span class="text-[10px] font-medium text-gray-500">Logout</span>
                 </button>
             </nav>
         </div>
     </div>
 
-    <!-- Firebase System Modules Integration Hooks -->
+    <!-- ============================================================ -->
+    <!-- FIREBASE MODULE -->
     <script type="module">
+        // -------- IMPORTS --------
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, get, update, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged,
+            updatePassword,
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            set,
+            get,
+            update,
+            push,
+            remove
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Firebase Configuration Core Matrix Base
-        const firebaseConfig = {
+        const FIREBASE_CONFIG = {
             apiKey: "AIzaSyAVHBNMZAffSaX9JeAexBGV60zUlGyeb54",
             authDomain: "vscoin-ba376.firebaseapp.com",
             databaseURL: "https://vscoin-ba376-default-rtdb.firebaseio.com",
@@ -413,204 +577,361 @@
             storageBucket: "vscoin-ba376.firebasestorage.app"
         };
 
-        const app = initializeApp(firebaseConfig);
+        const app = initializeApp(FIREBASE_CONFIG);
         const auth = getAuth(app);
-        const rtdb = getDatabase(app);
+        const db = getDatabase(app);
 
         const ADMIN_EMAIL = "grtts24@gmail.com";
-        
-        let currentUser = null, userData = {}, authMode = 'login';
+
+        // -------- GLOBALS --------
+        let currentUser = null;
+        let userData = {};
+        let authMode = 'login';
         let trackingInterval = null;
         let sessionSeconds = 0;
-        let sessionMoneyEarned = 0.0;
-        let totalActiveSecondsInDatabase = 0;
-        let globalReferValue = 15.00; // Default System Variable fallback
+        let sessionMoneyEarned = 0;
+        let totalActiveSeconds = 0;
+        let globalReferralReward = 15.00;
+        let isTracking = false;
+        let logoutTimer = null;
 
-        function showGlobalLoadingAnimation(messageText) {
-            document.getElementById('loading-overlay-text').innerText = messageText;
-            document.getElementById('global-loading-overlay').classList.remove('hidden');
+        // -------- DOM REFS --------
+        const $ = id => document.getElementById(id);
+        const toastContainer = $('toast-container');
+        const loadingOverlay = $('global-loading-overlay');
+        const loadingText = $('loading-overlay-text');
+
+        // -------- TOAST SYSTEM --------
+        function showToast(message, type = 'info', duration = 4500) {
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-triangle-exclamation',
+                info: 'fa-circle-info'
+            };
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icons[type] || icons.info}"></i>
+                <span style="flex:1">${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => { if (toast.parentElement) toast.remove(); }, duration);
         }
 
-        function hideGlobalLoadingAnimation() {
-            document.getElementById('global-loading-overlay').classList.add('hidden');
+        // Expose toast to window
+        window.showToast = showToast;
+
+        // -------- LOADING --------
+        function showLoading(msg = 'Syncing…') {
+            loadingText.textContent = msg;
+            loadingOverlay.classList.remove('hidden');
         }
 
-        function toggleAuthButtonLoadingState(isLoading) {
-            const btn = document.getElementById('btn-auth-trigger');
-            const txt = document.getElementById('btn-auth-text');
-            const spinner = document.getElementById('btn-auth-spinner');
-            
-            if(isLoading) {
-                btn.disabled = true;
-                spinner.classList.remove('hidden');
-                txt.innerText = authMode === 'signup' ? "Creating Profile..." : "Securing Access...";
-                btn.classList.add('opacity-80', 'cursor-not-allowed');
-            } else {
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
+
+        // -------- AUTH UI --------
+        window.setAuthMode = (mode) => {
+            authMode = mode;
+            const tabLogin = $('tab-login');
+            const tabSignup = $('tab-signup');
+            const referralBox = $('referral-field-box');
+            const forgotBox = $('forgot-password-box');
+
+            tabLogin.className = mode === 'login' ?
+                'flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center' :
+                'flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center';
+
+            tabSignup.className = mode === 'signup' ?
+                'flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center' :
+                'flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center';
+
+            referralBox.classList.toggle('hidden', mode === 'login');
+            forgotBox.classList.toggle('hidden', mode === 'signup');
+        };
+
+        // -------- AUTH HANDLER --------
+        window.handleAuth = async () => {
+            const email = $('auth-email').value.trim().toLowerCase();
+            const password = $('auth-password').value;
+            const referral = $('auth-referral').value.trim();
+
+            if (!email || !password) {
+                showToast('Please fill in all required fields.', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters.', 'error');
+                return;
+            }
+
+            const btn = $('btn-auth-trigger');
+            const txt = $('btn-auth-text');
+            const spinner = $('btn-auth-spinner');
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            txt.textContent = authMode === 'signup' ? 'Creating…' : 'Signing in…';
+
+            try {
+                await syncConfig();
+
+                if (authMode === 'signup') {
+                    if (email === ADMIN_EMAIL) {
+                        showToast('Cannot create admin account via signup.', 'error');
+                        return;
+                    }
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    let initialBalance = 0;
+
+                    // Referral
+                    if (referral) {
+                        const snap = await get(ref(db, 'users/' + referral));
+                        if (snap.exists()) {
+                            const refData = snap.val();
+                            initialBalance = 10;
+                            const newBal = (refData.balance || 0) + globalReferralReward;
+                            const newCount = (refData.referralCount || 0) + 1;
+                            await update(ref(db, 'users/' + referral), {
+                                balance: newBal,
+                                referralCount: newCount,
+                                lastReferralTimestamp: Date.now()
+                            });
+                            showToast(`Referral credited! You got ₹10 bonus.`, 'success');
+                        } else {
+                            showToast('Referral code not found. Proceeding without bonus.', 'warning');
+                        }
+                    }
+
+                    await set(ref(db, 'users/' + cred.user.uid), {
+                        email,
+                        password,
+                        balance: initialBalance,
+                        activeAppTime: 0,
+                        status: 'active',
+                        signupTimestamp: Date.now(),
+                        lastActiveTimestamp: Date.now(),
+                        lastReferralTimestamp: Date.now(),
+                        referralCount: 0,
+                        fullName: '',
+                        mobileNumber: '',
+                        emailId: '',
+                        redeemMethod: 'Mobile Recharge'
+                    });
+                    showToast('Account created successfully!', 'success');
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
                 btn.disabled = false;
                 spinner.classList.add('hidden');
-                txt.innerText = "Continue";
-                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                txt.textContent = 'Continue';
             }
-        }
+        };
 
-        window.addEventListener('load', async () => {
-            showGlobalLoadingAnimation("Initializing environment...");
-            await syncGlobalVariablesFromDatabase();
-            startMidnightResetClockRadar();
-            setTimeout(checkAndRecoverInterruptedSession, 1500);
-        });
-
-        async function syncGlobalVariablesFromDatabase() {
+        // -------- PASSWORD RESET --------
+        window.triggerPasswordReset = async () => {
+            const email = $('auth-email').value.trim().toLowerCase();
+            if (!email) {
+                showToast('Please enter your email address first.', 'warning');
+                return;
+            }
             try {
-                const configSnap = await get(ref(rtdb, 'system_config'));
-                if(configSnap.exists()) {
-                    globalReferValue = parseFloat(configSnap.val().referralAmount) || 15.00;
-                    if(document.getElementById('admin-global-refer-reward')) {
-                        document.getElementById('admin-global-refer-reward').value = globalReferValue;
-                    }
-                } else {
-                    await set(ref(rtdb, 'system_config'), { referralAmount: 15.00 });
-                }
-            } catch(e) { console.log("Config sync fault loop active."); }
-        }
-
-        // Daily Midnight Time Cap Reset Clock Engine Loop
-        function startMidnightResetClockRadar() {
-            setInterval(async () => {
-                const now = new Date();
-                const hrs = 23 - now.getHours();
-                const mins = 59 - now.getMinutes();
-                const secs = 59 - now.getSeconds();
-                document.getElementById('header-timer-countdown').innerText = `Reset: ${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                
-                // Trigger exact midnight profile wipe rule parameters matches
-                if(now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-                    if(currentUser) {
-                        showGlobalLoadingAnimation("Midnight reset active...");
-                        await update(ref(rtdb, 'users/' + currentUser.uid), { activeAppTime: 0 });
-                        totalActiveSecondsInDatabase = 0;
-                        clearKodularTokens();
-                        fetchUserData();
-                        hideGlobalLoadingAnimation();
-                    }
-                }
-            }, 1000);
-        }
-
-        window.toggleRechargeNoticeDisplay = () => {
-            const method = document.getElementById('user-redeem-method').value;
-            const notice = document.getElementById('recharge-validity-notice');
-            if(method === "Mobile Recharge") {
-                notice.classList.remove('hidden');
-            } else {
-                notice.classList.add('hidden');
+                showLoading('Sending recovery mail…');
+                await sendPasswordResetEmail(auth, email);
+                showToast('Password reset link sent to your email.', 'success');
+                hideLoading();
+            } catch (err) {
+                hideLoading();
+                showToast(err.message, 'error');
             }
         };
 
-        window.recalculateGstOverheadDisplay = () => {
-            const valInput = parseFloat(document.getElementById('user-payout-amount').value) || 0;
-            const gstTax = valInput * 0.18;
-            const grossRequired = valInput + gstTax;
-
-            document.getElementById('display-base-val').innerText = "₹ " + valInput.toFixed(2);
-            document.getElementById('display-gst-tax').innerText = "+ ₹ " + gstTax.toFixed(2);
-            document.getElementById('display-gross-total').innerText = "₹ " + grossRequired.toFixed(2);
+        // -------- UPDATE PASSWORD --------
+        window.updateUserPassword = async () => {
+            const newPass = $('settings-new-password').value;
+            if (!newPass || newPass.length < 6) {
+                showToast('New password must be at least 6 characters.', 'error');
+                return;
+            }
+            try {
+                showLoading('Updating password…');
+                await updatePassword(auth.currentUser, newPass);
+                await update(ref(db, 'users/' + auth.currentUser.uid), { password: newPass });
+                showToast('Password updated successfully.', 'success');
+                $('settings-new-password').value = '';
+                hideLoading();
+            } catch (err) {
+                hideLoading();
+                showToast(err.message, 'error');
+            }
         };
 
-        window.launchTargetTaskWindow = (url, name) => {
+        // -------- LOGOUT --------
+        window.logout = () => {
+            if (trackingInterval) {
+                clearInterval(trackingInterval);
+                trackingInterval = null;
+                isTracking = false;
+            }
+            clearKodularTokens();
+            showLoading('Logging out…');
+            signOut(auth).finally(() => hideLoading());
+        };
+
+        // -------- COPY REFERRAL --------
+        window.copyReferralCode = () => {
+            const code = $('referral-code-display').textContent;
+            if (code && code !== '—') {
+                navigator.clipboard.writeText(code).then(() => {
+                    showToast('Referral code copied!', 'success');
+                }).catch(() => {
+                    // fallback
+                    const ta = document.createElement('textarea');
+                    ta.value = code;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    ta.remove();
+                    showToast('Referral code copied!', 'success');
+                });
+            } else {
+                showToast('No referral code available.', 'warning');
+            }
+        };
+
+        // -------- DAILY BONUS --------
+        window.claimDailyBonus = async () => {
+            if (!currentUser) return;
+            const today = new Date().toDateString();
+            if (userData.lastDailyCheckIn === today) {
+                showToast('You already claimed today\'s check-in bonus.', 'warning');
+                return;
+            }
+            try {
+                showLoading('Claiming bonus…');
+                const bal = (userData.balance || 0) + 2.50;
+                await update(ref(db, 'users/' + currentUser.uid), {
+                    balance: bal,
+                    lastDailyCheckIn: today
+                });
+                showToast('🎉 Check-In Bonus ₹2.50 credited!', 'success');
+                await fetchUserData();
+                hideLoading();
+            } catch (err) {
+                hideLoading();
+                showToast(err.message, 'error');
+            }
+        };
+
+        // -------- TASK LAUNCH --------
+        window.launchTask = (url, name) => {
+            if (isTracking) {
+                showToast('A task is already running. Complete it first.', 'warning');
+                return;
+            }
             localStorage.setItem('kodular_task_running', 'true');
             localStorage.setItem('kodular_task_name', name);
             localStorage.setItem('kodular_start_time', Date.now().toString());
 
             window.open(url, '_blank');
-            startLiveTrackingEngine(name);
+            startTracking(name);
         };
 
-        function startLiveTrackingEngine(appName) {
-            clearInterval(trackingInterval);
+        // -------- TRACKING --------
+        function startTracking(appName) {
+            if (trackingInterval) {
+                clearInterval(trackingInterval);
+                trackingInterval = null;
+            }
+            isTracking = true;
             sessionSeconds = 0;
-            sessionMoneyEarned = 0.0;
-            totalActiveSecondsInDatabase = userData.activeAppTime || 0;
+            sessionMoneyEarned = 0;
+            totalActiveSeconds = userData.activeAppTime || 0;
 
-            updateTrackingUI(true, appName);
+            updateStatusUI(true, appName);
 
             trackingInterval = setInterval(async () => {
-                if (totalActiveSecondsInDatabase >= 43200) {
-                    clearInterval(trackingInterval);
-                    updateTrackingUI(false);
-                    alert("Daily Cap Reached: (43200s limit achieved). Come back tomorrow.");
-                    clearKodularTokens();
+                if (totalActiveSeconds >= 43200) {
+                    stopTracking('Daily limit reached (12 hours).');
+                    showToast('Daily earning limit reached.', 'warning');
                     return;
                 }
 
                 sessionSeconds++;
-                totalActiveSecondsInDatabase++;
+                totalActiveSeconds++;
 
-                let currentPerSecondRate = 30.00 / 43200.00;
-                sessionMoneyEarned += currentPerSecondRate;
+                const rate = 30 / 43200;
+                sessionMoneyEarned += rate;
 
-                renderTimerStrings(sessionSeconds);
-                document.getElementById('session-earned').innerText = "₹" + sessionMoneyEarned.toFixed(4);
-                document.getElementById('live-timer-progress').innerText = `${totalActiveSecondsInDatabase}s / 43200s`;
+                renderTimer(sessionSeconds);
+                $('session-earned').textContent = '₹' + sessionMoneyEarned.toFixed(4);
+                $('live-timer-progress').textContent = `${totalActiveSeconds}s / 43200s`;
 
                 localStorage.setItem('kodular_session_secs', sessionSeconds.toString());
                 localStorage.setItem('kodular_money_earned', sessionMoneyEarned.toString());
 
                 if (sessionSeconds % 5 === 0) {
-                    syncEarningSnapshotToCloud(currentPerSecondRate * 5);
+                    await syncEarning(rate * 5);
                 }
             }, 1000);
         }
 
-        async function syncEarningSnapshotToCloud(amountToInject) {
-            if (!currentUser) return;
-            try {
-                let freshSnap = await get(ref(rtdb, 'users/' + currentUser.uid));
-                if(freshSnap.exists()) {
-                    let remoteBalance = freshSnap.val().balance || 0;
-                    await update(ref(rtdb, 'users/' + currentUser.uid), {
-                        balance: remoteBalance + amountToInject,
-                        activeAppTime: totalActiveSecondsInDatabase,
-                        lastActiveTimestamp: Date.now()
-                    });
-                    fetchUserData();
-                }
-            } catch(e) { console.log("Sync background buffer holding."); }
+        function stopTracking(msg) {
+            if (trackingInterval) {
+                clearInterval(trackingInterval);
+                trackingInterval = null;
+            }
+            isTracking = false;
+            clearKodularTokens();
+            updateStatusUI(false);
+            if (msg) showToast(msg, 'info');
         }
 
-        async function checkAndRecoverInterruptedSession() {
-            const isRunning = localStorage.getItem('kodular_task_running');
-            if (isRunning === 'true' && currentUser) {
-                const startTime = parseInt(localStorage.getItem('kodular_start_time') || Date.now());
-                let calculatedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                
-                if (calculatedSeconds <= 0 || calculatedSeconds > 43200) {
-                    clearKodularTokens();
-                    hideGlobalLoadingAnimation();
-                    return;
-                }
+        function updateStatusUI(active, name = '') {
+            const badge = $('status-badge');
+            if (active) {
+                badge.className = 'bg-green-100 text-green-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase animate-pulse';
+                badge.textContent = `Running: ${name}`;
+            } else {
+                badge.className = 'bg-gray-200 text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase';
+                badge.textContent = 'Idle';
+                $('live-timer').textContent = '00:00:00';
+                $('session-earned').textContent = '₹0.0000';
+            }
+        }
 
-                let freshSnap = await get(ref(rtdb, 'users/' + currentUser.uid));
-                if (freshSnap.exists()) {
-                    let currentDbTime = freshSnap.val().activeAppTime || 0;
-                    let remoteBalance = freshSnap.val().balance || 0;
-                    
-                    if (currentDbTime >= 43200) { clearKodularTokens(); hideGlobalLoadingAnimation(); return; }
-                    if (currentDbTime + calculatedSeconds > 43200) calculatedSeconds = 43200 - currentDbTime;
+        function renderTimer(secs) {
+            const h = String(Math.floor(secs / 3600)).padStart(2, '0');
+            const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
+            const s = String(secs % 60).padStart(2, '0');
+            $('live-timer').textContent = `${h}:${m}:${s}`;
+        }
 
-                    let currentPerSecondRate = 30.00 / 43200.00;
-                    let totalAccumulatedRefund = calculatedSeconds * currentPerSecondRate;
-
-                    await update(ref(rtdb, 'users/' + currentUser.uid), {
-                        balance: remoteBalance + totalAccumulatedRefund,
-                        activeAppTime: currentDbTime + calculatedSeconds,
+        async function syncEarning(amount) {
+            if (!currentUser) return;
+            try {
+                const snap = await get(ref(db, 'users/' + currentUser.uid));
+                if (snap.exists()) {
+                    const data = snap.val();
+                    const newBal = (data.balance || 0) + amount;
+                    await update(ref(db, 'users/' + currentUser.uid), {
+                        balance: newBal,
+                        activeAppTime: totalActiveSeconds,
                         lastActiveTimestamp: Date.now()
                     });
-                    clearKodularTokens();
-                    fetchUserData();
+                    // update UI balance
+                    const balEl = $('global-balance');
+                    balEl.textContent = newBal.toFixed(2);
+                    balEl.classList.add('pulse');
+                    setTimeout(() => balEl.classList.remove('pulse'), 300);
+                    $('wallet-balance-display').textContent = '₹ ' + newBal.toFixed(2);
                 }
-            }
-            hideGlobalLoadingAnimation();
+            } catch (e) { /* silent */ }
         }
 
         function clearKodularTokens() {
@@ -619,375 +940,497 @@
             localStorage.removeItem('kodular_start_time');
             localStorage.removeItem('kodular_session_secs');
             localStorage.removeItem('kodular_money_earned');
-            updateTrackingUI(false);
         }
 
-        function renderTimerStrings(totalSecs) {
-            let hrs = Math.floor(totalSecs / 3600);
-            let mins = Math.floor((totalSecs % 3600) / 60);
-            let secs = totalSecs % 60;
-            document.getElementById('live-timer').innerText = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        // -------- RECOVER SESSION --------
+        async function recoverSession() {
+            const running = localStorage.getItem('kodular_task_running');
+            if (running !== 'true' || !currentUser) return;
+
+            const startTime = parseInt(localStorage.getItem('kodular_start_time') || Date.now());
+            let elapsed = Math.floor((Date.now() - startTime) / 1000);
+            if (elapsed <= 0 || elapsed > 43200) {
+                clearKodularTokens();
+                return;
+            }
+
+            try {
+                const snap = await get(ref(db, 'users/' + currentUser.uid));
+                if (!snap.exists()) return;
+                const data = snap.val();
+                let dbTime = data.activeAppTime || 0;
+                if (dbTime >= 43200) { clearKodularTokens(); return; }
+                if (dbTime + elapsed > 43200) elapsed = 43200 - dbTime;
+
+                const rate = 30 / 43200;
+                const credit = elapsed * rate;
+                await update(ref(db, 'users/' + currentUser.uid), {
+                    balance: (data.balance || 0) + credit,
+                    activeAppTime: dbTime + elapsed,
+                    lastActiveTimestamp: Date.now()
+                });
+                clearKodularTokens();
+                showToast(`Recovered ${elapsed}s of lost session. ₹${credit.toFixed(2)} credited.`, 'success');
+                await fetchUserData();
+            } catch (e) { /* ignore */ }
         }
 
-        function updateTrackingUI(isActive, appName = "") {
-            const badge = document.getElementById('status-badge');
-            if(isActive) {
-                badge.className = "bg-green-100 text-green-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase animate-pulse";
-                badge.innerText = `Running: ${appName}`;
-            } else {
-                badge.className = "bg-gray-200 text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase";
-                badge.innerText = "Idle";
-                document.getElementById('live-timer').innerText = "00:00:00";
-                document.getElementById('session-earned').innerText = "₹0.0000";
-            }
-        }
-
-        window.setAuthLayoutMode = (mode) => {
-            authMode = mode;
-            document.getElementById('tab-login').className = mode === 'login' ? "flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center" : "flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center";
-            document.getElementById('tab-signup').className = mode === 'signup' ? "flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center" : "flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center";
-            document.getElementById('forgot-password-box').className = mode === 'login' ? "text-right" : "hidden";
-            if(mode === 'signup') {
-                document.getElementById('referral-field-box').classList.remove('hidden');
-            } else {
-                document.getElementById('referral-field-box').classList.add('hidden');
-            }
+        // -------- GST CALC --------
+        window.recalcGst = () => {
+            const val = parseFloat($('user-payout-amount').value) || 0;
+            const gst = val * 0.18;
+            const total = val + gst;
+            $('display-base-val').textContent = '₹ ' + val.toFixed(2);
+            $('display-gst-tax').textContent = '+ ₹ ' + gst.toFixed(2);
+            $('display-gross-total').textContent = '₹ ' + total.toFixed(2);
         };
 
-        window.triggerForgotPasswordRecovery = async () => {
-            const email = document.getElementById('auth-email').value.trim();
-            if(!email) return alert("Please type your email address first inside the field container.");
+        // -------- TOGGLE RECHARGE NOTICE --------
+        window.toggleRechargeNotice = () => {
+            const method = $('user-redeem-method').value;
+            $('recharge-validity-notice').classList.toggle('hidden', method !== 'Mobile Recharge');
+        };
+
+        // -------- SAVE PROFILE --------
+        window.saveProfile = async () => {
+            if (!currentUser) return;
+            const fullName = $('user-full-name').value.trim();
+            const mobile = $('user-mobile-num').value.trim();
+            const emailId = $('user-email-id').value.trim();
+            const method = $('user-redeem-method').value;
+
+            if (!fullName || !mobile || !emailId) {
+                showToast('Please fill in all profile fields.', 'error');
+                return;
+            }
             try {
-                showGlobalLoadingAnimation("Sending link...");
-                await sendPasswordResetEmail(auth, email);
-                alert("Password reset configuration link successfully dispatched via mail network pipelines.");
-                hideGlobalLoadingAnimation();
-            } catch(e) { alert(e.message); hideGlobalLoadingAnimation(); }
-        };
-
-        window.changeUserAccountPassword = async () => {
-            const newPass = document.getElementById('settings-new-password').value;
-            if(!newPass || newPass.length < 6) return alert("Password must sit at 6 characters minimum threshold.");
-            try {
-                showGlobalLoadingAnimation("Updating password layer...");
-                await updatePassword(auth.currentUser, newPass);
-                await update(ref(rtdb, 'users/' + auth.currentUser.uid), { password: newPass });
-                alert("Security account credential signature updated successfully.");
-                document.getElementById('settings-new-password').value = "";
-                hideGlobalLoadingAnimation();
-            } catch(e) { alert(e.message); hideGlobalLoadingAnimation(); }
-        };
-
-        window.claimDailyCheckInBonus = async () => {
-            if(!currentUser) return;
-            const todayKey = new Date().toDateString();
-            if(userData.lastDailyCheckIn === todayKey) {
-                return alert("Claim Denied: You have already secured your daily retention bonus parameters today.");
+                showLoading('Saving profile…');
+                await update(ref(db, 'users/' + currentUser.uid), {
+                    fullName,
+                    mobileNumber: mobile,
+                    emailId,
+                    redeemMethod: method
+                });
+                showToast('Profile saved successfully.', 'success');
+                await fetchUserData();
+                hideLoading();
+            } catch (err) {
+                hideLoading();
+                showToast(err.message, 'error');
             }
-            showGlobalLoadingAnimation("Securing bonus...");
-            let currentBal = userData.balance || 0;
-            await update(ref(rtdb, 'users/' + currentUser.uid), {
-                balance: currentBal + 2.50, // Added reward value inject
-                lastDailyCheckIn: todayKey
-            });
-            alert("Success! Check-In Bonus of ₹2.50 has been credited inside ledger.");
-            await fetchUserData();
-            hideGlobalLoadingAnimation();
         };
 
-        window.executeAuthenticationGateway = async () => {
-            const email = document.getElementById('auth-email').value.trim().toLowerCase();
-            const password = document.getElementById('auth-password').value;
-            const refCodeInput = document.getElementById('auth-referral').value.trim();
+        // -------- REQUEST PAYOUT --------
+        window.requestPayout = async () => {
+            if (!currentUser) return;
+            const balance = userData.balance || 0;
+            const amount = parseFloat($('user-payout-amount').value) || 0;
 
-            if(!email || !password) return alert("Credentials fields cannot be left empty.");
+            if (amount < 300 || amount > 1000) {
+                showToast('Amount must be between ₹300 and ₹1000.', 'error');
+                return;
+            }
+            if (!userData.fullName || !userData.mobileNumber || !userData.emailId) {
+                showToast('Please complete your withdrawal profile first.', 'warning');
+                return;
+            }
 
-            toggleAuthButtonLoadingState(true);
-            await syncGlobalVariablesFromDatabase(); // Assure latest reward variable state matches
+            const gst = amount * 0.18;
+            const gross = amount + gst;
+            if (balance < gross) {
+                showToast('Insufficient balance. Required: ₹' + gross.toFixed(2), 'error');
+                return;
+            }
 
             try {
-                if(authMode === 'signup') {
-                    if(email === ADMIN_EMAIL) { toggleAuthButtonLoadingState(false); return alert("Root deployment validation mismatch."); }
-                    const res = await createUserWithEmailAndPassword(auth, email, password);
-                    let initialBalance = 0.00; 
+                showLoading('Processing withdrawal…');
+                const payoutRef = push(ref(db, 'payouts'));
+                await set(payoutRef, {
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                    amount: amount,
+                    gstLevied: gst,
+                    grossCharged: gross,
+                    fullName: userData.fullName,
+                    mobileNumber: userData.mobileNumber,
+                    emailId: userData.emailId,
+                    redeemMethod: userData.redeemMethod || 'Mobile Recharge',
+                    status: 'pending',
+                    timestamp: Date.now()
+                });
 
-                    if(refCodeInput !== "") {
-                        const referrerCheck = await get(ref(rtdb, 'users/' + refCodeInput));
-                        if(referrerCheck.exists()) {
-                            initialBalance = 10.00; // Sign-up bonus allocation
-                            let currentReferrerBalance = referrerCheck.val().balance || 0;
-                            let currentReferrerCount = referrerCheck.val().referralCount || 0;
-                            
-                            // Inject dynamically loaded admin set variables value
-                            await update(ref(rtdb, 'users/' + refCodeInput), {
-                                balance: currentReferrerBalance + globalReferValue,
-                                referralCount: currentReferrerCount + 1,
-                                lastReferralTimestamp: Date.now()
-                            });
-                        }
+                const newBal = balance - gross;
+                await update(ref(db, 'users/' + currentUser.uid), { balance: newBal });
+                showToast('Withdrawal request submitted for admin approval.', 'success');
+                await fetchUserData();
+                await fetchUserHistory();
+                $('user-payout-amount').value = '';
+                recalcGst();
+                hideLoading();
+            } catch (err) {
+                hideLoading();
+                showToast(err.message, 'error');
+            }
+        };
+
+        // -------- FETCH USER DATA --------
+        async function fetchUserData() {
+            if (!currentUser) return;
+            try {
+                const snap = await get(ref(db, 'users/' + currentUser.uid));
+                if (snap.exists()) {
+                    userData = snap.val();
+                    const bal = userData.balance || 0;
+                    $('global-balance').textContent = bal.toFixed(2);
+                    $('wallet-balance-display').textContent = '₹ ' + bal.toFixed(2);
+                    $('live-timer-progress').textContent = `${userData.activeAppTime || 0}s / 43200s`;
+                    $('referral-code-display').textContent = currentUser.uid;
+
+                    $('user-full-name').value = userData.fullName || '';
+                    $('user-mobile-num').value = userData.mobileNumber || '';
+                    $('user-email-id').value = userData.emailId || '';
+                    if (userData.redeemMethod) {
+                        $('user-redeem-method').value = userData.redeemMethod;
                     }
-
-                    await set(ref(rtdb, 'users/' + res.user.uid), {
-                        email: email, password: password, balance: initialBalance,
-                        activeAppTime: 0, status: "active", signupTimestamp: Date.now(),
-                        lastActiveTimestamp: Date.now(), lastReferralTimestamp: Date.now(),
-                        referralCount: 0
-                    });
-                    alert("Profile registration complete.");
-                } else {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    toggleRechargeNotice();
+                    recalcGst();
                 }
-            } catch (err) { alert(err.message); toggleAuthButtonLoadingState(false); }
+            } catch (e) { /* ignore */ }
+        }
+
+        // -------- FETCH USER HISTORY --------
+        async function fetchUserHistory() {
+            if (!currentUser) return;
+            const box = $('user-withdrawal-history-box');
+            try {
+                const snap = await get(ref(db, 'payouts'));
+                box.innerHTML = '';
+                let found = false;
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const data = child.val();
+                        if (data.uid === currentUser.uid) {
+                            found = true;
+                            const div = document.createElement('div');
+                            div.className = 'bg-gray-50 p-2.5 rounded-lg border border-gray-100 flex justify-between items-center';
+                            const statusColor = data.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
+                                data.status === 'rejected' ? 'bg-red-50 text-red-600 border-red-200' :
+                                'bg-amber-50 text-amber-700 border-amber-200';
+                            div.innerHTML = `
+                                <span class="font-bold text-gray-800">₹${(data.amount || 0).toFixed(2)}</span>
+                                <span class="px-2 py-0.5 border text-[9px] font-bold rounded uppercase ${statusColor}">${data.status || 'pending'}</span>
+                            `;
+                            box.appendChild(div);
+                        }
+                    });
+                }
+                if (!found) {
+                    box.innerHTML = '<p class="text-gray-400 text-center py-2">No transactions yet.</p>';
+                }
+            } catch (e) { /* ignore */ }
+        }
+
+        // -------- SYNC CONFIG --------
+        async function syncConfig() {
+            try {
+                const snap = await get(ref(db, 'system_config'));
+                if (snap.exists()) {
+                    globalReferralReward = parseFloat(snap.val().referralAmount) || 15;
+                } else {
+                    await set(ref(db, 'system_config'), { referralAmount: 15 });
+                }
+                const adminInput = $('admin-global-refer-reward');
+                if (adminInput) adminInput.value = globalReferralReward;
+            } catch (e) { /* ignore */ }
+        }
+
+        // -------- SAVE SYSTEM CONFIG --------
+        window.saveSystemConfig = async () => {
+            const val = parseFloat($('admin-global-refer-reward').value);
+            if (isNaN(val) || val < 0) {
+                showToast('Enter a valid positive number.', 'error');
+                return;
+            }
+            try {
+                showLoading('Updating system config…');
+                await set(ref(db, 'system_config'), { referralAmount: val });
+                globalReferralReward = val;
+                showToast(`Referral reward set to ₹${val}`, 'success');
+                hideLoading();
+            } catch (err) {
+                hideLoading();
+                showToast(err.message, 'error');
+            }
         };
 
-        window.terminateSessionLogout = () => {
-            showGlobalLoadingAnimation("Logging out safely...");
-            clearKodularTokens();
-            signOut(auth).then(() => { hideGlobalLoadingAnimation(); });
+        // -------- ADMIN PANEL --------
+        async function renderAdminPanel() {
+            if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+
+            // Users
+            const usersDiv = $('admin-user-management-node');
+            usersDiv.innerHTML = '';
+            try {
+                const snap = await get(ref(db, 'users'));
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const uid = child.key;
+                        const data = child.val();
+                        if (data.email === ADMIN_EMAIL) return;
+
+                        const row = document.createElement('div');
+                        row.className = 'bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2 text-xs';
+
+                        const profileHtml = (data.fullName || data.mobileNumber || data.emailId) ?
+                            `<div class="bg-blue-50/50 p-1.5 rounded text-[10px] text-gray-700 border border-blue-100">
+                                <strong>Profile:</strong> ${data.fullName || 'N/A'} | ${data.mobileNumber || 'N/A'} | ${data.emailId || 'N/A'}<br>
+                                <strong>Method:</strong> ${data.redeemMethod || 'N/A'}
+                            </div>` :
+                            `<div class="text-[10px] text-gray-400 italic">No profile saved.</div>`;
+
+                        row.innerHTML = `
+                            <div class="flex flex-col border-b border-gray-200/60 pb-1">
+                                <span class="font-mono text-gray-800 font-bold break-all">${data.email}</span>
+                                <span class="font-mono text-amber-600 text-[10px]">Pass: ${data.password || 'N/A'}</span>
+                            </div>
+                            <div class="grid grid-cols-2 text-[11px] text-gray-600">
+                                <div>Ledger: <strong class="text-green-600">₹${(data.balance || 0).toFixed(2)}</strong></div>
+                                <div>Time: <strong>${data.activeAppTime || 0}s</strong></div>
+                            </div>
+                            ${profileHtml}
+                            <div class="grid grid-cols-3 gap-1.5 pt-1.5 border-t">
+                                <button onclick="adminEditBalance('${uid}')" class="bg-white border rounded py-1 text-[10px] hover:bg-gray-50">Edit Bal</button>
+                                <button onclick="adminToggleBlock('${uid}','${data.status||'active'}')" class="bg-amber-50 text-amber-700 border border-amber-200 rounded py-1 text-[10px] hover:bg-amber-100">${data.status === 'blocked' ? 'Unblock' : 'Block'}</button>
+                                <button onclick="adminDeleteUser('${uid}')" class="bg-red-50 text-red-600 border border-red-200 rounded py-1 text-[10px] hover:bg-red-100">Delete</button>
+                            </div>
+                        `;
+                        usersDiv.appendChild(row);
+                    });
+                }
+            } catch (e) { /* ignore */ }
+
+            // Payouts
+            const pendingDiv = $('admin-payouts-list');
+            const completedDiv = $('admin-completed-payouts-list');
+            pendingDiv.innerHTML = '';
+            completedDiv.innerHTML = '';
+
+            try {
+                const snap = await get(ref(db, 'payouts'));
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const id = child.key;
+                        const data = child.val();
+                        const status = data.status || 'pending';
+
+                        if (status === 'pending') {
+                            const card = document.createElement('div');
+                            card.className = 'bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-1.5';
+                            card.innerHTML = `
+                                <div class="flex justify-between font-bold">
+                                    <span>${data.email}</span>
+                                    <span class="text-green-600">₹${(data.amount || 0).toFixed(2)}</span>
+                                </div>
+                                <div class="text-[10px] text-gray-500">${data.fullName || 'N/A'} | ${data.redeemMethod || 'N/A'}</div>
+                                <div class="flex gap-2 text-[11px]">
+                                    <button onclick="adminApprovePayout('${id}')" class="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-500">Approve</button>
+                                    <button onclick="adminRejectPayout('${id}','${data.uid}',${data.grossCharged||0})" class="flex-1 bg-red-50 text-red-600 border py-1 rounded hover:bg-red-100">Reject</button>
+                                </div>
+                            `;
+                            pendingDiv.appendChild(card);
+                        } else {
+                            const card = document.createElement('div');
+                            card.className = 'bg-gray-50 p-2 border rounded flex justify-between text-[11px]';
+                            card.innerHTML = `<span>${data.email}</span><span class="text-green-600 font-bold">₹${(data.amount||0).toFixed(2)} (${status})</span>`;
+                            completedDiv.appendChild(card);
+                        }
+                    });
+                }
+            } catch (e) { /* ignore */ }
+        }
+
+        // Admin actions (exposed to window)
+        window.adminEditBalance = async (uid) => {
+            const snap = await get(ref(db, 'users/' + uid));
+            if (!snap.exists()) return showToast('User not found.', 'error');
+            const cur = snap.val().balance || 0;
+            const input = prompt('Enter new balance:', cur);
+            if (input === null) return;
+            const val = parseFloat(input);
+            if (isNaN(val)) return showToast('Invalid number.', 'error');
+            await update(ref(db, 'users/' + uid), { balance: val });
+            showToast('Balance updated.', 'success');
+            renderAdminPanel();
         };
 
+        window.adminToggleBlock = async (uid, status) => {
+            const newStatus = status === 'blocked' ? 'active' : 'blocked';
+            await update(ref(db, 'users/' + uid), { status: newStatus });
+            showToast(`User ${newStatus === 'blocked' ? 'blocked' : 'unblocked'}.`, 'success');
+            renderAdminPanel();
+        };
+
+        window.adminDeleteUser = async (uid) => {
+            if (!confirm('Permanently delete this user?')) return;
+            await remove(ref(db, 'users/' + uid));
+            showToast('User deleted.', 'success');
+            renderAdminPanel();
+        };
+
+        window.adminApprovePayout = async (id) => {
+            if (!confirm('Approve this withdrawal?')) return;
+            await update(ref(db, 'payouts/' + id), { status: 'completed' });
+            showToast('Payout approved.', 'success');
+            renderAdminPanel();
+        };
+
+        window.adminRejectPayout = async (id, uid, gross) => {
+            if (!confirm('Reject and refund this payout?')) return;
+            const snap = await get(ref(db, 'users/' + uid));
+            if (snap.exists()) {
+                const bal = snap.val().balance || 0;
+                await update(ref(db, 'users/' + uid), { balance: bal + gross });
+            }
+            await update(ref(db, 'payouts/' + id), { status: 'rejected' });
+            showToast('Payout rejected, funds refunded.', 'success');
+            renderAdminPanel();
+        };
+
+        // -------- SCREEN SWITCH --------
+        window.switchScreen = (screen) => {
+            document.querySelectorAll('.user-screen').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+            const target = $('screen-' + screen);
+            if (target) target.classList.add('active');
+
+            const navBtn = $('nav-' + screen);
+            if (navBtn) navBtn.classList.add('active');
+
+            if (screen === 'wallet') {
+                fetchUserData();
+                fetchUserHistory();
+            }
+            if (screen === 'admin' && currentUser && currentUser.email === ADMIN_EMAIL) {
+                renderAdminPanel();
+            }
+        };
+
+        // -------- MIDNIGHT RESET --------
+        function startMidnightTimer() {
+            setInterval(async () => {
+                const now = new Date();
+                const h = String(23 - now.getHours()).padStart(2, '0');
+                const m = String(59 - now.getMinutes()).padStart(2, '0');
+                const s = String(59 - now.getSeconds()).padStart(2, '0');
+                $('header-timer-countdown').textContent = `Reset: ${h}:${m}:${s}`;
+
+                if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+                    if (currentUser) {
+                        showLoading('Midnight reset…');
+                        await update(ref(db, 'users/' + currentUser.uid), { activeAppTime: 0 });
+                        totalActiveSeconds = 0;
+                        clearKodularTokens();
+                        await fetchUserData();
+                        hideLoading();
+                        showToast('Daily timer reset.', 'info');
+                    }
+                }
+            }, 1000);
+        }
+
+        // -------- AUTO-LOGOUT (inactivity) --------
+        function resetLogoutTimer() {
+            if (logoutTimer) clearTimeout(logoutTimer);
+            logoutTimer = setTimeout(() => {
+                if (currentUser) {
+                    showToast('Logged out due to inactivity.', 'warning');
+                    logout();
+                }
+            }, 30 * 60 * 1000); // 30 min
+        }
+
+        // -------- AUTH STATE --------
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                if(currentUser && currentUser.uid === user.uid) { toggleAuthButtonLoadingState(false); return; }
-                showGlobalLoadingAnimation("Syncing database node...");
                 currentUser = user;
-                
-                const userRefPath = ref(rtdb, 'users/' + currentUser.uid);
-                const checkBlock = await get(userRefPath);
-                
-                if(checkBlock.exists()) {
-                    const profile = checkBlock.val();
-                    if(profile.status === "blocked") {
-                        alert("Profile Blocked."); signOut(auth); hideGlobalLoadingAnimation(); return;
-                    }
-                    await update(userRefPath, { lastActiveTimestamp: Date.now() });
+                showLoading('Loading dashboard…');
+
+                // Check if blocked
+                const snap = await get(ref(db, 'users/' + user.uid));
+                if (snap.exists() && snap.val().status === 'blocked') {
+                    showToast('Your account has been suspended.', 'error');
+                    await signOut(auth);
+                    hideLoading();
+                    return;
                 }
 
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('user-app').classList.remove('hidden');
-                document.getElementById('referral-code-display').innerText = currentUser.uid;
+                $('auth-screen').classList.add('hidden');
+                $('user-app').classList.remove('hidden');
+                $('referral-code-display').textContent = user.uid;
 
-                if(currentUser.email.toLowerCase() === ADMIN_EMAIL) {
-                    document.getElementById('nav-admin').classList.remove('hidden');
+                if (user.email === ADMIN_EMAIL) {
+                    $('nav-admin').classList.remove('hidden');
                 }
-                
+
                 await fetchUserData();
-                await fetchUserWithdrawalHistory();
-                await checkAndRecoverInterruptedSession();
-                
-                if(currentUser.email.toLowerCase() === ADMIN_EMAIL) window.invokeSystemAdminModule();
-                
-                toggleAuthButtonLoadingState(false);
-                hideGlobalLoadingAnimation();
+                await fetchUserHistory();
+                await syncConfig();
+
+                // Recover session
+                await recoverSession();
+
+                // Render admin if needed
+                if (user.email === ADMIN_EMAIL) {
+                    await renderAdminPanel();
+                    // auto-switch to admin if admin wants
+                }
+
+                // Switch to tasks by default
+                switchScreen('tasks');
+
+                hideLoading();
+                resetLogoutTimer();
+
+                // Listen for user activity to reset logout timer
+                ['click', 'keydown', 'scroll', 'touchstart'].forEach(ev => {
+                    document.addEventListener(ev, resetLogoutTimer);
+                });
+
             } else {
                 currentUser = null;
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('user-app').classList.add('hidden');
-                document.getElementById('nav-admin').classList.add('hidden');
-                toggleAuthButtonLoadingState(false);
-                hideGlobalLoadingAnimation();
+                isTracking = false;
+                if (trackingInterval) {
+                    clearInterval(trackingInterval);
+                    trackingInterval = null;
+                }
+                clearKodularTokens();
+                $('auth-screen').classList.remove('hidden');
+                $('user-app').classList.add('hidden');
+                $('nav-admin').classList.add('hidden');
+                hideLoading();
             }
         });
 
-        async function fetchUserData() {
-            if(!currentUser) return;
-            const snapshot = await get(ref(rtdb, 'users/' + currentUser.uid));
-            if(snapshot.exists()) {
-                userData = snapshot.val();
-                document.getElementById('global-balance').innerText = (userData.balance || 0).toFixed(2);
-                document.getElementById('wallet-balance-display').innerText = "₹ " + (userData.balance || 0).toFixed(2);
-                document.getElementById('live-timer-progress').innerText = `${userData.activeAppTime || 0}s / 43200s`;
-                
-                document.getElementById('user-full-name').value = userData.fullName || "";
-                document.getElementById('user-mobile-num').value = userData.mobileNumber || "";
-                document.getElementById('user-email-id').value = userData.emailId || "";
-                if(userData.redeemMethod) document.getElementById('user-redeem-method').value = userData.redeemMethod;
-                
-                toggleRechargeNoticeDisplay();
-                recalculateGstOverheadDisplay();
-            }
-        }
+        // -------- INIT --------
+        window.addEventListener('load', () => {
+            showLoading('Initializing…');
+            startMidnightTimer();
+            // set default auth mode
+            setAuthMode('login');
+            // load config
+            syncConfig().then(() => {
+                hideLoading();
+            }).catch(() => hideLoading());
+        });
 
-        async function fetchUserWithdrawalHistory() {
-            if(!currentUser) return;
-            const historyBox = document.getElementById('user-withdrawal-history-box');
-            try {
-                const paySnap = await get(ref(rtdb, 'payouts'));
-                historyBox.innerHTML = ""; let itemFound = false;
+        // expose some functions globally
+        window.fetchUserData = fetchUserData;
+        window.fetchUserHistory = fetchUserHistory;
+        window.renderAdminPanel = renderAdminPanel;
+        window.syncConfig = syncConfig;
 
-                if (paySnap.exists()) {
-                    paySnap.forEach(snap => {
-                        const data = snap.val();
-                        if (data.uid === currentUser.uid) {
-                            itemFound = true;
-                            const record = document.createElement('div');
-                            record.className = "bg-gray-50 p-2.5 rounded-lg border border-gray-100 flex flex-col gap-1";
-                            let badgeColor = data.status === "completed" ? "bg-green-50 text-green-700 border-green-200" : (data.status === "rejected" ? "bg-red-50 text-red-600 border-red-200" : "bg-amber-50 text-amber-700 border-amber-200");
-                            
-                            record.innerHTML = `
-                                <div class="flex justify-between items-center">
-                                    <span class="font-bold text-gray-800">₹ ${data.amount.toFixed(2)}</span>
-                                    <span class="px-2 py-0.5 border text-[9px] font-bold rounded uppercase ${badgeColor}">${data.status || 'pending'}</span>
-                                </div>`;
-                            historyBox.appendChild(record);
-                        }
-                    });
-                }
-                if(!itemFound) historyBox.innerHTML = `<p class="text-gray-400 text-center py-2">No transaction history recorded.</p>`;
-            } catch(e) { console.log("History vector load delay exception handled."); }
-        }
-
-        window.switchUserScreenLayout = (screenId) => {
-            document.querySelectorAll('.user-screen').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-[#0b57d0]', 'text-gray-400'));
-            document.getElementById(`screen-${screenId}`).classList.remove('hidden');
-            document.getElementById(`nav-${screenId}`).classList.replace('text-gray-400', 'text-[#0b57d0]');
-            if(screenId === 'wallet') { fetchUserData(); fetchUserWithdrawalHistory(); }
-        };
-
-        window.dispatchWithdrawalMatrixRequest = async () => {
-            const currentBal = userData.balance || 0;
-            const baseAmount = parseFloat(document.getElementById('user-payout-amount').value) || 0;
-            
-            if(baseAmount < 300 || baseAmount > 1000) return alert("Bound Failure: Out of system threshold constraints (₹300 - ₹1000).");
-            if(!userData.fullName || !userData.mobileNumber || !userData.emailId) return alert("Validation Profile settings parameters missing.");
-
-            const gstTaxAmount = baseAmount * 0.18;
-            const grossDeductibleTotal = baseAmount + gstTaxAmount;
-
-            if (currentBal < grossDeductibleTotal) return alert("Insufficient Ledger Funds Available.");
-
-            try {
-                showGlobalLoadingAnimation("Processing execution queue...");
-                const payoutRef = push(ref(rtdb, 'payouts'));
-                await set(payoutRef, {
-                    uid: currentUser.uid, email: currentUser.email, amount: baseAmount,
-                    gstLevied: gstTaxAmount, grossCharged: grossDeductibleTotal,
-                    fullName: userData.fullName, mobileNumber: userData.mobileNumber,
-                    emailId: userData.emailId, redeemMethod: userData.redeemMethod,
-                    status: "pending", timestamp: Date.now()
-                });
-                
-                await update(ref(rtdb, `users/${currentUser.uid}`), { balance: currentBal - grossDeductibleTotal });
-                alert("Withdrawal execution successfully routed to admin review arrays.");
-                await fetchUserData(); await fetchUserWithdrawalHistory(); hideGlobalLoadingAnimation();
-            } catch (err) { alert("Pipeline interface routing breakdown."); hideGlobalLoadingAnimation(); }
-        };
-
-        window.commitUserGatewayProfile = async () => {
-            const fName = document.getElementById('user-full-name').value.trim();
-            const mNum = document.getElementById('user-mobile-num').value.trim();
-            const eId = document.getElementById('user-email-id').value.trim();
-            const rMethod = document.getElementById('user-redeem-method').value;
-
-            if(!fName || !mNum || !eId) return alert("Data fields cannot contain empty configurations.");
-
-            showGlobalLoadingAnimation("Committing information properties...");
-            await update(ref(rtdb, 'users/' + currentUser.uid), { fullName: fName, mobileNumber: mNum, emailId: eId, redeemMethod: rMethod });
-            alert("Profile properties committed."); await fetchUserData(); hideGlobalLoadingAnimation();
-        };
-
-        // ADMIN TERMINAL ENGINE SUITE FUNCTIONS
-        window.commitGlobalSystemParameters = async () => {
-            const referRewardVal = parseFloat(document.getElementById('admin-global-refer-reward').value) || 15.00;
-            showGlobalLoadingAnimation("Configuring dynamic parameters...");
-            await set(ref(rtdb, 'system_config'), { referralAmount: referRewardVal });
-            globalReferValue = referRewardVal;
-            alert(`Dynamic System Configuration Matrix Updated. New Sign Up Referral Reward Set To: ৳${referRewardVal}`);
-            hideGlobalLoadingAnimation();
-        };
-
-        window.invokeSystemAdminModule = async () => {
-            if(currentUser.email.toLowerCase() !== ADMIN_EMAIL) return;
-            const usersControlDiv = document.getElementById('admin-user-management-node'); 
-            usersControlDiv.innerHTML = "";
-            
-            const usersSnap = await get(ref(rtdb, 'users'));
-            if(usersSnap.exists()) {
-                usersSnap.forEach(snap => {
-                    const uId = snap.key; const uData = snap.val();
-                    if(uData.email !== ADMIN_EMAIL) {
-                        const row = document.createElement('div');
-                        row.className = "bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2 text-xs flex flex-col";
-                        row.innerHTML = `
-                            <div class="flex flex-col border-b border-gray-200/60 pb-1">
-                                <span class="font-mono text-gray-800 font-bold break-all">User: ${uData.email}</span>
-                                <span class="font-mono text-amber-600 text-[10px]">Pass: ${uData.password || 'N/A'}</span>
-                            </div>
-                            <div class="grid grid-cols-2 text-[11px] text-gray-600">
-                                <div>Ledger: <strong class="text-green-600">₹ ${(uData.balance || 0).toFixed(2)}</strong></div>
-                                <div>Time Trace: <strong>${uData.activeAppTime || 0}s</strong></div>
-                            </div>
-                            <div class="grid grid-cols-3 gap-1.5 pt-1.5 border-t">
-                                <button onclick="modifyUserNodeBalance('${uId}', ${(uData.balance || 0)})" class="bg-white border rounded py-1 text-[10px]">Edit Balance</button>
-                                <button onclick="toggleUserNodeBlock('${uId}', '${uData.status || 'active'}')" class="bg-amber-50 text-amber-700 border border-amber-200 rounded py-1 text-[10px]">${uData.status === 'blocked' ? 'Unblock':'Block'}</button>
-                                <button onclick="deleteUserNodeData('${uId}')" class="bg-red-50 text-red-600 border border-red-200 rounded py-1 text-[10px]">Delete</button>
-                            </div>`;
-                        usersControlDiv.appendChild(row);
-                    }
-                });
-            }
-
-            const payoutsDiv = document.getElementById('admin-payouts-list'); 
-            const completedPayoutsDiv = document.getElementById('admin-completed-payouts-list');
-            payoutsDiv.innerHTML = ""; completedPayoutsDiv.innerHTML = "";
-            
-            const paySnap = await get(ref(rtdb, 'payouts'));
-            if(paySnap.exists()) {
-                paySnap.forEach(snap => {
-                    const data = snap.val(); const payId = snap.key;
-                    if (data.status === "pending" || !data.status) {
-                        const card = document.createElement('div');
-                        card.className = "bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-1.5";
-                        card.innerHTML = `
-                            <div class="flex justify-between font-bold"><span>${data.email}</span><span class="text-green-600">₹ ${data.amount}</span></div>
-                            <div class="text-[10px] text-gray-500">Name: ${data.fullName} | Method: ${data.redeemMethod}</div>
-                            <div class="flex gap-2 text-[11px]">
-                                <button onclick="approvePayoutRequest('${payId}')" class="flex-1 bg-green-600 text-white py-1 rounded">Approve</button>
-                                <button onclick="rejectPayoutRequest('${payId}', '${data.uid}', ${data.grossCharged})" class="flex-1 bg-red-50 text-red-600 border py-1 rounded">Reject</button>
-                            </div>`;
-                        payoutsDiv.appendChild(card);
-                    } else {
-                        const card = document.createElement('div');
-                        card.className = "bg-gray-50 p-2 border rounded flex justify-between text-[11px]";
-                        card.innerHTML = `<span>${data.email}</span><span class="text-green-600 font-bold">₹ ${data.amount} (${data.status})</span>`;
-                        completedPayoutsDiv.appendChild(card);
-                    }
-                });
-            }
-        };
-
-        window.modifyUserNodeBalance = async (uid, curBal) => {
-            const inputVal = prompt(`Enter new balance ledger parameter allocation values:`, curBal);
-            if(inputVal === null || inputVal.trim() === "") return;
-            await update(ref(rtdb, `users/${uid}`), { balance: parseFloat(inputVal) });
-            window.invokeSystemAdminModule();
-        };
-
-        window.toggleUserNodeBlock = async (uid, currentStatus) => {
-            await update(ref(rtdb, `users/${uid}`), { status: currentStatus === "blocked" ? "active" : "blocked" });
-            window.invokeSystemAdminModule();
-        };
-
-        window.deleteUserNodeData = async (uid) => {
-            if(confirm("Wipe selected item permanent node directory structure?")) {
-                await remove(ref(rtdb, `users/${uid}`)); window.invokeSystemAdminModule();
-            }
-        };
-
-        window.approvePayoutRequest = async (payId) => {
-            if(confirm("Approve execution settlement logs structure?")) {
-                await update(ref(rtdb, `payouts/${payId}`), { status: "completed" }); window.invokeSystemAdminModule();
-            }
-        };
-
-        window.rejectPayoutRequest = async (payId, uid, grossChargedAmount) => {
-            if(confirm("Rollback layout transaction nodes?")) {
-                const uSnap = await get(ref(rtdb, `users/${uid}`));
-                if(uSnap.exists()) await update(ref(rtdb, `users/${uid}`), { balance: (uSnap.val().balance || 0) + grossChargedAmount });
-                await update(ref(rtdb, `payouts/${payId}`), { status: "rejected" }); window.invokeSystemAdminModule();
-            }
-        };
+        console.log('🚀 VSCOIN PREMIUM loaded successfully.');
     </script>
 </body>
 </html>
