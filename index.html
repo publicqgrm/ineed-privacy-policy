@@ -10,9 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
     <style>
+        /* ── RESET / BASE ── */
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
+        html,
         body {
             font-family: 'Google Sans', 'Roboto', sans-serif;
             background: #f1f3f4;
@@ -20,15 +24,27 @@
             user-select: none;
             margin: 0;
             min-height: 100vh;
+            /* force mobile-only */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background: #e8eaed;
         }
+
+        /* ── APP CONTAINER (mobile-only) ── */
         .app-container {
             max-width: 480px;
-            margin: 0 auto;
+            width: 100%;
             min-height: 100vh;
             background: #ffffff;
             position: relative;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.12);
+            margin: 0 auto;
+            border-left: 1px solid #e0e0e0;
+            border-right: 1px solid #e0e0e0;
         }
+
+        /* ── GOOGLE CARDS ── */
         .google-card {
             background: #ffffff;
             border-radius: 16px;
@@ -62,6 +78,8 @@
             opacity: 0.65;
             cursor: not-allowed;
         }
+
+        /* ── SPINNER ── */
         @keyframes spinner-rotate {
             100% {
                 transform: rotate(360deg);
@@ -90,6 +108,8 @@
             stroke-linecap: round;
             animation: spinner-dash 1.5s ease-in-out infinite;
         }
+
+        /* ── TOAST ── */
         #toast-container {
             position: fixed;
             top: 20px;
@@ -105,9 +125,9 @@
         }
         .toast {
             pointer-events: auto;
-            padding: 14px 20px;
+            padding: 12px 16px;
             border-radius: 12px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             display: flex;
@@ -152,6 +172,8 @@
             cursor: pointer;
             opacity: 0.7;
         }
+
+        /* ── NAV ── */
         .nav-btn.active {
             color: #0b57d0;
         }
@@ -161,33 +183,31 @@
         .nav-btn {
             transition: color 0.15s;
         }
-        .balance-pulse {
-            transition: all 0.3s ease;
-        }
-        .balance-pulse.pulse {
-            transform: scale(1.02);
-        }
+
+        /* ── USER SCREENS ── */
         .user-screen {
             display: none;
         }
         .user-screen.active {
             display: block;
         }
+
+        /* ── TASK GRID (compact mobile) ── */
         .task-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 6px;
         }
         .task-item {
             background: #fff;
-            border-radius: 14px;
-            padding: 10px 4px;
+            border-radius: 12px;
+            padding: 6px 2px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.15s;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+            transition: all 0.12s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
             border: 1px solid #f0f0f0;
-            min-height: 80px;
+            min-height: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -199,46 +219,76 @@
             border-color: #dadce0;
         }
         .task-item:active {
-            transform: scale(0.96);
+            transform: scale(0.94);
         }
         .task-item i {
-            font-size: 22px;
-            margin-bottom: 4px;
+            font-size: 18px;
+            margin-bottom: 2px;
         }
         .task-item span {
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 500;
             color: #3c4043;
-            line-height: 1.2;
+            line-height: 1.1;
         }
         .task-item .cat-tag {
-            font-size: 6px;
+            font-size: 5.5px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             background: #e8eaed;
-            padding: 1px 6px;
-            border-radius: 10px;
-            margin-top: 2px;
+            padding: 0 5px;
+            border-radius: 8px;
+            margin-top: 1px;
             color: #5f6368;
             font-weight: 700;
         }
         .task-item.hidden-item {
             display: none;
         }
+
         @media (max-width: 420px) {
             .task-grid {
-                gap: 6px;
+                gap: 4px;
             }
             .task-item {
-                min-height: 68px;
-                padding: 6px 2px;
+                min-height: 52px;
+                padding: 4px 1px;
+                border-radius: 10px;
             }
             .task-item i {
-                font-size: 18px;
+                font-size: 15px;
             }
             .task-item span {
-                font-size: 8px;
+                font-size: 7px;
             }
+            .task-item .cat-tag {
+                font-size: 5px;
+                padding: 0 4px;
+            }
+        }
+        @media (max-width: 360px) {
+            .task-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 3px;
+            }
+            .task-item {
+                min-height: 44px;
+                padding: 3px 1px;
+            }
+            .task-item i {
+                font-size: 13px;
+            }
+            .task-item span {
+                font-size: 6px;
+            }
+        }
+
+        /* ── MISC ── */
+        .balance-pulse {
+            transition: all 0.3s ease;
+        }
+        .balance-pulse.pulse {
+            transform: scale(1.02);
         }
         .admin-user-card {
             transition: all 0.15s;
@@ -278,18 +328,19 @@
             font-size: 8px;
         }
         .profile-avatar {
-            width: 64px;
-            height: 64px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             background: linear-gradient(135deg, #0b57d0, #1a73e8);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             text-transform: uppercase;
             box-shadow: 0 2px 8px rgba(11, 87, 208, 0.3);
+            flex-shrink: 0;
         }
         .settings-option {
             display: flex;
@@ -333,13 +384,14 @@
             background: #f1f3f4;
             border: none;
             border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 9px;
+            padding: 3px 10px;
+            font-size: 8px;
             font-weight: 500;
             color: #3c4043;
             cursor: pointer;
             transition: all 0.15s;
             white-space: nowrap;
+            flex-shrink: 0;
         }
         .cat-filter-btn.active {
             background: #0b57d0;
@@ -352,24 +404,27 @@
             position: relative;
         }
         .search-box input {
-            padding-left: 32px;
+            padding-left: 28px;
+            font-size: 11px;
+            padding-top: 6px;
+            padding-bottom: 6px;
         }
         .search-box i {
             position: absolute;
-            left: 12px;
+            left: 10px;
             top: 50%;
             transform: translateY(-50%);
             color: #9aa0a6;
-            font-size: 14px;
+            font-size: 12px;
         }
         .search-box .clear-search {
             position: absolute;
-            right: 12px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             color: #9aa0a6;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             display: none;
         }
         .search-box .clear-search.visible {
@@ -422,77 +477,160 @@
             font-weight: 500;
             color: #1f1f1f;
         }
+
+        /* ── LOADING OVERLAY ── */
+        #global-loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        #global-loading-overlay.show {
+            display: flex;
+        }
+
+        /* ── HIDE SCROLLBAR ── */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* ── balance card tweaks ── */
+        .balance-card {
+            background: linear-gradient(135deg, #0b57d0, #1a73e8);
+        }
+
+        /* timer badge */
+        .timer-badge {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* small helper */
+        .text-xxs {
+            font-size: 8px;
+        }
+        .gap-1\.5 {
+            gap: 4px;
+        }
+        .gap-0\.5 {
+            gap: 2px;
+        }
+
+        /* tracking status pulse */
+        .status-pulse {
+            animation: pulse-dot 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* Admin panel scroll */
+        #admin-user-management-node,
+        #admin-payouts-list,
+        #admin-completed-payouts-list,
+        #user-withdrawal-history-box {
+            scrollbar-width: thin;
+        }
+        #admin-user-management-node::-webkit-scrollbar,
+        #admin-payouts-list::-webkit-scrollbar,
+        #admin-completed-payouts-list::-webkit-scrollbar,
+        #user-withdrawal-history-box::-webkit-scrollbar {
+            width: 4px;
+        }
+        #admin-user-management-node::-webkit-scrollbar-thumb,
+        #admin-payouts-list::-webkit-scrollbar-thumb,
+        #admin-completed-payouts-list::-webkit-scrollbar-thumb,
+        #user-withdrawal-history-box::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 
     <div id="toast-container"></div>
 
-    <div id="global-loading-overlay" class="hidden fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center space-y-4">
-        <svg class="animate-google-spinner w-14 h-14" viewBox="0 0 50 50">
+    <div id="global-loading-overlay">
+        <svg class="animate-google-spinner w-12 h-12" viewBox="0 0 50 50">
             <circle class="animate-google-spinner-circle stroke-[#0b57d0]" cx="25" cy="25" r="20" fill="none" stroke-width="4" />
         </svg>
-        <p id="loading-overlay-text" class="text-sm font-medium text-gray-600 tracking-wide">Syncing secure connection…</p>
+        <p id="loading-overlay-text" class="text-xs font-medium text-gray-600 tracking-wide">Syncing secure connection…</p>
     </div>
 
-    <div class="app-container flex flex-col justify-between min-h-screen border-x border-gray-100">
+    <div class="app-container flex flex-col justify-between min-h-screen">
 
         <!-- ===== AUTH SCREEN ===== -->
-        <div id="auth-screen" class="flex-1 flex flex-col items-center justify-center px-6 py-8">
-            <div class="w-full max-w-sm space-y-6 text-center">
-                <h1 class="text-5xl font-bold tracking-tight mb-1">
+        <div id="auth-screen" class="flex-1 flex flex-col items-center justify-center px-5 py-8">
+            <div class="w-full max-w-sm space-y-5 text-center">
+                <h1 class="text-4xl font-bold tracking-tight">
                     <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span>
                     <span class="text-[#FBBC05]">C</span><span class="text-[#4285F4]">O</span>
                     <span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
                 </h1>
-                <p class="text-[11px] text-gray-500 font-medium tracking-[0.2em] uppercase">Premium Rewards Ecosystem</p>
+                <p class="text-[10px] text-gray-500 font-medium tracking-[0.2em] uppercase">Premium Rewards Ecosystem</p>
 
-                <div class="google-card p-6 text-left space-y-4">
-                    <div class="flex border-b border-gray-200 mb-3">
-                        <button id="tab-login" onclick="setAuthMode('login')" class="flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all">Sign In</button>
-                        <button id="tab-signup" onclick="setAuthMode('signup')" class="flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all">Create Account</button>
+                <div class="google-card p-5 text-left space-y-4">
+                    <div class="flex border-b border-gray-200 mb-2">
+                        <button id="tab-login" onclick="setAuthMode('login')" class="flex-1 pb-2.5 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all">Sign In</button>
+                        <button id="tab-signup" onclick="setAuthMode('signup')" class="flex-1 pb-2.5 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all">Create Account</button>
                     </div>
 
-                    <!-- Login Fields -->
+                    <!-- Login -->
                     <div id="login-fields">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
-                            <input type="email" id="auth-email" placeholder="example@gmail.com" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="email" />
+                            <input type="email" id="auth-email" placeholder="example@gmail.com" class="w-full p-2.5 google-input text-sm text-gray-900 focus:outline-none" autocomplete="email" />
                         </div>
-                        <div class="mt-3">
+                        <div class="mt-2.5">
                             <label class="block text-xs font-medium text-gray-600 mb-1">Password</label>
-                            <input type="password" id="auth-password" placeholder="Enter password" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="current-password" />
+                            <input type="password" id="auth-password" placeholder="Enter password" class="w-full p-2.5 google-input text-sm text-gray-900 focus:outline-none" autocomplete="current-password" />
                         </div>
-                        <div id="forgot-password-box" class="text-right mt-2">
+                        <div id="forgot-password-box" class="text-right mt-1.5">
                             <button onclick="triggerPasswordReset()" class="text-xs font-medium text-[#0b57d0] hover:underline">Forgot password?</button>
                         </div>
                     </div>
 
-                    <!-- Signup Fields -->
-                    <div id="signup-fields" class="hidden space-y-3">
+                    <!-- Signup -->
+                    <div id="signup-fields" class="hidden space-y-2.5">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Full Name</label>
-                            <input type="text" id="signup-fullname" placeholder="Enter your full name" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" />
+                            <input type="text" id="signup-fullname" placeholder="Enter your full name" class="w-full p-2.5 google-input text-sm text-gray-900 focus:outline-none" />
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
-                            <input type="email" id="signup-email" placeholder="example@gmail.com" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="email" />
+                            <input type="email" id="signup-email" placeholder="example@gmail.com" class="w-full p-2.5 google-input text-sm text-gray-900 focus:outline-none" autocomplete="email" />
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Mobile Number</label>
-                            <input type="tel" id="signup-mobile" placeholder="Enter mobile number" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" />
+                            <input type="tel" id="signup-mobile" placeholder="Enter mobile number" class="w-full p-2.5 google-input text-sm text-gray-900 focus:outline-none" />
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Password</label>
-                            <input type="password" id="signup-password" placeholder="Min 6 characters" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" autocomplete="new-password" />
+                            <input type="password" id="signup-password" placeholder="Min 6 characters" class="w-full p-2.5 google-input text-sm text-gray-900 focus:outline-none" autocomplete="new-password" />
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Referral Code <span class="text-gray-400 font-normal">(optional)</span></label>
-                            <input type="text" id="signup-referral" placeholder="Enter referrer's UID" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none" />
+                            <input type="text" id="signup-referral" placeholder="Enter referrer's UID" class="w-full p-2.5 google-input text-sm text-gray-900 focus:outline-none" />
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Withdrawal Method</label>
-                            <select id="signup-method" class="w-full p-3 google-input text-sm text-gray-900 focus:outline-none">
+                            <select id="signup-method" class="w-full p-2.5 google-input text-sm text-gray-900 focus:outline-none">
                                 <option value="Mobile Recharge">Mobile Recharge</option>
                                 <option value="Redeem Code">Redeem Code</option>
                                 <option value="Flipkart Gift Card">Flipkart Gift Card</option>
@@ -501,7 +639,7 @@
                         </div>
                     </div>
 
-                    <button onclick="handleAuth()" id="btn-auth-trigger" class="w-full google-btn-blue p-3.5 text-sm mt-2 focus:outline-none flex items-center justify-center gap-2">
+                    <button onclick="handleAuth()" id="btn-auth-trigger" class="w-full google-btn-blue p-3 text-sm mt-1 focus:outline-none flex items-center justify-center gap-2">
                         <span id="btn-auth-text">Continue</span>
                         <svg id="btn-auth-spinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
@@ -514,65 +652,67 @@
 
         <!-- ===== DASHBOARD ===== -->
         <div id="user-app" class="hidden flex-1 flex-col">
-            <header class="bg-white border-b border-gray-100 p-4 sticky top-0 z-50 flex justify-between items-center">
-                <span class="text-2xl font-bold tracking-tight">
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-100 p-3 sticky top-0 z-50 flex justify-between items-center">
+                <span class="text-xl font-bold tracking-tight">
                     <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span>
                     <span class="text-[#FBBC05]">C</span><span class="text-[#4285F4]">O</span>
                     <span class="text-[#34A853]">I</span><span class="text-[#EA4335]">N</span>
                 </span>
-                <div class="flex items-center gap-2">
-                    <span id="header-timer-countdown" class="text-[10px] bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-mono font-bold border border-red-200">Reset: --:--:--</span>
+                <div class="flex items-center gap-1.5">
+                    <span id="header-timer-countdown" class="text-[9px] bg-red-50 text-red-600 px-2 py-0.5 rounded-full font-mono font-bold border border-red-200">Reset: --:--:--</span>
                 </div>
             </header>
 
             <!-- Balance Card -->
-            <div class="mx-4 mt-4 bg-gradient-to-br from-[#0b57d0] to-[#1a73e8] p-6 rounded-2xl text-white shadow-lg relative overflow-hidden">
-                <div class="absolute right-[-10px] bottom-[-20px] opacity-10 text-9xl font-bold">₹</div>
-                <p class="text-xs font-medium tracking-widest text-blue-100 uppercase">Available Ledger Balance</p>
-                <div class="flex items-baseline gap-1 mt-2">
-                    <span class="text-2xl font-medium">₹</span>
-                    <span id="global-balance" class="text-5xl font-bold tracking-tight balance-pulse">0.00</span>
+            <div class="mx-3 mt-3 balance-card p-4 rounded-2xl text-white shadow-lg relative overflow-hidden">
+                <div class="absolute right-[-10px] bottom-[-20px] opacity-10 text-8xl font-bold">₹</div>
+                <p class="text-[10px] font-medium tracking-widest text-blue-100 uppercase">Available Ledger Balance</p>
+                <div class="flex items-baseline gap-1 mt-1">
+                    <span class="text-xl font-medium">₹</span>
+                    <span id="global-balance" class="text-4xl font-bold tracking-tight balance-pulse">0.00</span>
                 </div>
-                <div class="mt-4 flex justify-between items-center bg-white/10 p-2.5 rounded-xl border border-white/10 text-xs">
+                <div class="mt-3 flex justify-between items-center bg-white/10 p-2 rounded-xl border border-white/10 text-[10px]">
                     <span>Daily Progress:</span>
                     <span class="font-mono font-bold" id="live-timer-progress">0s / 43200s</span>
                 </div>
             </div>
 
-            <!-- Status -->
-            <div id="tracking-status-box" class="mx-4 mt-3 p-3 rounded-xl border border-gray-100 bg-gray-50 flex flex-col gap-1.5">
+            <!-- Status Radar -->
+            <div id="tracking-status-box" class="mx-3 mt-2 p-2.5 rounded-xl border border-gray-100 bg-gray-50 flex flex-col gap-1">
                 <div class="flex justify-between items-center">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Gateway Status Radar</span>
-                    <span id="status-badge" class="bg-gray-200 text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Idle</span>
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Gateway Status</span>
+                    <span id="status-badge" class="bg-gray-200 text-gray-700 text-[8px] font-bold px-2 py-0.5 rounded-full uppercase">Idle</span>
                 </div>
-                <div class="grid grid-cols-2 gap-2 text-xs border-t border-gray-200/60 pt-2">
+                <div class="grid grid-cols-2 gap-1 text-[10px] border-t border-gray-200/60 pt-1.5">
                     <div class="text-gray-600 font-medium">Active Session: <span id="live-timer" class="font-mono font-bold text-gray-900">00:00:00</span></div>
                     <div class="text-right text-gray-600 font-medium">Session Earned: <span id="session-earned" class="font-mono font-bold text-green-600">₹0.0000</span></div>
                 </div>
             </div>
 
-            <main class="p-4 flex-1 space-y-4 pb-28 overflow-y-auto max-h-[calc(100vh-210px)]">
+            <!-- Main -->
+            <main class="p-3 flex-1 space-y-3 pb-28 overflow-y-auto max-h-[calc(100vh-200px)]">
 
-                <!-- ===== HOME SCREEN (TASKS) ===== -->
-                <section id="screen-home" class="user-screen active space-y-4">
+                <!-- ===== HOME ===== -->
+                <section id="screen-home" class="user-screen active space-y-3">
                     <div class="flex gap-2">
-                        <div class="google-card p-3 flex-1 flex justify-between items-center text-xs">
+                        <div class="google-card p-2.5 flex-1 flex justify-between items-center text-[10px]">
                             <span class="font-bold text-[#0b57d0]"><i class="fa-solid fa-bolt mr-1"></i> Production Cap</span>
-                            <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded font-medium text-[11px]">₹30 / 12 Hrs</span>
+                            <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded font-medium text-[10px]">₹30 / 12 Hrs</span>
                         </div>
-                        <button onclick="claimDailyBonus()" class="bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 hover:bg-amber-100 transition-all">
+                        <button onclick="claimDailyBonus()" class="bg-amber-50 border border-amber-200 text-amber-700 px-3 py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1 hover:bg-amber-100 transition-all flex-shrink-0">
                             <i class="fa-solid fa-calendar-check"></i> Check-In
                         </button>
                     </div>
 
-                    <!-- Search & Category Filters -->
-                    <div class="space-y-2.5">
+                    <!-- Search + Filters -->
+                    <div class="space-y-2">
                         <div class="search-box relative">
                             <i class="fa-solid fa-search"></i>
-                            <input type="text" id="task-search" placeholder="Search apps..." class="w-full google-input p-2.5 text-xs focus:outline-none rounded-lg" oninput="filterTasks()" />
+                            <input type="text" id="task-search" placeholder="Search apps..." class="w-full google-input p-1.5 text-[11px] focus:outline-none rounded-lg" oninput="filterTasks()" />
                             <span id="clear-search-btn" class="clear-search" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></span>
                         </div>
-                        <div class="flex gap-1.5 overflow-x-auto pb-1 hide-scrollbar" id="category-filters">
+                        <div class="flex gap-1 overflow-x-auto pb-0.5 hide-scrollbar" id="category-filters">
                             <button class="cat-filter-btn active" data-cat="all" onclick="filterByCategory('all')">All</button>
                             <button class="cat-filter-btn" data-cat="social" onclick="filterByCategory('social')">Social</button>
                             <button class="cat-filter-btn" data-cat="islamic" onclick="filterByCategory('islamic')">Islamic</button>
@@ -585,197 +725,196 @@
                         </div>
                     </div>
 
+                    <!-- Task Grid -->
                     <div class="task-grid" id="task-grid"></div>
-                    <p class="text-[8px] text-gray-400 text-center mt-2"><i class="fa-regular fa-clock mr-1"></i> Tap any gateway to start earning — each session auto-credits to your ledger</p>
+                    <p class="text-[7px] text-gray-400 text-center mt-1"><i class="fa-regular fa-clock mr-1"></i> Tap any gateway to start earning — auto-credits to ledger</p>
                 </section>
 
-                <!-- ===== PROFILE SCREEN ===== -->
-                <section id="screen-profile" class="user-screen space-y-4">
-                    <div class="google-card p-5 space-y-4">
-                        <div class="flex items-center gap-4">
+                <!-- ===== PROFILE ===== -->
+                <section id="screen-profile" class="user-screen space-y-3">
+                    <div class="google-card p-4 space-y-3">
+                        <div class="flex items-center gap-3">
                             <div class="profile-avatar" id="profile-avatar-text">U</div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-bold text-gray-800 truncate" id="profile-display-name">User</p>
-                                <p class="text-[10px] text-gray-400 font-mono truncate" id="profile-display-uid">UID: —</p>
-                                <p class="text-[10px] text-gray-400" id="profile-display-email">—</p>
+                                <p class="text-[9px] text-gray-400 font-mono truncate" id="profile-display-uid">UID: —</p>
+                                <p class="text-[9px] text-gray-400" id="profile-display-email">—</p>
                             </div>
                         </div>
 
-                        <!-- Profile Stats -->
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-center">
-                                <p class="text-[9px] text-gray-400 font-medium">Total Invites</p>
+                        <div class="grid grid-cols-2 gap-1.5 text-[10px]">
+                            <div class="bg-gray-50 p-2 rounded-xl border border-gray-100 text-center">
+                                <p class="text-[8px] text-gray-400 font-medium">Total Invites</p>
                                 <p class="font-bold text-gray-800" id="profile-invites">0</p>
                             </div>
-                            <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-center">
-                                <p class="text-[9px] text-gray-400 font-medium">Referral Earnings</p>
+                            <div class="bg-gray-50 p-2 rounded-xl border border-gray-100 text-center">
+                                <p class="text-[8px] text-gray-400 font-medium">Referral Earnings</p>
                                 <p class="font-bold text-green-600" id="profile-referral-earnings">₹0.00</p>
                             </div>
-                            <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-center">
-                                <p class="text-[9px] text-gray-400 font-medium">Active Time</p>
+                            <div class="bg-gray-50 p-2 rounded-xl border border-gray-100 text-center">
+                                <p class="text-[8px] text-gray-400 font-medium">Active Time</p>
                                 <p class="font-bold text-gray-800" id="profile-active-time">0s</p>
                             </div>
-                            <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-center">
-                                <p class="text-[9px] text-gray-400 font-medium">Total Earned</p>
+                            <div class="bg-gray-50 p-2 rounded-xl border border-gray-100 text-center">
+                                <p class="text-[8px] text-gray-400 font-medium">Total Earned</p>
                                 <p class="font-bold text-blue-600" id="profile-total-earned">₹0.00</p>
                             </div>
                         </div>
 
-                        <!-- Profile Info Display -->
-                        <div class="border-t border-gray-200 pt-3 space-y-2">
-                            <div class="flex justify-between text-xs"><span class="text-gray-500">Full Name</span><span class="font-medium text-gray-800" id="profile-full-name">—</span></div>
-                            <div class="flex justify-between text-xs"><span class="text-gray-500">Mobile</span><span class="font-medium text-gray-800" id="profile-mobile">—</span></div>
-                            <div class="flex justify-between text-xs"><span class="text-gray-500">Email</span><span class="font-medium text-gray-800" id="profile-email-display">—</span></div>
-                            <div class="flex justify-between text-xs"><span class="text-gray-500">Withdrawal Method</span><span class="font-medium text-gray-800" id="profile-redeem-method">—</span></div>
-                            <div class="flex justify-between text-xs"><span class="text-gray-500">Referral Code (UID)</span><span class="font-medium text-gray-800 font-mono text-[10px]" id="profile-referral-code">—</span></div>
+                        <div class="border-t border-gray-200 pt-2.5 space-y-1.5 text-[10px]">
+                            <div class="flex justify-between"><span class="text-gray-500">Full Name</span><span class="font-medium text-gray-800" id="profile-full-name">—</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Mobile</span><span class="font-medium text-gray-800" id="profile-mobile">—</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Email</span><span class="font-medium text-gray-800" id="profile-email-display">—</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Withdrawal Method</span><span class="font-medium text-gray-800" id="profile-redeem-method">—</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Referral Code (UID)</span><span class="font-medium text-gray-800 font-mono text-[9px]" id="profile-referral-code">—</span></div>
                         </div>
-                        <button onclick="copyReferralCode()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium p-2.5 rounded-xl text-xs transition-all border border-gray-300 flex items-center justify-center gap-2">
+                        <button onclick="copyReferralCode()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium p-2 rounded-xl text-[10px] transition-all border border-gray-300 flex items-center justify-center gap-2">
                             <i class="fa-regular fa-copy"></i> Copy My UID
                         </button>
                     </div>
 
-                    <!-- Edit Profile Form -->
-                    <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-regular fa-pen-to-square text-[#0b57d0]"></i> Edit Profile</h3>
+                    <!-- Edit Profile -->
+                    <div class="google-card p-4 space-y-2.5">
+                        <h3 class="text-[10px] font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-regular fa-pen-to-square text-[#0b57d0]"></i> Edit Profile</h3>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Full Name</label>
-                            <input type="text" id="profile-edit-name" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" placeholder="Enter full name" />
+                            <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Full Name</label>
+                            <input type="text" id="profile-edit-name" class="w-full bg-white google-input p-2 text-[11px] focus:outline-none" placeholder="Enter full name" />
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Mobile Number</label>
-                            <input type="tel" id="profile-edit-mobile" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" placeholder="Enter mobile number" />
+                            <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Mobile Number</label>
+                            <input type="tel" id="profile-edit-mobile" class="w-full bg-white google-input p-2 text-[11px] focus:outline-none" placeholder="Enter mobile number" />
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Email ID</label>
-                            <input type="email" id="profile-edit-email" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none bg-gray-50 text-gray-500" disabled placeholder="Email cannot be changed" />
+                            <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Email ID</label>
+                            <input type="email" id="profile-edit-email" class="w-full bg-white google-input p-2 text-[11px] bg-gray-50 text-gray-500" disabled placeholder="Email cannot be changed" />
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">New Password <span class="text-gray-400 font-normal">(leave blank to keep current)</span></label>
-                            <input type="password" id="profile-edit-password" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" placeholder="Enter new password (min 6 chars)" />
+                            <label class="block text-[10px] font-medium text-gray-500 mb-0.5">New Password <span class="text-gray-400 font-normal">(leave blank to keep)</span></label>
+                            <input type="password" id="profile-edit-password" class="w-full bg-white google-input p-2 text-[11px] focus:outline-none" placeholder="Enter new password (min 6 chars)" />
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 mb-0.5">Withdrawal Method</label>
-                            <select id="profile-edit-method" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none">
+                            <label class="block text-[10px] font-medium text-gray-500 mb-0.5">Withdrawal Method</label>
+                            <select id="profile-edit-method" class="w-full bg-white google-input p-2 text-[11px] focus:outline-none">
                                 <option value="Mobile Recharge">Mobile Recharge</option>
                                 <option value="Redeem Code">Redeem Code</option>
                                 <option value="Flipkart Gift Card">Flipkart Gift Card</option>
                                 <option value="Amazon Gift Card">Amazon Gift Card</option>
                             </select>
                         </div>
-                        <button onclick="updateFullProfile()" class="w-full google-btn-blue text-white font-medium p-2.5 text-xs uppercase tracking-wider transition-all">Update Profile</button>
+                        <button onclick="updateFullProfile()" class="w-full google-btn-blue text-white font-medium p-2 text-[10px] uppercase tracking-wider transition-all">Update Profile</button>
                     </div>
                 </section>
 
-                <!-- ===== WITHDRAWAL SCREEN ===== -->
-                <section id="screen-withdrawal" class="user-screen space-y-4">
-                    <div class="google-card p-5 space-y-4">
-                        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <span class="text-xs text-gray-600 font-medium">Withdrawable Balance:</span>
+                <!-- ===== WITHDRAWAL ===== -->
+                <section id="screen-withdrawal" class="user-screen space-y-3">
+                    <div class="google-card p-4 space-y-3">
+                        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-200">
+                            <span class="text-[10px] text-gray-600 font-medium">Withdrawable Balance:</span>
                             <span id="wallet-balance-display" class="font-bold text-lg text-green-600">₹ 0.00</span>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Cashout Amount (₹300 – ₹1000)</label>
-                            <input type="number" id="user-payout-amount" oninput="recalcGst()" min="300" max="1000" class="w-full bg-white google-input p-3 text-sm font-bold text-gray-900 focus:outline-none" placeholder="Enter amount" />
+                            <label class="block text-[10px] font-bold text-gray-700 uppercase mb-1">Cashout Amount (₹300 – ₹1000)</label>
+                            <input type="number" id="user-payout-amount" oninput="recalcGst()" min="300" max="1000" class="w-full bg-white google-input p-2.5 text-sm font-bold text-gray-900 focus:outline-none" placeholder="Enter amount" />
                         </div>
-                        <div class="bg-gray-50/80 rounded-xl border border-gray-200 p-3 text-[11px] font-medium text-gray-600 space-y-1.5 shadow-inner">
+                        <div class="bg-gray-50/80 rounded-xl border border-gray-200 p-2.5 text-[10px] font-medium text-gray-600 space-y-1 shadow-inner">
                             <div class="flex justify-between"><span>Base Amount:</span><span id="display-base-val" class="font-mono text-gray-900 font-bold">₹0.00</span></div>
                             <div class="flex justify-between text-amber-600"><span>GST (18%):</span><span id="display-gst-tax" class="font-mono font-bold">+ ₹0.00</span></div>
                             <div class="flex justify-between border-t border-gray-200 pt-1 text-gray-900 font-bold"><span>Total Required:</span><span id="display-gross-total" class="font-mono text-blue-600">₹0.00</span></div>
                         </div>
-                        <button onclick="requestPayout()" class="w-full google-btn-blue text-white font-medium p-3.5 text-xs uppercase tracking-widest transition-all">Request Withdrawal</button>
+                        <button onclick="requestPayout()" class="w-full google-btn-blue text-white font-medium p-3 text-[10px] uppercase tracking-widest transition-all">Request Withdrawal</button>
                     </div>
 
-                    <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-[#0b57d0]"></i> Transaction History</h3>
-                        <div id="user-withdrawal-history-box" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1">
+                    <div class="google-card p-4 space-y-2.5">
+                        <h3 class="text-[10px] font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-[#0b57d0]"></i> Transaction History</h3>
+                        <div id="user-withdrawal-history-box" class="space-y-1.5 text-[10px] max-h-40 overflow-y-auto pr-1">
                             <p class="text-gray-400 text-center py-2">No transactions yet.</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- ===== SETTINGS SCREEN ===== -->
-                <section id="screen-settings" class="user-screen space-y-4">
-                    <div class="google-card p-4 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-red-500"></i> Security</h3>
+                <!-- ===== SETTINGS ===== -->
+                <section id="screen-settings" class="user-screen space-y-3">
+                    <div class="google-card p-4 space-y-2.5">
+                        <h3 class="text-[10px] font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-red-500"></i> Security</h3>
                         <div class="space-y-2">
-                            <input type="password" id="settings-new-password" placeholder="Enter new password (min 6 chars)" class="w-full bg-white google-input p-2.5 text-xs focus:outline-none" />
-                            <button onclick="updateUserPassword()" class="w-full bg-gray-900 text-white font-medium p-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-gray-800 transition-all">Update Password</button>
+                            <input type="password" id="settings-new-password" placeholder="Enter new password (min 6 chars)" class="w-full bg-white google-input p-2 text-[11px] focus:outline-none" />
+                            <button onclick="updateUserPassword()" class="w-full bg-gray-900 text-white font-medium p-2 rounded-xl text-[10px] uppercase tracking-wider hover:bg-gray-800 transition-all">Update Password</button>
                         </div>
                     </div>
 
                     <!-- Admin Panel -->
-                    <div id="admin-panel-container" class="hidden space-y-4">
-                        <div class="flex items-center gap-2 border-b border-red-200 pb-2">
+                    <div id="admin-panel-container" class="hidden space-y-3">
+                        <div class="flex items-center gap-2 border-b border-red-200 pb-1.5">
                             <i class="fa-solid fa-circle-nodes text-red-500 text-sm"></i>
                             <h2 class="text-sm font-bold text-red-600 uppercase tracking-widest">Admin Terminal</h2>
-                            <button onclick="refreshAdminPanel()" class="ml-auto bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-lg text-[10px] font-medium flex items-center gap-1 transition-all border border-gray-300">
-                                <i id="admin-refresh-icon" class="fa-solid fa-rotate text-[9px]"></i> Refresh
+                            <button onclick="refreshAdminPanel()" class="ml-auto bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-0.5 rounded-lg text-[9px] font-medium flex items-center gap-1 transition-all border border-gray-300">
+                                <i id="admin-refresh-icon" class="fa-solid fa-rotate text-[8px]"></i> Refresh
                             </button>
                         </div>
 
-                        <!-- System Parameters -->
-                        <div class="google-card p-4 space-y-3 bg-slate-900 text-white">
-                            <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-sliders"></i> System Parameters</h3>
+                        <!-- System Params -->
+                        <div class="google-card p-3.5 space-y-2.5 bg-slate-900 text-white">
+                            <h3 class="text-[10px] font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-sliders"></i> System Parameters</h3>
                             <div>
-                                <label class="block text-[10px] text-gray-400 font-medium mb-1">Referral Reward (₹)</label>
+                                <label class="block text-[9px] text-gray-400 font-medium mb-1">Referral Reward (₹)</label>
                                 <div class="flex gap-2">
-                                    <input type="number" id="admin-global-refer-reward" class="bg-slate-800 border border-slate-700 rounded p-2 text-xs font-mono font-bold text-green-400 flex-1 focus:outline-none focus:border-amber-400" placeholder="e.g. 15" />
-                                    <button onclick="saveSystemConfig()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-blue-500 transition-all">Save</button>
+                                    <input type="number" id="admin-global-refer-reward" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs font-mono font-bold text-green-400 flex-1 focus:outline-none focus:border-amber-400" placeholder="e.g. 15" />
+                                    <button onclick="saveSystemConfig()" class="bg-blue-600 text-white px-3 py-1 rounded text-[10px] font-bold hover:bg-blue-500 transition-all">Save</button>
                                 </div>
-                                <p class="text-[10px] text-gray-500 mt-1.5">Current value: ₹<span id="admin-current-refer-display">15.00</span></p>
-                                <p id="admin-perm-error" class="text-[10px] text-red-400 hidden mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Permission denied. Please check Firebase security rules.</p>
+                                <p class="text-[9px] text-gray-500 mt-1.5">Current value: ₹<span id="admin-current-refer-display">15.00</span></p>
+                                <p id="admin-perm-error" class="text-[9px] text-red-400 hidden mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Permission denied. Check Firebase rules.</p>
                             </div>
                         </div>
 
                         <!-- User Directory -->
-                        <div class="google-card p-4 space-y-3">
+                        <div class="google-card p-3.5 space-y-2.5">
                             <div class="flex justify-between items-center">
-                                <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">User Directory <span id="user-count-badge" class="ml-1 text-[10px] font-normal text-gray-400"></span></h3>
+                                <h3 class="text-[10px] font-bold text-gray-700 uppercase tracking-wider">User Directory <span id="user-count-badge" class="ml-1 text-[9px] font-normal text-gray-400"></span></h3>
                             </div>
-                            <div id="admin-user-management-node" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+                            <div id="admin-user-management-node" class="space-y-2.5 max-h-80 overflow-y-auto pr-1"></div>
                         </div>
 
                         <!-- Pending Withdrawals -->
-                        <div class="google-card p-4 space-y-3">
+                        <div class="google-card p-3.5 space-y-2.5">
                             <div class="flex justify-between items-center">
-                                <h3 class="text-xs font-bold text-amber-600 uppercase tracking-wider">Pending Withdrawals</h3>
-                                <button onclick="clearAllHistory()" class="clear-history-btn"><i class="fa-solid fa-trash-can mr-1"></i> Clear All History</button>
+                                <h3 class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Pending Withdrawals</h3>
+                                <button onclick="clearAllHistory()" class="clear-history-btn"><i class="fa-solid fa-trash-can mr-1"></i> Clear All</button>
                             </div>
-                            <div id="admin-payouts-list" class="space-y-3 text-xs"></div>
+                            <div id="admin-payouts-list" class="space-y-2.5 text-[10px] max-h-60 overflow-y-auto pr-1"></div>
                         </div>
 
-                        <!-- Completed Withdrawals -->
-                        <div class="google-card p-4 space-y-3">
-                            <h3 class="text-xs font-bold text-green-600 uppercase tracking-wider">Completed Withdrawals</h3>
-                            <div id="admin-completed-payouts-list" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
+                        <!-- Completed -->
+                        <div class="google-card p-3.5 space-y-2.5">
+                            <h3 class="text-[10px] font-bold text-green-600 uppercase tracking-wider">Completed Withdrawals</h3>
+                            <div id="admin-completed-payouts-list" class="space-y-1.5 text-[10px] max-h-48 overflow-y-auto pr-1"></div>
                         </div>
                     </div>
 
-                    <button onclick="logout()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium p-3.5 rounded-xl text-xs uppercase tracking-wider transition-all border border-red-200 flex items-center justify-center gap-2">
+                    <button onclick="logout()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium p-3 rounded-xl text-[10px] uppercase tracking-wider transition-all border border-red-200 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
                     </button>
                 </section>
             </main>
 
             <!-- ===== BOTTOM NAV ===== -->
-            <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-1.5 flex justify-between items-center z-50">
-                <button onclick="switchScreen('home')" class="flex flex-col items-center gap-0.5 nav-btn active flex-1 py-1" id="nav-home">
-                    <i class="fa-solid fa-house text-xl"></i><span class="text-[9px] font-medium">Home</span>
+            <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-1 py-1 flex justify-between items-center z-50">
+                <button onclick="switchScreen('home')" class="flex flex-col items-center gap-0 nav-btn active flex-1 py-1" id="nav-home">
+                    <i class="fa-solid fa-house text-lg"></i><span class="text-[8px] font-medium">Home</span>
                 </button>
-                <button onclick="switchScreen('profile')" class="flex flex-col items-center gap-0.5 nav-btn flex-1 py-1" id="nav-profile">
-                    <i class="fa-solid fa-user text-xl"></i><span class="text-[9px] font-medium">Profile</span>
+                <button onclick="switchScreen('profile')" class="flex flex-col items-center gap-0 nav-btn flex-1 py-1" id="nav-profile">
+                    <i class="fa-solid fa-user text-lg"></i><span class="text-[8px] font-medium">Profile</span>
                 </button>
-                <button onclick="switchScreen('withdrawal')" class="flex flex-col items-center gap-0.5 nav-btn flex-1 py-1" id="nav-withdrawal">
-                    <i class="fa-solid fa-wallet text-xl"></i><span class="text-[9px] font-medium">Withdrawal</span>
+                <button onclick="switchScreen('withdrawal')" class="flex flex-col items-center gap-0 nav-btn flex-1 py-1" id="nav-withdrawal">
+                    <i class="fa-solid fa-wallet text-lg"></i><span class="text-[8px] font-medium">Withdrawal</span>
                 </button>
-                <button onclick="switchScreen('settings')" class="flex flex-col items-center gap-0.5 nav-btn flex-1 py-1" id="nav-settings">
-                    <i class="fa-solid fa-gear text-xl"></i><span class="text-[9px] font-medium">Settings</span>
+                <button onclick="switchScreen('settings')" class="flex flex-col items-center gap-0 nav-btn flex-1 py-1" id="nav-settings">
+                    <i class="fa-solid fa-gear text-lg"></i><span class="text-[8px] font-medium">Settings</span>
                 </button>
             </nav>
         </div>
     </div>
 
-    <!-- ===== FIREBASE APPLICATION MODULE ===== -->
+    <!-- ===== FIREBASE ===== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import {
@@ -826,13 +965,17 @@
         let isTracking = false;
         let currentCategory = 'all';
         let currentSearch = '';
+        let trackingStartTime = null;
+        let trackingAccumulated = 0;
+        let lastSyncTime = 0;
+        let trackingAppName = '';
 
         const $ = id => document.getElementById(id);
         const toastContainer = $('toast-container');
         const loadingOverlay = $('global-loading-overlay');
         const loadingText = $('loading-overlay-text');
 
-        // ---- APPS DEFINITION ----
+        // ---- APPS (compact list) ----
         const APPS = [
             { id: 1, name: 'YouTube', url: 'https://m.youtube.com', icon: 'fa-brands fa-youtube', color: '#FF0000',
                 cat: 'entertainment' },
@@ -850,21 +993,21 @@
                 color: '#2e7d32', cat: 'islamic' },
             { id: 8, name: 'Remove BG', url: 'https://www.remove.bg', icon: 'fa-solid fa-wand-magic-sparkles',
                 color: '#6c4fcb', cat: 'tools' },
-            { id: 9, name: 'Health', url: 'https://www.healthline.com', icon: 'fa-solid fa-heart-pulse',
+            { id: 9, name: 'Healthline', url: 'https://www.healthline.com', icon: 'fa-solid fa-heart-pulse',
                 color: '#d93025', cat: 'health' },
-            { id: 10, name: 'Online Games', url: 'https://www.crazygames.com', icon: 'fa-solid fa-gamepad',
+            { id: 10, name: 'CrazyGames', url: 'https://www.crazygames.com', icon: 'fa-solid fa-gamepad',
                 color: '#34A853', cat: 'games' },
             { id: 11, name: 'Flipkart', url: 'https://www.flipkart.com', icon: 'fa-solid fa-bag-shopping',
                 color: '#2874F0', cat: 'shopping' },
             { id: 12, name: 'Image to PDF', url: 'https://www.ilovepdf.com/image_to_pdf', icon: 'fa-solid fa-file-pdf',
                 color: '#d93025', cat: 'tools' },
-            { id: 13, name: 'Image Compressor', url: 'https://www.ilovepdf.com/compress_image',
+            { id: 13, name: 'Compress Image', url: 'https://www.ilovepdf.com/compress_image',
                 icon: 'fa-solid fa-compress', color: '#fbbc04', cat: 'tools' },
             { id: 14, name: 'PDF to Image', url: 'https://www.ilovepdf.com/pdf_to_image', icon: 'fa-solid fa-file-image',
                 color: '#4285F4', cat: 'tools' },
             { id: 15, name: 'Amazon', url: 'https://www.amazon.in', icon: 'fa-brands fa-amazon', color: '#FF9900',
                 cat: 'shopping' },
-            { id: 16, name: 'APK Download', url: 'https://apkpure.com', icon: 'fa-solid fa-download', color: '#0b57d0',
+            { id: 16, name: 'APKPure', url: 'https://apkpure.com', icon: 'fa-solid fa-download', color: '#0b57d0',
                 cat: 'tools' },
             { id: 17, name: 'Meesho', url: 'https://www.meesho.com', icon: 'fa-solid fa-store', color: '#9F206C',
                 cat: 'shopping' },
@@ -892,11 +1035,11 @@
             education: { label: 'Education', icon: 'fa-solid fa-graduation-cap' }
         };
 
+        // ===== RENDER TASKS (compact) =====
         function renderTasks() {
             const grid = $('task-grid');
             grid.innerHTML = '';
             let filtered = APPS;
-
             if (currentCategory !== 'all') {
                 filtered = filtered.filter(app => app.cat === currentCategory);
             }
@@ -904,20 +1047,18 @@
                 const q = currentSearch.trim().toLowerCase();
                 filtered = filtered.filter(app => app.name.toLowerCase().includes(q));
             }
-
             if (filtered.length === 0) {
                 grid.innerHTML =
-                    `<div class="col-span-4 text-center py-6 text-gray-400 text-xs">No apps match your search.</div>`;
+                    `<div class="col-span-4 text-center py-4 text-gray-400 text-[10px]">No apps match.</div>`;
                 return;
             }
-
             filtered.forEach(app => {
                 const div = document.createElement('div');
                 div.className = 'task-item';
                 div.setAttribute('data-cat', app.cat);
                 div.setAttribute('data-name', app.name.toLowerCase());
                 div.innerHTML = `
-                        <i class="${app.icon}" style="color:${app.color}"></i>
+                        <i class="${app.icon}" style="color:${app.color};font-size:16px;"></i>
                         <span>${app.name}</span>
                         <span class="cat-tag">${CATEGORIES[app.cat]?.label || app.cat}</span>
                     `;
@@ -930,11 +1071,7 @@
             const searchInput = $('task-search');
             currentSearch = searchInput.value;
             const clearBtn = $('clear-search-btn');
-            if (currentSearch.length > 0) {
-                clearBtn.classList.add('visible');
-            } else {
-                clearBtn.classList.remove('visible');
-            }
+            clearBtn.classList.toggle('visible', currentSearch.length > 0);
             renderTasks();
         };
 
@@ -958,7 +1095,8 @@
             renderTasks();
         };
 
-        function showToast(message, type = 'info', duration = 4500) {
+        // ===== TOAST =====
+        function showToast(message, type = 'info', duration = 4000) {
             const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-triangle-exclamation',
                 info: 'fa-circle-info' };
             const toast = document.createElement('div');
@@ -974,32 +1112,29 @@
 
         function showLoading(msg = 'Syncing…') {
             loadingText.textContent = msg;
-            loadingOverlay.classList.remove('hidden');
+            loadingOverlay.classList.add('show');
         }
 
         function hideLoading() {
-            loadingOverlay.classList.add('hidden');
+            loadingOverlay.classList.remove('show');
         }
 
-        // ---- AUTH MODE TOGGLE ----
+        // ===== AUTH MODE =====
         window.setAuthMode = function(mode) {
             authMode = mode;
             document.getElementById('tab-login').className = mode === 'login' ?
-                'flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all' :
-                'flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all';
+                'flex-1 pb-2.5 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all' :
+                'flex-1 pb-2.5 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all';
             document.getElementById('tab-signup').className = mode === 'signup' ?
-                'flex-1 pb-3 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all' :
-                'flex-1 pb-3 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all';
-
+                'flex-1 pb-2.5 text-sm font-medium text-[#0b57d0] border-b-2 border-[#0b57d0] text-center transition-all' :
+                'flex-1 pb-2.5 text-sm font-medium text-gray-500 border-b-2 border-transparent text-center transition-all';
             document.getElementById('login-fields').classList.toggle('hidden', mode === 'signup');
             document.getElementById('signup-fields').classList.toggle('hidden', mode === 'login');
             document.getElementById('forgot-password-box').classList.toggle('hidden', mode === 'signup');
-
-            // Update button text
             document.getElementById('btn-auth-text').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
         };
 
-        // ---- SYNC CONFIG ----
+        // ===== SYNC CONFIG =====
         async function syncConfig() {
             try {
                 const snap = await get(ref(db, 'system_config'));
@@ -1013,9 +1148,6 @@
                 if (rewardInput) rewardInput.value = globalReferralReward;
                 const displaySpan = $('admin-current-refer-display');
                 if (displaySpan) displaySpan.textContent = globalReferralReward.toFixed(2);
-                const refRewardSpan = $('referral-reward-display');
-                if (refRewardSpan) refRewardSpan.textContent = globalReferralReward.toFixed(2);
-                // Hide permission error if shown
                 const permError = $('admin-perm-error');
                 if (permError) permError.classList.add('hidden');
             } catch (e) {
@@ -1028,7 +1160,7 @@
             }
         }
 
-        // ---- HANDLE AUTH ----
+        // ===== HANDLE AUTH =====
         window.handleAuth = async () => {
             const btn = $('btn-auth-trigger');
             btn.disabled = true;
@@ -1036,35 +1168,30 @@
 
             try {
                 await syncConfig();
-
                 if (authMode === 'login') {
                     const email = $('auth-email').value.trim().toLowerCase();
                     const password = $('auth-password').value;
-                    if (!email || !password) { throw new Error('Please enter email and password.'); }
+                    if (!email || !password) throw new Error('Please enter email and password.');
                     $('btn-auth-text').textContent = 'Signing in…';
                     await signInWithEmailAndPassword(auth, email, password);
                     showToast('Welcome back!', 'success');
                 } else {
-                    // Signup
                     const fullName = $('signup-fullname').value.trim();
                     const email = $('signup-email').value.trim().toLowerCase();
                     const mobile = $('signup-mobile').value.trim();
                     const password = $('signup-password').value;
                     const referral = $('signup-referral').value.trim();
                     const method = $('signup-method').value;
-
-                    if (!fullName) { throw new Error('Please enter your full name.'); }
-                    if (!email) { throw new Error('Please enter your email.'); }
-                    if (!mobile) { throw new Error('Please enter your mobile number.'); }
-                    if (!password || password.length < 6) { throw new Error('Password must be at least 6 characters.'); }
-                    if (email === ADMIN_EMAIL) { throw new Error('Cannot register using admin credentials.'); }
+                    if (!fullName) throw new Error('Please enter your full name.');
+                    if (!email) throw new Error('Please enter your email.');
+                    if (!mobile) throw new Error('Please enter your mobile number.');
+                    if (!password || password.length < 6) throw new Error('Password must be at least 6 characters.');
+                    if (email === ADMIN_EMAIL) throw new Error('Cannot register using admin credentials.');
 
                     $('btn-auth-text').textContent = 'Creating…';
-
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     let initialBalance = 0;
 
-                    // Process referral
                     if (referral && referral.length > 0) {
                         if (referral.length < 20) {
                             showToast('Referral UID seems invalid. Proceeding without bonus.', 'warning');
@@ -1121,7 +1248,7 @@
             }
         };
 
-        // ---- PASSWORD RESET ----
+        // ===== PASSWORD RESET =====
         window.triggerPasswordReset = async () => {
             const email = $('auth-email').value.trim().toLowerCase();
             if (!email) return showToast('Please enter your email address first.', 'warning');
@@ -1136,7 +1263,7 @@
             }
         };
 
-        // ---- UPDATE PASSWORD (Settings) ----
+        // ===== UPDATE PASSWORD =====
         window.updateUserPassword = async () => {
             const newPass = $('settings-new-password').value;
             if (!newPass || newPass.length < 6) return showToast('Password must be at least 6 characters.', 'error');
@@ -1153,31 +1280,22 @@
             }
         };
 
-        // ---- FULL PROFILE UPDATE ----
+        // ===== FULL PROFILE UPDATE =====
         window.updateFullProfile = async () => {
             const name = $('profile-edit-name').value.trim();
             const mobile = $('profile-edit-mobile').value.trim();
             const method = $('profile-edit-method').value;
             const newPass = $('profile-edit-password').value;
-
             if (!name || !mobile) return showToast('Please enter both name and mobile.', 'error');
-
             try {
                 showLoading('Updating profile…');
-                const updates = {
-                    fullName: name,
-                    mobileNumber: mobile,
-                    redeemMethod: method
-                };
-
-                // Update password if provided
+                const updates = { fullName: name, mobileNumber: mobile, redeemMethod: method };
                 if (newPass && newPass.length >= 6) {
                     await updatePassword(auth.currentUser, newPass);
                     updates.password = newPass;
                 } else if (newPass && newPass.length < 6) {
                     showToast('Password must be at least 6 characters. Skipping password update.', 'warning');
                 }
-
                 await update(ref(db, 'users/' + currentUser.uid), updates);
                 showToast('✅ Profile updated successfully!', 'success');
                 await fetchUserData();
@@ -1189,17 +1307,17 @@
             }
         };
 
-        // ---- LOGOUT ----
+        // ===== LOGOUT =====
         window.logout = () => {
             if (trackingInterval) { clearInterval(trackingInterval);
                 trackingInterval = null; }
             isTracking = false;
-            clearKodularTokens();
+            clearTrackingState();
             showLoading('Logging out…');
             signOut(auth).finally(() => hideLoading());
         };
 
-        // ---- COPY REFERRAL CODE ----
+        // ===== COPY REFERRAL CODE =====
         window.copyReferralCode = () => {
             const code = currentUser?.uid;
             if (!code) return showToast('Identifier not ready.', 'warning');
@@ -1207,7 +1325,7 @@
                 .catch(() => showToast('Failed to copy.', 'error'));
         };
 
-        // ---- CLAIM DAILY BONUS ----
+        // ===== CLAIM DAILY BONUS =====
         window.claimDailyBonus = async () => {
             if (!currentUser) return;
             const today = new Date().toDateString();
@@ -1223,60 +1341,228 @@
             } catch (err) { showToast(err.message, 'error'); } finally { hideLoading(); }
         };
 
-        // ---- LAUNCH TASK ----
-        window.launchTask = (url, name) => {
-            if (isTracking) return showToast('A task is already running.', 'warning');
-            localStorage.setItem('kodular_task_running', 'true');
-            localStorage.setItem('kodular_task_name', name);
-            localStorage.setItem('kodular_start_time', Date.now().toString());
-            window.open(url, '_blank');
-            startTracking(name);
-        };
+        // ============================================================
+        //  TRACKING — FIXED with timestamp + localStorage persistence
+        // ============================================================
+
+        function clearTrackingState() {
+            ['tracking_start', 'tracking_accumulated', 'tracking_active', 'tracking_app', 'tracking_last_sync']
+            .forEach(k => localStorage.removeItem(k));
+            trackingStartTime = null;
+            trackingAccumulated = 0;
+            lastSyncTime = 0;
+            trackingAppName = '';
+        }
+
+        function getTrackingState() {
+            const start = localStorage.getItem('tracking_start');
+            const acc = localStorage.getItem('tracking_accumulated');
+            const active = localStorage.getItem('tracking_active') === 'true';
+            const app = localStorage.getItem('tracking_app') || '';
+            return { start: start ? parseInt(start) : null, accumulated: acc ? parseFloat(acc) : 0, active, app };
+        }
+
+        function saveTrackingState(start, accumulated, active, app) {
+            if (start) localStorage.setItem('tracking_start', start.toString());
+            else localStorage.removeItem('tracking_start');
+            localStorage.setItem('tracking_accumulated', accumulated.toString());
+            localStorage.setItem('tracking_active', active ? 'true' : 'false');
+            if (app) localStorage.setItem('tracking_app', app);
+            else localStorage.removeItem('tracking_app');
+        }
+
+        // Calculate earned amount for given seconds
+        function earningsForSeconds(sec) {
+            return sec * (30 / 43200);
+        }
+
+        // Update UI with current tracking values
+        function updateTrackingUI() {
+            const totalSec = totalActiveSeconds || 0;
+            const rem = Math.max(0, 43200 - totalSec);
+            $('live-timer').textContent = String(Math.floor(sessionSeconds / 3600)).padStart(2, '0') + ':' +
+                String(Math.floor((sessionSeconds % 3600) / 60)).padStart(2, '0') + ':' +
+                String(sessionSeconds % 60).padStart(2, '0');
+            $('session-earned').textContent = '₹' + sessionMoneyEarned.toFixed(4);
+            $('live-timer-progress').textContent = `${totalSec}s / 43200s`;
+        }
+
+        // Core tracking update — called every second AND on visibility change
+        async function updateTracking(forceSync = false) {
+            if (!isTracking) return;
+            const state = getTrackingState();
+            if (!state.start) {
+                // No active tracking in localStorage — stop
+                stopTracking('Tracking session expired.');
+                return;
+            }
+
+            const now = Date.now();
+            const elapsedTotal = (now - state.start) / 1000; // total seconds since start
+            const newSeconds = Math.floor(elapsedTotal - state.accumulated);
+
+            if (newSeconds > 0) {
+                const capRemaining = 43200 - totalActiveSeconds;
+                const addSeconds = Math.min(newSeconds, capRemaining);
+                if (addSeconds > 0) {
+                    sessionSeconds += addSeconds;
+                    totalActiveSeconds += addSeconds;
+                    const earn = earningsForSeconds(addSeconds);
+                    sessionMoneyEarned += earn;
+
+                    // Update accumulated in localStorage
+                    const newAcc = state.accumulated + addSeconds;
+                    saveTrackingState(state.start, newAcc, true, state.app);
+
+                    // Update UI
+                    updateTrackingUI();
+
+                    // Sync to Firebase every 5 seconds or on force
+                    const shouldSync = forceSync || (sessionSeconds % 5 === 0 && sessionSeconds > 0);
+                    if (shouldSync) {
+                        await syncEarning(earningsForSeconds(sessionSeconds % 5 === 0 ? 5 : sessionSeconds % 5));
+                    }
+
+                    // Check daily limit
+                    if (totalActiveSeconds >= 43200) {
+                        stopTracking('Daily limit of 12 hours reached.');
+                        return;
+                    }
+                }
+            }
+
+            // Update the accumulated time in localStorage periodically even if no new seconds
+            // to keep it fresh
+            if (state.start) {
+                const currentElapsed = (Date.now() - state.start) / 1000;
+                if (currentElapsed - state.accumulated > 0) {
+                    // Just refresh the accumulated value to prevent drift
+                    const newAcc = Math.min(state.accumulated + 0.1, currentElapsed);
+                    saveTrackingState(state.start, newAcc, true, state.app);
+                }
+            }
+        }
 
         function startTracking(appName) {
-            if (trackingInterval) clearInterval(trackingInterval);
-            isTracking = true;
+            if (isTracking) return showToast('A task is already running.', 'warning');
+
+            // Clear any stale state
+            clearTrackingState();
+
+            const now = Date.now();
+            trackingStartTime = now;
+            trackingAccumulated = 0;
             sessionSeconds = 0;
             sessionMoneyEarned = 0;
             totalActiveSeconds = userData.activeAppTime || 0;
+            trackingAppName = appName;
+            isTracking = true;
+
+            // Save to localStorage
+            saveTrackingState(now, 0, true, appName);
+
             updateStatusUI(true, appName);
+            updateTrackingUI();
 
-            trackingInterval = setInterval(async () => {
-                if (totalActiveSeconds >= 43200) {
-                    stopTracking('Daily limit reached.');
-                    return;
-                }
-                sessionSeconds++;
-                totalActiveSeconds++;
-                sessionMoneyEarned += (30 / 43200);
-
-                $('live-timer').textContent = String(Math.floor(sessionSeconds / 3600)).padStart(2, '0') + ':' +
-                    String(Math.floor((sessionSeconds % 3600) / 60)).padStart(2, '0') + ':' +
-                    String(sessionSeconds % 60).padStart(2, '0');
-                $('session-earned').textContent = '₹' + sessionMoneyEarned.toFixed(4);
-                $('live-timer-progress').textContent = `${totalActiveSeconds}s / 43200s`;
-
-                if (sessionSeconds % 5 === 0) {
-                    await syncEarning(5 * (30 / 43200));
-                }
+            // Start interval (every second)
+            if (trackingInterval) clearInterval(trackingInterval);
+            trackingInterval = setInterval(() => {
+                updateTracking(false);
             }, 1000);
+
+            // Also set up visibility change handler to catch when user returns
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
+            // Save to localStorage that task is running
+            localStorage.setItem('kodular_task_running', 'true');
+            localStorage.setItem('kodular_task_name', appName);
+            localStorage.setItem('kodular_start_time', now.toString());
+        }
+
+        function handleVisibilityChange() {
+            if (document.hidden) {
+                // Tab went to background — we just let the interval run (it may be throttled)
+                // But we store the current accumulated time
+                const state = getTrackingState();
+                if (state.start && isTracking) {
+                    const now = Date.now();
+                    const elapsed = (now - state.start) / 1000;
+                    saveTrackingState(state.start, Math.max(state.accumulated, elapsed), true, state.app);
+                }
+            } else {
+                // Tab became visible again — recalculate immediately
+                if (isTracking) {
+                    // Force a full sync
+                    updateTracking(true).then(() => {
+                        // Also sync any pending earnings
+                        if (sessionSeconds > 0) {
+                            syncEarning(earningsForSeconds(sessionSeconds % 5 === 0 ? 5 : sessionSeconds % 5));
+                        }
+                    });
+                } else {
+                    // Check if there's a tracking session in localStorage that survived
+                    const state = getTrackingState();
+                    if (state.start && state.active) {
+                        // Restore tracking
+                        const app = state.app || 'Unknown';
+                        isTracking = true;
+                        trackingStartTime = state.start;
+                        trackingAccumulated = state.accumulated;
+                        totalActiveSeconds = userData.activeAppTime || 0;
+                        sessionSeconds = state.accumulated;
+                        sessionMoneyEarned = earningsForSeconds(sessionSeconds);
+                        trackingAppName = app;
+                        updateStatusUI(true, app);
+                        updateTrackingUI();
+                        if (trackingInterval) clearInterval(trackingInterval);
+                        trackingInterval = setInterval(() => {
+                            updateTracking(false);
+                        }, 1000);
+                        // Force a sync
+                        updateTracking(true);
+                    }
+                }
+            }
         }
 
         function stopTracking(msg) {
-            if (trackingInterval) clearInterval(trackingInterval);
+            if (trackingInterval) {
+                clearInterval(trackingInterval);
+                trackingInterval = null;
+            }
             isTracking = false;
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+
+            // Clear localStorage tracking state but keep the accumulated time
+            const state = getTrackingState();
+            if (state.start) {
+                // Save final accumulated time
+                const now = Date.now();
+                const finalElapsed = Math.max(state.accumulated, (now - state.start) / 1000);
+                // Don't clear tracking_start yet — we use it to calculate final time
+                localStorage.setItem('tracking_accumulated', finalElapsed.toString());
+                localStorage.setItem('tracking_active', 'false');
+            }
+
+            // Clear kodular tokens
             clearKodularTokens();
+
             updateStatusUI(false);
             if (msg) showToast(msg, 'info');
+
+            // Final sync
+            if (sessionSeconds > 0) {
+                syncEarning(earningsForSeconds(sessionSeconds));
+            }
         }
 
         function updateStatusUI(active, name = '') {
             const badge = $('status-badge');
             if (active) {
-                badge.className = 'bg-green-100 text-green-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase animate-pulse';
-                badge.textContent = `Running: ${name}`;
+                badge.className = 'bg-green-100 text-green-700 text-[8px] font-bold px-2 py-0.5 rounded-full uppercase animate-pulse';
+                badge.textContent = `⏳ ${name}`;
             } else {
-                badge.className = 'bg-gray-200 text-gray-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase';
+                badge.className = 'bg-gray-200 text-gray-700 text-[8px] font-bold px-2 py-0.5 rounded-full uppercase';
                 badge.textContent = 'Idle';
                 $('live-timer').textContent = '00:00:00';
                 $('session-earned').textContent = '₹0.0000';
@@ -1284,7 +1570,7 @@
         }
 
         async function syncEarning(amount) {
-            if (!currentUser) return;
+            if (!currentUser || amount <= 0) return;
             try {
                 const snap = await get(ref(db, 'users/' + currentUser.uid));
                 if (snap.exists()) {
@@ -1297,6 +1583,9 @@
                     });
                     $('global-balance').textContent = nBal.toFixed(2);
                     $('wallet-balance-display').textContent = '₹ ' + nBal.toFixed(2);
+                    // Update userData cache
+                    userData.balance = nBal;
+                    userData.activeAppTime = totalActiveSeconds;
                 }
             } catch (e) { console.warn('syncEarning error:', e); }
         }
@@ -1306,7 +1595,16 @@
                 .forEach(k => localStorage.removeItem(k));
         }
 
-        // ---- GST CALC ----
+        // ===== LAUNCH TASK (with fixed tracking) =====
+        window.launchTask = (url, name) => {
+            if (isTracking) return showToast('A task is already running.', 'warning');
+            // Open in a new tab
+            window.open(url, '_blank');
+            // Start tracking immediately
+            startTracking(name);
+        };
+
+        // ===== GST CALC =====
         window.recalcGst = () => {
             const val = parseFloat($('user-payout-amount').value) || 0;
             const gst = val * 0.18;
@@ -1315,17 +1613,15 @@
             $('display-gross-total').textContent = '₹ ' + (val + gst).toFixed(2);
         };
 
-        // ---- REQUEST PAYOUT ----
+        // ===== REQUEST PAYOUT =====
         window.requestPayout = async () => {
             const amt = parseFloat($('user-payout-amount').value) || 0;
             if (amt < 300 || amt > 1000) return showToast('Amount must be between ₹300 and ₹1000.', 'error');
             if (!userData.fullName || !userData.mobileNumber || !userData.emailId) return showToast(
                 'Please complete your profile first.', 'warning');
-
             const gross = amt * 1.18;
             if ((userData.balance || 0) < gross) return showToast(`Insufficient balance. Need ₹${gross.toFixed(2)}`,
                 'error');
-
             try {
                 showLoading('Submitting withdrawal…');
                 const pRef = push(ref(db, 'payouts'));
@@ -1351,7 +1647,7 @@
             } catch (err) { showToast(err.message, 'error'); } finally { hideLoading(); }
         };
 
-        // ---- FETCH USER DATA ----
+        // ===== FETCH USER DATA =====
         async function fetchUserData() {
             if (!currentUser) return;
             try {
@@ -1378,28 +1674,21 @@
                     $('profile-redeem-method').textContent = userData.redeemMethod || '—';
                     $('profile-referral-code').textContent = currentUser.uid;
 
-                    // Edit form
                     $('profile-edit-name').value = userData.fullName || '';
                     $('profile-edit-mobile').value = userData.mobileNumber || '';
                     $('profile-edit-email').value = userData.emailId || userData.email || '';
                     if (userData.redeemMethod) {
                         $('profile-edit-method').value = userData.redeemMethod;
                     }
-                    $('referral-code-display').textContent = currentUser.uid;
-
-                    if (userData.redeemMethod) $('user-redeem-method').value = userData.redeemMethod;
-                    toggleRechargeNotice();
                     recalcGst();
+
+                    // Update totalActiveSeconds from DB
+                    totalActiveSeconds = userData.activeAppTime || 0;
                 }
             } catch (e) { console.warn('fetchUserData error:', e); }
         }
 
-        window.toggleRechargeNotice = () => {
-            const el = $('recharge-validity-notice');
-            if (el) el.classList.toggle('hidden', $('user-redeem-method').value !== 'Mobile Recharge');
-        };
-
-        // ---- FETCH USER HISTORY ----
+        // ===== FETCH USER HISTORY =====
         async function fetchUserHistory() {
             if (!currentUser) return;
             const box = $('user-withdrawal-history-box');
@@ -1417,9 +1706,9 @@
                                 'bg-amber-50 text-amber-700 border-amber-200';
                             const item = document.createElement('div');
                             item.className =
-                                'bg-gray-50 p-2.5 rounded-lg border border-gray-100 flex justify-between items-center';
+                                'bg-gray-50 p-2 rounded-lg border border-gray-100 flex justify-between items-center';
                             item.innerHTML =
-                                `<span class="font-bold text-gray-800">₹${(d.amount || 0).toFixed(2)}</span><span class="px-2 py-0.5 border text-[9px] font-bold rounded uppercase ${cl}">${d.status || 'pending'}</span>`;
+                                `<span class="font-bold text-gray-800">₹${(d.amount || 0).toFixed(2)}</span><span class="px-2 py-0.5 border text-[8px] font-bold rounded uppercase ${cl}">${d.status || 'pending'}</span>`;
                             box.appendChild(item);
                         }
                     });
@@ -1428,7 +1717,7 @@
             } catch (e) { console.warn('fetchUserHistory error:', e); }
         }
 
-        // ---- ADMIN: SAVE SYSTEM CONFIG ----
+        // ===== ADMIN: SAVE SYSTEM CONFIG =====
         window.saveSystemConfig = async () => {
             const v = parseFloat($('admin-global-refer-reward').value);
             if (isNaN(v) || v < 0) return showToast('Please enter a valid positive number.', 'error');
@@ -1438,9 +1727,6 @@
                 globalReferralReward = v;
                 const displaySpan = $('admin-current-refer-display');
                 if (displaySpan) displaySpan.textContent = v.toFixed(2);
-                const refRewardSpan = $('referral-reward-display');
-                if (refRewardSpan) refRewardSpan.textContent = v.toFixed(2);
-                // Hide permission error
                 const permError = $('admin-perm-error');
                 if (permError) permError.classList.add('hidden');
                 showToast(`✅ Referral reward set to ₹${v.toFixed(2)}`, 'success');
@@ -1458,12 +1744,12 @@
             }
         };
 
-        // ---- ADMIN: RENDER PANEL ----
+        // ===== ADMIN: RENDER PANEL =====
         async function renderAdminPanel() {
             if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
             const uNode = $('admin-user-management-node');
             uNode.innerHTML =
-                '<div class="text-center py-4"><svg class="animate-google-spinner w-8 h-8 mx-auto" viewBox="0 0 50 50"><circle class="animate-google-spinner-circle stroke-[#0b57d0]" cx="25" cy="25" r="20" fill="none" stroke-width="4"/></svg><p class="text-xs text-gray-400 mt-2">Loading directory…</p></div>';
+                '<div class="text-center py-3"><svg class="animate-google-spinner w-6 h-6 mx-auto" viewBox="0 0 50 50"><circle class="animate-google-spinner-circle stroke-[#0b57d0]" cx="25" cy="25" r="20" fill="none" stroke-width="4"/></svg><p class="text-[10px] text-gray-400 mt-1">Loading directory…</p></div>';
 
             try {
                 await syncConfig();
@@ -1485,25 +1771,24 @@
 
                     if (users.length === 0) {
                         uNode.innerHTML =
-                            '<div class="text-center py-6 text-gray-400 text-sm border border-dashed border-gray-200 rounded-xl"><i class="fa-regular fa-user text-3xl block mb-2 opacity-40"></i>No users</div>';
+                            '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl"><i class="fa-regular fa-user text-2xl block mb-1 opacity-40"></i>No users</div>';
                     } else {
                         users.forEach((d) => {
                             const timeStr = d.activeAppTime ? Math.floor(d.activeAppTime / 3600) + 'h ' + Math
                                 .floor((d.activeAppTime % 3600) / 60) + 'm' : '0s';
-
                             const card = document.createElement('div');
                             card.className =
-                                'admin-user-card bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2 text-xs transition-all';
+                                'admin-user-card bg-gray-50 p-2.5 rounded-xl border border-gray-200 space-y-1.5 text-[10px] transition-all';
                             card.innerHTML = `
-                                    <div class="flex flex-col border-b border-gray-200/60 pb-1.5">
+                                    <div class="flex flex-col border-b border-gray-200/60 pb-1">
                                         <div class="flex justify-between items-start">
-                                            <span class="font-mono text-gray-800 font-bold break-all text-xs">${d.email}</span>
-                                            <span class="px-1.5 py-0.5 border rounded text-[8px] font-bold uppercase ${d.status === 'blocked' ? 'text-red-600 bg-red-50 border-red-200' : 'text-green-600 bg-green-50 border-green-200'}">${d.status || 'active'}</span>
+                                            <span class="font-mono text-gray-800 font-bold break-all text-[10px]">${d.email}</span>
+                                            <span class="px-1.5 py-0 border rounded text-[7px] font-bold uppercase ${d.status === 'blocked' ? 'text-red-600 bg-red-50 border-red-200' : 'text-green-600 bg-green-50 border-green-200'}">${d.status || 'active'}</span>
                                         </div>
-                                        <span class="text-[9px] text-gray-400 font-mono break-all">UID: ${d.uid || '—'}</span>
-                                        <span class="font-mono text-amber-600 text-[9px]">Pass: ${d.password || 'N/A'}</span>
+                                        <span class="text-[8px] text-gray-400 font-mono break-all">UID: ${d.uid || '—'}</span>
+                                        <span class="font-mono text-amber-600 text-[8px]">Pass: ${d.password || 'N/A'}</span>
                                     </div>
-                                    <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[9px]">
+                                    <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[8px]">
                                         <div><span class="text-gray-500">Name:</span> <strong>${d.fullName || '—'}</strong></div>
                                         <div><span class="text-gray-500">Mobile:</span> <strong>${d.mobileNumber || '—'}</strong></div>
                                         <div><span class="text-gray-500">Invites:</span> <strong class="text-blue-600">${d.referralCount || 0}</strong></div>
@@ -1511,10 +1796,10 @@
                                         <div class="col-span-2"><span class="text-gray-500">Referral Reward:</span> <strong class="text-green-600">₹${(d.referralEarnings || 0).toFixed(2)}</strong></div>
                                         <div class="col-span-2"><span class="text-gray-500">Total Earning:</span> <strong class="text-blue-600">₹${(d.balance || 0).toFixed(2)}</strong></div>
                                     </div>
-                                    <div class="grid grid-cols-3 gap-1.5 pt-1.5 border-t border-gray-200/60">
-                                        <button onclick="adminEditBalance('${d.uid}')" class="bg-white border rounded py-1.5 text-[9px] font-medium hover:bg-gray-50 transition-all">Edit Bal</button>
-                                        <button onclick="adminToggleBlock('${d.uid}','${d.status||'active'}')" class="${d.status === 'blocked' ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'} border rounded py-1.5 text-[9px] font-medium transition-all">${d.status === 'blocked' ? 'Unblock' : 'Block'}</button>
-                                        <button onclick="adminDeleteUser('${d.uid}')" class="bg-red-50 text-red-600 border border-red-200 rounded py-1.5 text-[9px] font-medium hover:bg-red-100 transition-all">Delete</button>
+                                    <div class="grid grid-cols-3 gap-1 pt-1 border-t border-gray-200/60">
+                                        <button onclick="adminEditBalance('${d.uid}')" class="bg-white border rounded py-1 text-[8px] font-medium hover:bg-gray-50 transition-all">Edit Bal</button>
+                                        <button onclick="adminToggleBlock('${d.uid}','${d.status||'active'}')" class="${d.status === 'blocked' ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'} border rounded py-1 text-[8px] font-medium transition-all">${d.status === 'blocked' ? 'Unblock' : 'Block'}</button>
+                                        <button onclick="adminDeleteUser('${d.uid}')" class="bg-red-50 text-red-600 border border-red-200 rounded py-1 text-[8px] font-medium hover:bg-red-100 transition-all">Delete</button>
                                     </div>
                                 `;
                             uNode.appendChild(card);
@@ -1522,7 +1807,7 @@
                     }
                 } else {
                     uNode.innerHTML =
-                        '<div class="text-center py-6 text-gray-400 text-sm border border-dashed border-gray-200 rounded-xl"><i class="fa-regular fa-database text-3xl block mb-2 opacity-40"></i>No user records</div>';
+                        '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl"><i class="fa-regular fa-database text-2xl block mb-1 opacity-40"></i>No user records</div>';
                 }
 
                 const badge = $('user-count-badge');
@@ -1531,12 +1816,12 @@
             } catch (e) {
                 console.error('renderAdminPanel error:', e);
                 uNode.innerHTML =
-                    `<div class="text-center py-6 text-red-500 text-sm border border-red-200 rounded-xl bg-red-50"><i class="fa-regular fa-circle-exclamation text-2xl block mb-2"></i>Error: ${e.message}</div>`;
+                    `<div class="text-center py-4 text-red-500 text-xs border border-red-200 rounded-xl bg-red-50"><i class="fa-regular fa-circle-exclamation text-xl block mb-1"></i>Error: ${e.message}</div>`;
             }
             await renderAdminPayouts();
         }
 
-        // ---- ADMIN: RENDER PAYOUTS ----
+        // ===== ADMIN: RENDER PAYOUTS =====
         async function renderAdminPayouts() {
             const pList = $('admin-payouts-list');
             const cList = $('admin-completed-payouts-list');
@@ -1554,21 +1839,21 @@
                         if (d.status === 'pending') {
                             pendingCount++;
                             const row = document.createElement('div');
-                            row.className = 'bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2';
+                            row.className = 'bg-gray-50 p-2.5 rounded-xl border border-gray-200 space-y-1.5';
                             row.innerHTML = `
                                     <div class="flex justify-between items-center">
-                                        <span class="font-bold text-gray-800 text-xs">₹${(d.amount || 0).toFixed(2)}</span>
-                                        <span class="text-[9px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Pending</span>
+                                        <span class="font-bold text-gray-800 text-[10px]">₹${(d.amount || 0).toFixed(2)}</span>
+                                        <span class="text-[8px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Pending</span>
                                     </div>
-                                    <div class="withdrawal-detail-grid">
+                                    <div class="withdrawal-detail-grid text-[9px]">
                                         <span class="label">Full Name</span><span class="value">${d.fullName || '—'}</span>
-                                        <span class="label">Email</span><span class="value text-[9px] font-mono">${d.email || '—'}</span>
+                                        <span class="label">Email</span><span class="value text-[8px] font-mono">${d.email || '—'}</span>
                                         <span class="label">Mobile</span><span class="value">${d.mobileNumber || '—'}</span>
                                         <span class="label">Method</span><span class="value">${d.redeemMethod || '—'}</span>
                                     </div>
-                                    <div class="flex gap-2 text-[10px] pt-1">
-                                        <button onclick="adminApprovePayout('${id}')" class="flex-1 bg-green-600 text-white py-1.5 rounded hover:bg-green-500 transition-all font-medium">Approve</button>
-                                        <button onclick="adminRejectPayout('${id}','${d.uid}',${d.grossCharged||0})" class="flex-1 bg-red-50 text-red-600 border border-red-200 py-1.5 rounded hover:bg-red-100 transition-all font-medium">Reject</button>
+                                    <div class="flex gap-2 text-[9px] pt-0.5">
+                                        <button onclick="adminApprovePayout('${id}')" class="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-500 transition-all font-medium">Approve</button>
+                                        <button onclick="adminRejectPayout('${id}','${d.uid}',${d.grossCharged||0})" class="flex-1 bg-red-50 text-red-600 border border-red-200 py-1 rounded hover:bg-red-100 transition-all font-medium">Reject</button>
                                     </div>
                                 `;
                             pList.appendChild(row);
@@ -1578,13 +1863,13 @@
                             const statusLabel = d.status === 'completed' ? '✅ Done' : '❌ Rejected';
                             const statusColor = d.status === 'completed' ? 'text-green-600' : 'text-red-500';
                             row.className =
-                                'bg-gray-50 p-2 border rounded flex flex-col gap-1 text-[10px] hover:bg-gray-100 transition-all';
+                                'bg-gray-50 p-1.5 border rounded flex flex-col gap-0.5 text-[9px] hover:bg-gray-100 transition-all';
                             row.innerHTML = `
                                     <div class="flex justify-between items-center">
-                                        <span class="font-mono truncate max-w-[100px]">${d.email || '—'}</span>
-                                        <span class="font-bold text-green-600">₹${(d.amount||0).toFixed(2)}</span>
+                                        <span class="font-mono truncate max-w-[80px] text-[8px]">${d.email || '—'}</span>
+                                        <span class="font-bold text-green-600 text-[10px]">₹${(d.amount||0).toFixed(2)}</span>
                                     </div>
-                                    <div class="flex justify-between text-[9px] text-gray-500">
+                                    <div class="flex justify-between text-[8px] text-gray-500">
                                         <span>${d.fullName || '—'}</span>
                                         <span>${d.mobileNumber || '—'}</span>
                                         <span class="${statusColor} font-medium">${statusLabel}</span>
@@ -1595,38 +1880,36 @@
                     });
                     if (pendingCount === 0) {
                         pList.innerHTML =
-                            '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl">✨ No pending withdrawals</div>';
+                            '<div class="text-center py-3 text-gray-400 text-[10px] border border-dashed border-gray-200 rounded-xl">✨ No pending withdrawals</div>';
                     }
                     if (completedCount === 0) {
                         cList.innerHTML =
-                            '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl">📭 No completed transactions</div>';
+                            '<div class="text-center py-3 text-gray-400 text-[10px] border border-dashed border-gray-200 rounded-xl">📭 No completed transactions</div>';
                     }
                 } else {
                     pList.innerHTML =
-                        '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl">📭 No payout records</div>';
+                        '<div class="text-center py-3 text-gray-400 text-[10px] border border-dashed border-gray-200 rounded-xl">📭 No payout records</div>';
                     cList.innerHTML =
-                        '<div class="text-center py-4 text-gray-400 text-xs border border-dashed border-gray-200 rounded-xl">📭 No completed transactions</div>';
+                        '<div class="text-center py-3 text-gray-400 text-[10px] border border-dashed border-gray-200 rounded-xl">📭 No completed transactions</div>';
                 }
             } catch (e) {
                 console.warn('renderAdminPayouts error:', e);
                 pList.innerHTML =
-                    `<div class="text-center py-4 text-red-400 text-xs">Error: ${e.message}</div>`;
+                    `<div class="text-center py-3 text-red-400 text-[10px]">Error: ${e.message}</div>`;
                 cList.innerHTML =
-                    `<div class="text-center py-4 text-red-400 text-xs">Error: ${e.message}</div>`;
+                    `<div class="text-center py-3 text-red-400 text-[10px]">Error: ${e.message}</div>`;
             }
         }
 
-        // ---- ADMIN: CLEAR ALL HISTORY (15 days auto + manual) ----
+        // ===== ADMIN: CLEAR ALL HISTORY =====
         window.clearAllHistory = async () => {
-            if (!confirm('⚠️ This will permanently delete ALL payout history (pending & completed). Are you sure?')) return;
+            if (!confirm('⚠️ This will permanently delete ALL payout history. Are you sure?')) return;
             try {
                 showLoading('Clearing history…');
                 const snap = await get(ref(db, 'payouts'));
                 if (snap.exists()) {
                     const updates = {};
-                    snap.forEach(c => {
-                        updates[c.key] = null;
-                    });
+                    snap.forEach(c => { updates[c.key] = null; });
                     await update(ref(db, 'payouts'), updates);
                 }
                 showToast('✅ All history cleared successfully!', 'success');
@@ -1638,7 +1921,7 @@
             }
         };
 
-        // ---- AUTO CLEAR HISTORY (15 days old) ----
+        // ===== AUTO CLEAR OLD HISTORY (15 days) =====
         async function autoClearOldHistory() {
             try {
                 const snap = await get(ref(db, 'payouts'));
@@ -1661,7 +1944,7 @@
             }
         }
 
-        // ---- ADMIN ACTIONS ----
+        // ===== ADMIN ACTIONS =====
         window.adminEditBalance = async (uid) => {
             try {
                 const snap = await get(ref(db, 'users/' + uid));
@@ -1729,7 +2012,7 @@
             }
         };
 
-        // ---- SCREEN SWITCHING ----
+        // ===== SCREEN SWITCHING =====
         window.switchScreen = (screen) => {
             document.querySelectorAll('.user-screen').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
@@ -1755,10 +2038,34 @@
             }
             if (screen === 'home') {
                 renderTasks();
+                // Check if we have a tracking session in localStorage
+                const state = getTrackingState();
+                if (state.start && state.active && !isTracking) {
+                    // Restore tracking
+                    const app = state.app || 'Unknown';
+                    isTracking = true;
+                    trackingStartTime = state.start;
+                    trackingAccumulated = state.accumulated;
+                    totalActiveSeconds = userData.activeAppTime || 0;
+                    sessionSeconds = state.accumulated;
+                    sessionMoneyEarned = earningsForSeconds(sessionSeconds);
+                    trackingAppName = app;
+                    updateStatusUI(true, app);
+                    updateTrackingUI();
+                    if (trackingInterval) clearInterval(trackingInterval);
+                    trackingInterval = setInterval(() => {
+                        updateTracking(false);
+                    }, 1000);
+                    document.addEventListener('visibilitychange', handleVisibilityChange);
+                    // Force a sync
+                    updateTracking(true);
+                }
             }
         };
 
-        // ---- AUTH STATE ----
+        // ============================================================
+        //  AUTH STATE
+        // ============================================================
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
@@ -1777,8 +2084,31 @@
                     await fetchUserHistory();
                     await syncConfig();
                     renderTasks();
+
+                    // Check if there's a tracking session in localStorage
+                    const state = getTrackingState();
+                    if (state.start && state.active) {
+                        // Restore tracking
+                        const app = state.app || 'Unknown';
+                        isTracking = true;
+                        trackingStartTime = state.start;
+                        trackingAccumulated = state.accumulated;
+                        totalActiveSeconds = userData.activeAppTime || 0;
+                        sessionSeconds = state.accumulated;
+                        sessionMoneyEarned = earningsForSeconds(sessionSeconds);
+                        trackingAppName = app;
+                        updateStatusUI(true, app);
+                        updateTrackingUI();
+                        if (trackingInterval) clearInterval(trackingInterval);
+                        trackingInterval = setInterval(() => {
+                            updateTracking(false);
+                        }, 1000);
+                        document.addEventListener('visibilitychange', handleVisibilityChange);
+                        // Force a sync
+                        updateTracking(true);
+                    }
+
                     switchScreen('home');
-                    // Auto-clear old history on load
                     autoClearOldHistory();
                 } catch (e) { console.warn('Auth load error:', e); }
                 hideLoading();
@@ -1787,6 +2117,8 @@
                 isTracking = false;
                 if (trackingInterval) { clearInterval(trackingInterval);
                     trackingInterval = null; }
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+                clearTrackingState();
                 clearKodularTokens();
                 $('auth-screen').classList.remove('hidden');
                 $('user-app').classList.add('hidden');
@@ -1794,7 +2126,9 @@
             }
         });
 
-        // ---- INIT ----
+        // ============================================================
+        //  INIT
+        // ============================================================
         window.addEventListener('load', () => {
             showLoading('Initializing…');
             setAuthMode('login');
@@ -1818,6 +2152,18 @@
             }).catch(() => {
                 renderTasks();
                 hideLoading();
+            });
+
+            // Handle page unload — save tracking state
+            window.addEventListener('beforeunload', () => {
+                if (isTracking) {
+                    const state = getTrackingState();
+                    if (state.start) {
+                        const now = Date.now();
+                        const elapsed = Math.max(state.accumulated, (now - state.start) / 1000);
+                        saveTrackingState(state.start, elapsed, true, state.app);
+                    }
+                }
             });
         });
     </script>
