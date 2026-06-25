@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- Android WebView Cache Disable -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>VSCOIN PREMIUM — Advanced Terminal</title>
     <script src="https://cdn.tailwindcss.com">
     </script>
@@ -24,24 +28,24 @@
             user-select: none;
             margin: 0;
             min-height: 100vh;
-            /* force mobile-only */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
             background: #e8eaed;
+            /* Full screen support for WebView */
+            width: 100%;
+            overflow-x: hidden;
         }
 
-        /* ── APP CONTAINER (mobile-only) ── */
+        /* ── APP CONTAINER (FULL WIDTH for Android) ── */
         .app-container {
-            max-width: 480px;
             width: 100%;
+            max-width: 100%; /* Changed from 480px to full */
             min-height: 100vh;
             background: #ffffff;
             position: relative;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.12);
+            box-shadow: none; /* Removed shadow for fullscreen */
             margin: 0 auto;
-            border-left: 1px solid #e0e0e0;
-            border-right: 1px solid #e0e0e0;
+            border: none; /* Removed borders */
+            display: flex;
+            flex-direction: column;
         }
 
         /* ── GOOGLE CARDS ── */
@@ -560,6 +564,33 @@
             background: #ccc;
             border-radius: 4px;
         }
+
+        /* Fix for bottom nav in WebView */
+        .app-container {
+            position: relative;
+            min-height: 100vh;
+        }
+        main {
+            padding-bottom: 80px; /* Extra space for bottom nav */
+        }
+        nav {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 50;
+            width: 100%;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        /* For older Android WebView */
+        input, select, textarea {
+            -webkit-appearance: none;
+            appearance: none;
+        }
     </style>
 </head>
 <body>
@@ -573,10 +604,11 @@
         <p id="loading-overlay-text" class="text-xs font-medium text-gray-600 tracking-wide">Syncing secure connection…</p>
     </div>
 
-    <div class="app-container flex flex-col justify-between min-h-screen">
+    <!-- ===== APP CONTAINER ===== -->
+    <div class="app-container">
 
         <!-- ===== AUTH SCREEN ===== -->
-        <div id="auth-screen" class="flex-1 flex flex-col items-center justify-center px-5 py-8">
+        <div id="auth-screen" class="flex-1 flex flex-col items-center justify-center px-5 py-8" style="min-height: 100vh;">
             <div class="w-full max-w-sm space-y-5 text-center">
                 <h1 class="text-4xl font-bold tracking-tight">
                     <span class="text-[#4285F4]">V</span><span class="text-[#EA4335]">S</span>
@@ -651,7 +683,8 @@
         </div>
 
         <!-- ===== DASHBOARD ===== -->
-        <div id="user-app" class="hidden flex-1 flex-col">
+        <div id="user-app" class="hidden flex-1 flex-col" style="min-height: 100vh;">
+
             <!-- Header -->
             <header class="bg-white border-b border-gray-100 p-3 sticky top-0 z-50 flex justify-between items-center">
                 <span class="text-xl font-bold tracking-tight">
@@ -691,7 +724,7 @@
             </div>
 
             <!-- Main -->
-            <main class="p-3 flex-1 space-y-3 pb-28 overflow-y-auto max-h-[calc(100vh-200px)]">
+            <main class="p-3 flex-1 space-y-3 pb-28 overflow-y-auto" style="max-height: calc(100vh - 200px);">
 
                 <!-- ===== HOME ===== -->
                 <section id="screen-home" class="user-screen active space-y-3">
@@ -896,8 +929,8 @@
                 </section>
             </main>
 
-            <!-- ===== BOTTOM NAV ===== -->
-            <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-1 py-1 flex justify-between items-center z-50">
+            <!-- ===== BOTTOM NAV (Sticky) ===== -->
+            <nav class="bg-white border-t border-gray-200 px-1 py-1 flex justify-between items-center z-50">
                 <button onclick="switchScreen('home')" class="flex flex-col items-center gap-0 nav-btn active flex-1 py-1" id="nav-home">
                     <i class="fa-solid fa-house text-lg"></i><span class="text-[8px] font-medium">Home</span>
                 </button>
