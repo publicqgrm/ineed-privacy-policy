@@ -320,6 +320,7 @@
         let isTracking = false;
         let trackingStartTime = null;
         let trackingAppName = '';
+        let isOpeningNewWindow = false;   // flag to prevent stop on new window
 
         const $ = id => document.getElementById(id);
         const toastContainer = $('toast-container');
@@ -512,7 +513,7 @@
         };
 
         // ============================================================
-        //  TRACKING — each session separate, stops on back/leave
+        //  TRACKING — now with flag to prevent stop on new window
         // ============================================================
         const EARN_PER_SEC = 0.15 / 180;
 
@@ -553,20 +554,6 @@
             }
         }
 
-        function restoreSessionState() {
-            const active = localStorage.getItem('vscoin_session_active') === 'true';
-            if (!active) return null;
-            const start = localStorage.getItem('vscoin_session_start');
-            const app = localStorage.getItem('vscoin_session_app');
-            const seconds = localStorage.getItem('vscoin_session_seconds');
-            if (!start || !app || !seconds) return null;
-            return {
-                startTime: parseInt(start),
-                appName: app,
-                accumulatedSeconds: parseFloat(seconds)
-            };
-        }
-
         function clearSessionState() {
             localStorage.removeItem('vscoin_session_start');
             localStorage.removeItem('vscoin_session_app');
@@ -575,7 +562,13 @@
         }
 
         function startTracking(appName) {
-            if (isTracking) stopTracking(null);
+            // If already tracking, stop & collect first (but only if not opening new window)
+            if (isTracking) {
+                // If we're already tracking and user clicks another app, we should stop the previous
+                // and start new. But we don't want to stop on visibility change.
+                // So we stop manually here.
+                stopTracking(null);
+            }
             clearSessionState();
             const now = Date.now();
             trackingStartTime = now;
@@ -647,22 +640,38 @@
         }
 
         // ============================================================
-        //  LAUNCH TASK — opens in new window (blank), tracking starts
+        //  LAUNCH TASK — opens new window, sets flag to prevent stop
         // ============================================================
         window.launchTask = (url, name) => {
+            // Set flag before opening window
+            isOpeningNewWindow = true;
+            // Start tracking (this will stop previous if any)
             startTracking(name);
+            // Open new window
             window.open(url, '_blank');
+            // After a short delay, reset flag (so that visibility change can work)
+            setTimeout(() => {
+                isOpeningNewWindow = false;
+            }, 1000);
         };
 
-        // ===== HANDLE PAGE VISIBILITY CHANGE (back/leave) =====
+        // ===== HANDLE PAGE VISIBILITY CHANGE =====
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
+                // If we are opening a new window, ignore this hide event
+                if (isOpeningNewWindow) {
+                    console.log('Ignoring hide because new window is opening.');
+                    return;
+                }
+                // Otherwise, user really left the page → stop tracking
                 if (isTracking) {
                     stopTracking('Session ended. ₹' + sessionMoneyEarned.toFixed(4) + ' credited.');
                 }
             } else {
-                const saved = restoreSessionState();
-                if (saved) {
+                // Page became visible again — just ensure UI is idle
+                // (No auto-restore)
+                const active = localStorage.getItem('vscoin_session_active') === 'true';
+                if (active) {
                     clearSessionState();
                     updateStatusUI(false);
                     showToast('Previous session ended. Tap an app to start new.', 'info');
@@ -946,8 +955,9 @@
             }
             if (screen === 'home') {
                 renderTasks();
-                const saved = restoreSessionState();
-                if (saved) {
+                // Clear any stale session state
+                const active = localStorage.getItem('vscoin_session_active') === 'true';
+                if (active) {
                     clearSessionState();
                     updateStatusUI(false);
                 }
