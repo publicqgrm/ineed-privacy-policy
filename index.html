@@ -357,10 +357,8 @@
         // ===== GOOGLE SEARCH (now starts tracking) =====
         window.googleSearch = (query) => {
             if (!query.trim()) return;
-            // Start tracking with "Google Search" as app name
             if (isTracking) creditSession();
             startTracking('Google Search');
-            // Open search in new window
             window.open(`https://www.google.com/search?q=${encodeURIComponent(query.trim())}`, '_blank');
         };
 
@@ -537,7 +535,6 @@
             localStorage.setItem('vscoin_tracking_start', trackingStartTime.toString());
             localStorage.setItem('vscoin_tracking_app', appName);
             localStorage.setItem('vscoin_tracking_active', 'true');
-            // Clear any pending earn from before
             localStorage.removeItem('vscoin_pending_earn');
             localStorage.removeItem('vscoin_pending_seconds');
             updateStatusUI(true, appName);
@@ -556,8 +553,13 @@
                 const secs = String(Math.floor(elapsedSeconds % 60)).padStart(2,'0');
                 $('live-timer').textContent = `${hrs}:${mins}:${secs}`;
                 $('session-earned').textContent = `₹${earned.toFixed(4)}`;
-                syncEarning(earned, elapsedSeconds).then(() => {
-                    showToast(`✅ ₹${earned.toFixed(4)} credited for ${Math.floor(elapsedSeconds)}s`, 'success');
+                // Sync and then show toast only if success
+                syncEarning(earned, elapsedSeconds).then((success) => {
+                    if (success) {
+                        showToast(`✅ ₹${earned.toFixed(4)} credited for ${Math.floor(elapsedSeconds)}s`, 'success');
+                    } else {
+                        showToast(`❌ Failed to credit ₹${earned.toFixed(4)}. Please check network.`, 'error');
+                    }
                 });
             } else {
                 showToast('⏳ No time elapsed.', 'info');
@@ -568,31 +570,43 @@
             localStorage.removeItem('vscoin_tracking_start');
             localStorage.removeItem('vscoin_tracking_app');
             localStorage.setItem('vscoin_tracking_active', 'false');
-            // Also clear any pending earn to avoid duplicate
             localStorage.removeItem('vscoin_pending_earn');
             localStorage.removeItem('vscoin_pending_seconds');
             updateStatusUI(false);
         }
 
         async function syncEarning(amount, seconds) {
-            if (!currentUser || amount <= 0) return;
+            if (!currentUser) {
+                console.warn('No current user');
+                return false;
+            }
+            if (amount <= 0) return false;
             try {
                 const snap = await get(ref(db, 'users/' + currentUser.uid));
-                if (snap.exists()) {
-                    const data = snap.val();
-                    const nBal = (data.balance || 0) + amount;
-                    const newActiveTime = (data.activeAppTime || 0) + seconds;
-                    await update(ref(db, 'users/' + currentUser.uid), {
-                        balance: nBal,
-                        activeAppTime: newActiveTime,
-                        lastActiveTimestamp: Date.now()
-                    });
-                    $('global-balance').textContent = nBal.toFixed(2);
-                    $('wallet-balance-display').textContent = '₹ ' + nBal.toFixed(2);
-                    userData.balance = nBal;
-                    userData.activeAppTime = newActiveTime;
+                if (!snap.exists()) {
+                    console.warn('User data not found');
+                    return false;
                 }
-            } catch(e) { console.warn('syncEarning error:', e); }
+                const data = snap.val();
+                const nBal = (data.balance || 0) + amount;
+                const newActiveTime = (data.activeAppTime || 0) + seconds;
+                await update(ref(db, 'users/' + currentUser.uid), {
+                    balance: nBal,
+                    activeAppTime: newActiveTime,
+                    lastActiveTimestamp: Date.now()
+                });
+                // Update UI
+                $('global-balance').textContent = nBal.toFixed(2);
+                $('wallet-balance-display').textContent = '₹ ' + nBal.toFixed(2);
+                // Update userData cache
+                userData.balance = nBal;
+                userData.activeAppTime = newActiveTime;
+                console.log(`✅ Synced ₹${amount.toFixed(4)} for ${seconds}s`);
+                return true;
+            } catch(e) {
+                console.error('syncEarning error:', e);
+                return false;
+            }
         }
 
         function checkActiveSessionOnLoad() {
@@ -626,7 +640,6 @@
         });
 
         window.addEventListener('beforeunload', () => {
-            // Only save pending if tracking is active AND not already credited
             if (isTracking && trackingStartTime) {
                 const now = Date.now();
                 const elapsed = (now - trackingStartTime) / 1000;
@@ -646,9 +659,8 @@
             checkActiveSessionOnLoad();
         });
 
-        // ===== CHECK PENDING EARNINGS (only if not already credited) =====
+        // ===== CHECK PENDING EARNINGS (only if no active session) =====
         function checkPendingEarnings() {
-            // Only check if no active session is running
             const active = localStorage.getItem('vscoin_tracking_active') === 'true';
             if (active) return; // creditSession will handle it
 
@@ -657,8 +669,12 @@
                 const earn = parseFloat(pendingEarn);
                 const seconds = parseFloat(localStorage.getItem('vscoin_pending_seconds') || '0');
                 if (earn > 0) {
-                    syncEarning(earn, seconds).then(() => {
-                        showToast(`✅ ₹${earn.toFixed(4)} credited from previous session.`, 'success');
+                    syncEarning(earn, seconds).then((success) => {
+                        if (success) {
+                            showToast(`✅ ₹${earn.toFixed(4)} credited from previous session.`, 'success');
+                        } else {
+                            showToast(`❌ Failed to credit ₹${earn.toFixed(4)}.`, 'error');
+                        }
                     });
                 }
                 localStorage.removeItem('vscoin_pending_earn');
@@ -915,6 +931,7 @@
             }
             if (screen === 'home') {
                 renderTasks();
+                // Check for active session first
                 const active = localStorage.getItem('vscoin_tracking_active') === 'true';
                 if (active) {
                     const start = localStorage.getItem('vscoin_tracking_start');
@@ -929,9 +946,10 @@
                         localStorage.removeItem('vscoin_tracking_app');
                         localStorage.setItem('vscoin_tracking_active', 'false');
                     }
+                } else {
+                    // Only check pending if no active session
+                    checkPendingEarnings();
                 }
-                // Also check pending earnings only if no active session
-                checkPendingEarnings();
             }
         };
 
@@ -949,7 +967,7 @@
                     await fetchUserHistory();
                     await syncConfig();
                     renderTasks();
-                    // Check for active session and pending earnings
+                    // Check for active session first
                     const active = localStorage.getItem('vscoin_tracking_active') === 'true';
                     if (active) {
                         const start = localStorage.getItem('vscoin_tracking_start');
@@ -964,8 +982,10 @@
                             localStorage.removeItem('vscoin_tracking_app');
                             localStorage.setItem('vscoin_tracking_active', 'false');
                         }
+                    } else {
+                        // Only check pending if no active session
+                        checkPendingEarnings();
                     }
-                    checkPendingEarnings();
                     switchScreen('home');
                     autoClearOldHistory();
                 } catch(e) { console.warn(e); }
