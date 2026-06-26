@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <style>
-        /* Same as before – keep your existing styles */
+        /* Same styles as before – keep yours */
         * { box-sizing: border-box; margin:0; padding:0; }
         html,body { font-family:'Google Sans','Roboto',sans-serif; background:#f1f3f4; color:#1f1f1f; user-select:none; margin:0; min-height:100vh; background:#e8eaed; width:100%; overflow-x:hidden; }
         .app-container { width:100%; max-width:100%; min-height:100vh; background:#ffffff; position:relative; margin:0 auto; border:none; display:flex; flex-direction:column; }
@@ -194,7 +194,7 @@
 
                     <!-- Apps Grid -->
                     <div class="task-grid" id="task-grid"></div>
-                    <p class="text-[8px] text-gray-400 text-center mt-1"><i class="fa-regular fa-clock mr-1"></i> Tap an app or search → opens new window (tracking starts) — back to stop & collect</p>
+                    <p class="text-[8px] text-gray-400 text-center mt-1"><i class="fa-regular fa-clock mr-1"></i> Tap an app or search → opens new window (20 min limit) — back within 20 min to collect</p>
                 </section>
 
                 <!-- PROFILE, WITHDRAWAL, SETTINGS (unchanged) -->
@@ -511,9 +511,10 @@
         };
 
         // ============================================================
-        //  FIXED TRACKING SYSTEM — with retry and pending updates
+        //  TRACKING WITH 20-MINUTE TIME LIMIT
         // ============================================================
         const EARN_PER_SEC = 0.15 / 180;
+        const MAX_SESSION_SECONDS = 1200; // 20 minutes
 
         function updateStatusUI(active, name = '') {
             const badge = $('status-badge');
@@ -536,16 +537,15 @@
             localStorage.setItem('vscoin_tracking_start', trackingStartTime.toString());
             localStorage.setItem('vscoin_tracking_app', appName);
             localStorage.setItem('vscoin_tracking_active', 'true');
-            // Clear any old pending updates
+            // Clear any old pending
             localStorage.removeItem('vscoin_pending_earn');
             localStorage.removeItem('vscoin_pending_seconds');
             updateStatusUI(true, appName);
             $('live-timer').textContent = '00:00:00';
             $('session-earned').textContent = '₹0.0000';
-            console.log('🔵 Tracking started for:', appName);
+            console.log('🔵 Tracking started for:', appName, 'at', new Date(trackingStartTime).toLocaleTimeString());
         }
 
-        // Credit session with retry and pending save
         function creditSession() {
             if (!isTracking || !trackingStartTime) {
                 console.log('⚠️ No active session to credit.');
@@ -553,38 +553,44 @@
             }
             const now = Date.now();
             const elapsedSeconds = (now - trackingStartTime) / 1000;
-            if (elapsedSeconds <= 0) {
-                showToast('⏳ No time elapsed.', 'info');
-                // Still clear session
-                clearSessionState();
-                return;
-            }
-            const earned = elapsedSeconds * EARN_PER_SEC;
-            const hrs = String(Math.floor(elapsedSeconds / 3600)).padStart(2,'0');
-            const mins = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2,'0');
-            const secs = String(Math.floor(elapsedSeconds % 60)).padStart(2,'0');
+            const hrs = String(Math.floor(Math.min(elapsedSeconds, MAX_SESSION_SECONDS) / 3600)).padStart(2,'0');
+            const mins = String(Math.floor((Math.min(elapsedSeconds, MAX_SESSION_SECONDS) % 3600) / 60)).padStart(2,'0');
+            const secs = String(Math.floor(Math.min(elapsedSeconds, MAX_SESSION_SECONDS) % 60)).padStart(2,'0');
             $('live-timer').textContent = `${hrs}:${mins}:${secs}`;
-            $('session-earned').textContent = `₹${earned.toFixed(4)}`;
 
-            console.log(`🟡 Crediting ₹${earned.toFixed(4)} for ${elapsedSeconds}s...`);
+            // Check if within 20 minutes
+            if (elapsedSeconds <= MAX_SESSION_SECONDS && elapsedSeconds > 0) {
+                const earned = elapsedSeconds * EARN_PER_SEC;
+                $('session-earned').textContent = `₹${earned.toFixed(4)}`;
+                console.log(`🟡 Crediting ₹${earned.toFixed(4)} for ${elapsedSeconds}s (within 20 min)`);
 
-            // Save pending in case of failure
-            localStorage.setItem('vscoin_pending_earn', earned.toString());
-            localStorage.setItem('vscoin_pending_seconds', elapsedSeconds.toString());
+                // Save pending and sync
+                localStorage.setItem('vscoin_pending_earn', earned.toString());
+                localStorage.setItem('vscoin_pending_seconds', elapsedSeconds.toString());
 
-            // Try to sync now
-            syncEarning(earned, elapsedSeconds).then((success) => {
-                if (success) {
-                    showToast(`✅ ₹${earned.toFixed(4)} credited for ${Math.floor(elapsedSeconds)}s`, 'success');
-                    localStorage.removeItem('vscoin_pending_earn');
-                    localStorage.removeItem('vscoin_pending_seconds');
-                } else {
-                    // Keep pending, will retry on next load
-                    showToast(`⏳ ₹${earned.toFixed(4)} will be credited on next load.`, 'warning');
-                }
-            });
+                syncEarning(earned, elapsedSeconds).then((success) => {
+                    if (success) {
+                        showToast(`✅ ₹${earned.toFixed(4)} credited for ${Math.floor(elapsedSeconds)}s`, 'success');
+                        localStorage.removeItem('vscoin_pending_earn');
+                        localStorage.removeItem('vscoin_pending_seconds');
+                    } else {
+                        showToast(`⏳ ₹${earned.toFixed(4)} will be credited on next load.`, 'warning');
+                    }
+                });
+            } else if (elapsedSeconds > MAX_SESSION_SECONDS) {
+                // Session expired – no credit
+                $('session-earned').textContent = `⏰ Expired`;
+                showToast(`⏰ Session expired (${Math.floor(elapsedSeconds)}s > 20 min). No credit.`, 'warning');
+                console.log(`❌ Session expired: ${elapsedSeconds}s > ${MAX_SESSION_SECONDS}s. No credit.`);
+                // Clear any pending for this session
+                localStorage.removeItem('vscoin_pending_earn');
+                localStorage.removeItem('vscoin_pending_seconds');
+            } else {
+                // No time elapsed
+                showToast('⏳ No time elapsed.', 'info');
+            }
 
-            // Clear session state (but keep pending if failed)
+            // Clear session state
             clearSessionState();
         }
 
@@ -597,7 +603,6 @@
             updateStatusUI(false);
         }
 
-        // Sync earning with Firebase — returns Promise<boolean>
         async function syncEarning(amount, seconds) {
             if (!currentUser) {
                 console.warn('❌ No current user, cannot sync.');
@@ -619,7 +624,6 @@
                     activeAppTime: newActiveTime,
                     lastActiveTimestamp: Date.now()
                 });
-                // Update UI
                 $('global-balance').textContent = nBal.toFixed(2);
                 $('wallet-balance-display').textContent = '₹ ' + nBal.toFixed(2);
                 userData.balance = nBal;
@@ -632,13 +636,12 @@
             }
         }
 
-        // Check and apply pending earnings (from previous failed attempts)
         function processPendingEarnings() {
             const pendingEarn = localStorage.getItem('vscoin_pending_earn');
             if (!pendingEarn || !currentUser) return;
             const earn = parseFloat(pendingEarn);
             const seconds = parseFloat(localStorage.getItem('vscoin_pending_seconds') || '0');
-            if (earn > 0 && seconds > 0) {
+            if (earn > 0 && seconds > 0 && seconds <= MAX_SESSION_SECONDS) {
                 console.log(`🔄 Retrying pending sync: ₹${earn.toFixed(4)} for ${seconds}s`);
                 syncEarning(earn, seconds).then((success) => {
                     if (success) {
@@ -649,14 +652,17 @@
                         showToast(`⏳ Still pending: ₹${earn.toFixed(4)}`, 'warning');
                     }
                 });
+            } else if (seconds > MAX_SESSION_SECONDS) {
+                // Expired pending – discard
+                showToast(`⏰ Pending session expired (>20 min). No credit.`, 'warning');
+                localStorage.removeItem('vscoin_pending_earn');
+                localStorage.removeItem('vscoin_pending_seconds');
             } else {
-                // Invalid pending data, clear it
                 localStorage.removeItem('vscoin_pending_earn');
                 localStorage.removeItem('vscoin_pending_seconds');
             }
         }
 
-        // Check for active tracking session on load/visibility change
         function checkActiveSessionOnLoad() {
             const active = localStorage.getItem('vscoin_tracking_active') === 'true';
             if (active) {
@@ -667,29 +673,25 @@
                     trackingAppName = app;
                     isTracking = true;
                     console.log('🔵 Restored active session for:', app);
-                    creditSession(); // This will credit and clear
+                    creditSession(); // This will check time limit
                 } else {
-                    // Stale state, clear
                     localStorage.removeItem('vscoin_tracking_start');
                     localStorage.removeItem('vscoin_tracking_app');
                     localStorage.setItem('vscoin_tracking_active', 'false');
                 }
             }
-            // Also process any pending earnings
             processPendingEarnings();
         }
 
-        // Visibility change event
+        // Visibility change
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
-                // Save active session if any
                 if (isTracking && trackingStartTime) {
                     localStorage.setItem('vscoin_tracking_start', trackingStartTime.toString());
                     localStorage.setItem('vscoin_tracking_app', trackingAppName);
                     localStorage.setItem('vscoin_tracking_active', 'true');
                 }
             } else {
-                // Page became visible — check for session and pending
                 checkActiveSessionOnLoad();
             }
         });
@@ -699,7 +701,7 @@
             if (isTracking && trackingStartTime) {
                 const now = Date.now();
                 const elapsed = (now - trackingStartTime) / 1000;
-                if (elapsed > 0) {
+                if (elapsed > 0 && elapsed <= MAX_SESSION_SECONDS) {
                     const earn = elapsed * EARN_PER_SEC;
                     localStorage.setItem('vscoin_pending_earn', earn.toString());
                     localStorage.setItem('vscoin_pending_seconds', elapsed.toString());
@@ -708,7 +710,6 @@
             }
         });
 
-        // Pageshow & load
         window.addEventListener('pageshow', function(event) {
             checkActiveSessionOnLoad();
         });
@@ -717,7 +718,6 @@
             checkActiveSessionOnLoad();
         });
 
-        // ===== LAUNCH TASK =====
         window.launchTask = (url, name) => {
             if (isTracking) creditSession();
             startTracking(name);
@@ -967,7 +967,6 @@
             }
             if (screen === 'home') {
                 renderTasks();
-                // Check for active session or pending earnings
                 const active = localStorage.getItem('vscoin_tracking_active') === 'true';
                 if (active) {
                     const start = localStorage.getItem('vscoin_tracking_start');
@@ -983,7 +982,6 @@
                         localStorage.setItem('vscoin_tracking_active', 'false');
                     }
                 } else {
-                    // Process pending earnings if any
                     processPendingEarnings();
                 }
             }
@@ -1003,7 +1001,6 @@
                     await fetchUserHistory();
                     await syncConfig();
                     renderTasks();
-                    // Check for active session or pending earnings
                     const active = localStorage.getItem('vscoin_tracking_active') === 'true';
                     if (active) {
                         const start = localStorage.getItem('vscoin_tracking_start');
